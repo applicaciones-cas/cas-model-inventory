@@ -110,8 +110,6 @@ public class PurchaseOrder implements GTranDet {
                     if (!pbWthParent) {
                         poGRider.rollbackTrans();
                     }
-                    poJSON.put("result", "error");
-                    poJSON.put("message", "Unable to Save Transaction.");
                     return poJSON;
                 }
 
