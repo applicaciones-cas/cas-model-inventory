@@ -100,13 +100,19 @@ public class PurchaseOrder implements GTranDet {
             poGRider.beginTrans();
         }
 
-        
-        
         if (getItemCount() >= 1) {
             for (int lnCtr = 0; lnCtr <= getItemCount() - 1; lnCtr++) {
                 poModelDetail.get(lnCtr).setEntryNo(lnCtr + 1);
                 poJSON = poModelDetail.get(lnCtr).saveRecord();
-                 
+                if (!pbWthParent) {
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        poGRider.rollbackTrans();
+                        poJSON.put("result", "error");
+                        poJSON.put("message", "Unable to Save Transaction.");
+                        return poJSON;
+                    }
+                }
+
             }
 
         } else {
@@ -160,7 +166,7 @@ public class PurchaseOrder implements GTranDet {
 
         if (poModelMaster.getEditMode() == EditMode.READY
                 || poModelMaster.getEditMode() == EditMode.UPDATE) {
-            
+
             poJSON = poModelMaster.setPostedBy(poGRider.getUserID());
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
@@ -371,11 +377,11 @@ public class PurchaseOrder implements GTranDet {
     }
 
     public JSONObject AddModelDetail() {
-        String lsModelRequired = poModelDetail.get(poModelDetail.size()-1 ).getStockID();
+        String lsModelRequired = poModelDetail.get(poModelDetail.size() - 1).getStockID();
         if (!lsModelRequired.isEmpty()) {
             poModelDetail.add(new Model_PO_Detail(poGRider));
-            poModelDetail.get(poModelDetail.size()-1).newRecord();
-            poModelDetail.get(poModelDetail.size()-1).setTransactionNo(poModelMaster.getTransactionNo());
+            poModelDetail.get(poModelDetail.size() - 1).newRecord();
+            poModelDetail.get(poModelDetail.size() - 1).setTransactionNo(poModelMaster.getTransactionNo());
 
         } else {
             poJSON = new JSONObject();
@@ -388,7 +394,7 @@ public class PurchaseOrder implements GTranDet {
     }
 
     public void RemoveModelDetail(int fnRow) {
-        poModelDetail.remove(fnRow -1);
+        poModelDetail.remove(fnRow - 1);
 
     }
 
