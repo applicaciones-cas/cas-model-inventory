@@ -104,8 +104,10 @@ public class PurchaseOrder implements GTranDet {
             for (int lnCtr = 0; lnCtr <= getItemCount() - 1; lnCtr++) {
                 poModelDetail.get(lnCtr).setEntryNo(lnCtr + 1);
                 poJSON = poModelDetail.get(lnCtr).saveRecord();
-                if (!pbWthParent) {
+                
                     if ("error".equals((String) poJSON.get("result"))) {
+                        
+                        if (!pbWthParent) {
                         poGRider.rollbackTrans();
                         poJSON.put("result", "error");
                         poJSON.put("message", "Unable to Save Transaction.");
