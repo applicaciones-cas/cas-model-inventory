@@ -212,25 +212,25 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
      * @param fsCondition - filter values
      * @return result as success/failed
      */
-    @Override
-    public JSONObject openRecord(String fsCondition) {
+  public JSONObject openRecord(String lsFilter, String fsCondition) {
         poJSON = new JSONObject();
-        
-        String lsSQL = MiscUtil.makeSelect(this, "xBarCodex»xDescript»xCategrNm»xInvTypNm");
-        
+
+        String lsSQL = MiscUtil.makeSelect(this, "xCategrNm»xInvTypNm");
+
         //replace the condition based on the primary key column of the record
-        lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
-        
+        lsSQL = MiscUtil.addCondition(lsSQL, "sTransNox = " + SQLUtil.toSQL(lsFilter)
+                + "AND sStockIDx = " + SQLUtil.toSQL(fsCondition));
+
         ResultSet loRS = poGRider.executeQuery(lsSQL);
-        
+
         try {
-            if (loRS.next()){
-                for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++){
+            if (loRS.next()) {
+                for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++) {
                     setValue(lnCtr, loRS.getObject(lnCtr));
                 }
-                
+
                 pnEditMode = EditMode.UPDATE;
-                
+
                 poJSON.put("result", "success");
                 poJSON.put("message", "Record loaded successfully.");
             } else {
@@ -241,7 +241,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
             poJSON.put("result", "error");
             poJSON.put("message", e.getMessage());
         }
-        
+
         return poJSON;
     }
 
@@ -278,7 +278,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
                 Model_Inv_Stock_Request_Detail loOldEntity = new Model_Inv_Stock_Request_Detail(poGRider);
                 
                 //replace with the primary key column info
-                JSONObject loJSON = loOldEntity.openRecord(this.getStockID());
+                JSONObject loJSON = loOldEntity.openRecord(this.getTransactionNumber(), this.getStockID());
                 
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
@@ -714,4 +714,9 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
             System.exit(1);
         }
     } 
+
+    @Override
+    public JSONObject openRecord(String string) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
