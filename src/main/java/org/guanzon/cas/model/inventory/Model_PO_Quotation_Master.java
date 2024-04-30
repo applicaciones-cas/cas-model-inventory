@@ -829,6 +829,10 @@ public class Model_PO_Quotation_Master implements GEntity{
         return MiscUtil.makeSQL(this, "xSupplier»xAddressx»xCPerson1»xCPPosit1»xCPMobil1»xTermName»xCategrNm»xInvTypNm");
     }
     
+        public String makeSelectSQL() {
+        return MiscUtil.makeSelect(this, "xSupplier»xAddressx»xCPerson1»xCPPosit1»xCPMobil1»xTermName»xCategrNm»xInvTypNm");
+    }
+    
     private void initialize(){
         try {
             poEntity = MiscUtil.xml2ResultSet(System.getProperty("sys.default.path.metadata") + XML, getTable());

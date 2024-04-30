@@ -465,18 +465,18 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
     /**
      * Sets the EntryNumber of this record.
      * 
-     * @param fsValue 
+     * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setEntryNumber(Integer fnValue){
+    public JSONObject setEntryNumber(int fnValue){
         return setValue("nEntryNox", fnValue);
     }
     
     /**
      * @return The EntryNumber of this record. 
      */
-    public Integer getEntryNumber(){
-        return (Integer) getValue("nEntryNox");
+    public int getEntryNumber(){
+        return (int) getValue("nEntryNox");
     }
     
     /**
@@ -553,14 +553,14 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
      * @param fsValue 
      * @return result as success/failed
      */
-    public JSONObject setRecorddStatus(String fsValue){
+    public JSONObject setRecordStatus(String fsValue){
         return setValue("cRecdStat", fsValue);
     }
     
     /**
      * @return The RecorddStatus of this record. 
      */
-    public String getRecorddStatus(){
+    public String getRecordStatus(){
         return (String) getValue("cRecdStat");
     }
     
@@ -622,6 +622,10 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
      */
     public String makeSQL(){
         return MiscUtil.makeSQL(this, "xBranchNm»xDestinat»xCategrNm»xInvTypNm");
+    }
+    
+        public String makeSelectSQL() {
+        return MiscUtil.makeSelect(this, "xBranchNm»xDestinat»xCategrNm»xInvTypNm");
     }
     
     private void initialize(){
