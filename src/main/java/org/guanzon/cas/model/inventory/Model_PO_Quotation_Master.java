@@ -537,14 +537,14 @@ public class Model_PO_Quotation_Master implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setAddDiscx(BigDecimal fnValue){
+    public JSONObject setAddDiscount(BigDecimal fnValue){
         return setValue("nAddDiscx", fnValue);
     }
     
     /**
      * @return The AddDiscx of this record. 
      */
-    public BigDecimal getAddDiscx(){
+    public BigDecimal getAddDiscount(){
         return (BigDecimal) getValue("nAddDiscx");
     }
     
@@ -554,14 +554,14 @@ public class Model_PO_Quotation_Master implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setVatRatex(BigDecimal fnValue){
+    public JSONObject setVatRate(BigDecimal fnValue){
         return setValue("nVatRatex", fnValue);
     }
     
     /**
      * @return The VatRatex of this record. 
      */
-    public BigDecimal getVatRatex(){
+    public BigDecimal getVatRate(){
         return (BigDecimal) getValue("nVatRatex");
     }
     
@@ -571,14 +571,14 @@ public class Model_PO_Quotation_Master implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setVatAmtxx(BigDecimal fnValue){
+    public JSONObject setVatAmount(BigDecimal fnValue){
         return setValue("nVatAmtxx", fnValue);
     }
     
     /**
      * @return The VatAmtxx of this record. 
      */
-    public BigDecimal getVatAmtxx(){
+    public BigDecimal getVatAmount(){
         return (BigDecimal) getValue("nVatAmtxx");
     }
     
@@ -622,14 +622,14 @@ public class Model_PO_Quotation_Master implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setFreightx(BigDecimal fnValue){
+    public JSONObject setFreight(BigDecimal fnValue){
         return setValue("nFreightx", fnValue);
     }
     
     /**
      * @return The Freight of this record. 
      */
-    public BigDecimal getFreightx(){
+    public BigDecimal getFreight(){
         return (BigDecimal) getValue("nFreightx");
     }
     
@@ -758,14 +758,14 @@ public class Model_PO_Quotation_Master implements GEntity{
      * @param fsValue 
      * @return result as success/failed
      */
-    public JSONObject setRecorddStatus(String fsValue){
+    public JSONObject setRecordStatus(String fsValue){
         return setValue("cRecdStat", fsValue);
     }
     
     /**
      * @return The RecorddStatus of this record. 
      */
-    public String getRecorddStatus(){
+    public String getRecordStatus(){
         return (String) getValue("cRecdStat");
     }
     
@@ -792,14 +792,14 @@ public class Model_PO_Quotation_Master implements GEntity{
      * @param fsValue 
      * @return result as success/failed
      */
-    public JSONObject setModifiedBy(String fsValue){
+    public JSONObject setModified(String fsValue){
         return setValue("sModified", fsValue);
     }
     
     /**
      * @return The user encoded/updated the record 
      */
-    public String getModifiedBy(){
+    public String getModified(){
         return (String) getValue("sModified");
     }
     

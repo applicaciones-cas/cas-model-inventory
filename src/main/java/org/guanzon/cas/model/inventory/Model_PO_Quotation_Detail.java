@@ -469,84 +469,35 @@ public class Model_PO_Quotation_Detail implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setDiscAmtx(BigDecimal fnValue){
+    public JSONObject setDiscAmount(BigDecimal fnValue){
         return setValue("nDiscAmtx", fnValue);
     }
     
     /**
      * @return The Bank Branch Name of this record. 
      */
-    public BigDecimal getDiscAmtx(){
+    public BigDecimal getDiscAmount(){
         return (BigDecimal) getValue("nDiscAmtx");
-    }
-    
-    /**
-     * Sets the RecordStatus of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setRecordStatus(String fsValue){
-        return setValue("cRecdStat", fsValue);
-    }
-    
-    /**
-     * @return The RecordStatus of this record. 
-     */
-    public String getRecordStatus(){
-        return (String) getValue("cRecdStat");
-    }
-    
-    /**
-     * Sets record as active.
-     * 
-     * @param fbValue
-     * @return result as success/failed
-     */
-    public JSONObject setActive(boolean fbValue){
-        return setValue("cRecdStat", fbValue ? "1" : "0");
-    }
-    
-    /**
-     * @return If record is active. 
-     */
-    public boolean isActive(){
-        return ((String) getValue("cRecdStat")).equals("1");
     }
     
     /**
      * Sets the user encoded/updated the record.
      * 
-     * @param fsValue 
+     * @param fdValue 
      * @return result as success/failed
      */
-    public JSONObject setModifiedBy(String fsValue){
-        return setValue("sModified", fsValue);
+    public JSONObject setModified(Date fdValue){
+        return setValue("sModified", fdValue);
     }
     
     /**
      * @return The user encoded/updated the record 
      */
-    public String getModifiedBy(){
-        return (String) getValue("sModified");
+    public Date getModified(){
+        return (Date) getValue("sModified");
     }
     
-    /**
-     * Sets the date and time the record was modified.
-     * 
-     * @param fdValue 
-     * @return result as success/failed
-     */
-    public JSONObject setModifiedDate(Date fdValue){
-        return setValue("dModified", fdValue);
-    }
     
-    /**
-     * @return The date and time the record was modified.
-     */
-    public Date getModifiedDate(){
-        return (Date) getValue("dModified");
-    }
     
     /**
      * Gets the SQL statement for this entity.
