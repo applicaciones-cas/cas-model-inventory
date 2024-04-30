@@ -364,18 +364,18 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
     /**
      * Sets the BranchCode of this record.
      * 
-     * @param fnValue 
+     * @param fsValue 
      * @return result as success/failed
      */
-    public JSONObject setBranchCode(Integer fnValue){
-        return setValue("sBranchCd", fnValue);
+    public JSONObject setBranchCode(String fsValue){
+        return setValue("sBranchCd", fsValue);
     }
     
     /**
      * @return The BranchCode of this record. 
      */
-    public Integer getBranchCode(){
-        return (Integer) getValue("sBranchCd");
+    public String getBranchCode(){
+        return (String) getValue("sBranchCd");
     }
     
      /**
