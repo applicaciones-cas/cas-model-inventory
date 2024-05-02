@@ -112,7 +112,6 @@ public class PurchaseOrderQuotation implements GTranDet {
                     }
                     return poJSON;
                 }
-
             }
 
         } else {

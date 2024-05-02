@@ -1,6 +1,7 @@
 package org.guanzon.cas.model.inventory;
 
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -384,7 +385,7 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
      * @param fsValue 
      * @return result as success/failed
      */
-    public JSONObject setStockID(Date fsValue){
+    public JSONObject setStockID(String fsValue){
         return setValue("sStockIDx", fsValue);
     }
     
@@ -418,7 +419,7 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setQuantity(String fnValue){
+    public JSONObject setQuantity(int fnValue){
         return setValue("nQuantity", fnValue);
     }
     
@@ -435,19 +436,16 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setUnitPrice(String fnValue){
+    public JSONObject setUnitPrice(BigDecimal fnValue){
         return setValue("nUnitPrce", fnValue);
     }
     
     /**
      * @return The Unit Price of this record. 
      */
-    public int getUnitPrice(){
-        return (int) getValue("nUnitPrce");
+    public BigDecimal getUnitPrice(){
+        return (BigDecimal) getValue("nUnitPrce");
     }
-    
-    
-
 
     /**
      * Sets the date and time the record was modified.

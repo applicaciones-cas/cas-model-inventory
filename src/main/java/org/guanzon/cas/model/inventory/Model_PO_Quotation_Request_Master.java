@@ -547,54 +547,14 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
         return (Date) getValue("dPrepared");
     }
     
-    /**
-     * Sets the RecorddStatus of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setRecordStatus(String fsValue){
-        return setValue("cRecdStat", fsValue);
-    }
-    
-    /**
-     * @return The RecorddStatus of this record. 
-     */
-    public String getRecordStatus(){
-        return (String) getValue("cRecdStat");
-    }
-    
-    /**
-     * Sets record as active.
-     * 
-     * @param fbValue
-     * @return result as success/failed
-     */
-    public JSONObject setActive(boolean fbValue){
-        return setValue("cRecdStat", fbValue ? "1" : "0");
-    }
-    
-    /**
-     * @return If record is active. 
-     */
-    public boolean isActive(){
-        return ((String) getValue("cRecdStat")).equals("1");
-    }
-    
-    /**
-     * Sets the user encoded/updated the record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setModifiedBy(String fsValue){
+    public JSONObject setModified(String fsValue){
         return setValue("sModified", fsValue);
     }
     
     /**
      * @return The user encoded/updated the record 
      */
-    public String getModifiedBy(){
+    public String getModified(){
         return (String) getValue("sModified");
     }
     
