@@ -207,6 +207,7 @@ public class testPurchaseOrder_InventoryStockRequest {
             Assert.fail((String) loJSON.get("message"));
         }
         
+         
         loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setModifiedDate(instance.getServerDate());
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
