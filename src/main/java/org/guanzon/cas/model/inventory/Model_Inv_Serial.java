@@ -207,7 +207,7 @@ public class Model_Inv_Serial implements GEntity {
         pnEditMode = EditMode.ADDNEW;
 
         //replace with the primary key column info
-        setStockID(MiscUtil.getNextCode(getTable(), "sSerialID", false, poGRider.getConnection(), ""));
+        setSerialID(MiscUtil.getNextCode(getTable(), "sSerialID", true, poGRider.getConnection(), poGRider.getBranchCode()));
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         return poJSON;
@@ -265,10 +265,10 @@ public class Model_Inv_Serial implements GEntity {
             String lsSQL;
             if (pnEditMode == EditMode.ADDNEW) {
                 //replace with the primary key column info
-                setStockID(MiscUtil.getNextCode(getTable(), "sSerialID", false, poGRider.getConnection(), ""));
+                setSerialID(MiscUtil.getNextCode(getTable(), "sSerialID", true, poGRider.getConnection(), poGRider.getBranchCode()));
 
+                setModifiedDate(poGRider.getServerDate());
                 lsSQL = makeSQL();
-
                 if (!lsSQL.isEmpty()) {
                     if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
                         poJSON.put("result", "success");
@@ -284,8 +284,9 @@ public class Model_Inv_Serial implements GEntity {
             } else {
                 Model_Inv_Serial loOldEntity = new Model_Inv_Serial(poGRider);
 
+                setModifiedDate(poGRider.getServerDate());
                 //replace with the primary key column info
-                JSONObject loJSON = loOldEntity.openRecord(this.getStockID());
+                JSONObject loJSON = loOldEntity.openRecord(this.getSerialID());
 
                 if ("success".equals((String) loJSON.get("result"))) {
                     //replace the condition based on the primary key column of the record
@@ -361,7 +362,7 @@ public class Model_Inv_Serial implements GEntity {
      * @return result as success/failed
      */
     public JSONObject setSerialID(String fsValue) {
-        return setValue("sStockIDx", fsValue);
+        return setValue("sSerialID", fsValue);
     }
 
     /**
@@ -430,7 +431,7 @@ public class Model_Inv_Serial implements GEntity {
      * @param fsValue 
      * @return  True if the record assignment is successful.
      */
-    public JSONObject setUnitPrice(String fsValue){
+    public JSONObject setUnitPrice(Number fsValue){
         return setValue("nUnitPrce", fsValue);
     }
     

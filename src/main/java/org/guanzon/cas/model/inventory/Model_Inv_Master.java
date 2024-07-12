@@ -239,6 +239,7 @@ public class Model_Inv_Master implements GEntity {
                 }
 
                 
+                pnEditMode = EditMode.UPDATE;
 
                 poJSON.put("result", "success");
                 poJSON.put("message", "Record loaded successfully.");
@@ -293,7 +294,7 @@ public class Model_Inv_Master implements GEntity {
 
                 if ("success".equals((String) loJSON.get("result"))) {
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "s = " + SQLUtil.toSQL(this.getStockID()),  "xBarCodex»xDescript»xWHouseNm»xLocatnNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sStockIDx = " + SQLUtil.toSQL(this.getStockID()),  "xBarCodex»xDescript»xWHouseNm»xLocatnNm»xSectnNme");
                      
                     if (!lsSQL.isEmpty()) {
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
@@ -516,7 +517,7 @@ public class Model_Inv_Master implements GEntity {
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setLedgerNo(String fsValue) {
+    public JSONObject setLedgerNo(Number fsValue) {
         return setValue("nLedgerNo", fsValue);
     }
 
@@ -835,12 +836,18 @@ public class Model_Inv_Master implements GEntity {
     }
 
     /**
+     * @return The xSectnNme the record
+     */
+    public String getSectionName() {
+        return (String) getValue("xSectnNme");
+    }
+    /**
      * Gets the SQL statement for this entity.
      *
      * @return SQL Statement
      */
     public String makeSQL() {
-        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xWHouseNm»xLocatnNm»dLastTran");
+        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xWHouseNm»xLocatnNm»dLastTran»xSectnNme");
     }
     
 
@@ -850,7 +857,7 @@ public class Model_Inv_Master implements GEntity {
      * @return SelectSQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xWHouseNm»xLocatnNm");
+        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xWHouseNm»xLocatnNm»xSectnNme");
     }
     
     public String getSQL(){
@@ -882,10 +889,12 @@ public class Model_Inv_Master implements GEntity {
                             " , b.sDescript xDescript" +
                             " , c.sWHouseNm xWHouseNm" +
                             " , d.sDescript xLocatnNm" +
+                            " , e.sSectnNme xSectnNme" +
                         " FROM Inv_Master a"+ 
                             " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                             " LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID" +
-                            " LEFT JOIN Inv_Location d ON a.sLocatnCd = d.sLocatnCd";
+                            " LEFT JOIN Inv_Location d ON a.sLocatnCd = d.sLocatnCd" +
+                            " LEFT JOIN Section e ON e.sSectnIDx = d.sSectnIDx";
     }
 
     private void initialize() {

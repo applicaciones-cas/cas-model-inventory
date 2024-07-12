@@ -207,7 +207,7 @@ public class Model_Inv_Hist_Ledger implements GEntity {
         pnEditMode = EditMode.ADDNEW;
 
         //replace with the primary key column info
-        setStockID(MiscUtil.getNextCode(getTable(), "sStockIDx", false, poGRider.getConnection(), ""));
+//        setStockID(MiscUtil.getNextCode(getTable(), "sStockIDx", true, poGRider.getConnection(), ""));
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         return poJSON;
@@ -226,7 +226,7 @@ public class Model_Inv_Hist_Ledger implements GEntity {
         String lsSQL = makeSelectSQL();
 
         //replace the condition based on the primary key column of the record
-        lsSQL = MiscUtil.addCondition(lsSQL, " sStockIDx = " + SQLUtil.toSQL(fsCondition));
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsCondition));
 
         ResultSet loRS = poGRider.executeQuery(lsSQL);
 
@@ -265,8 +265,9 @@ public class Model_Inv_Hist_Ledger implements GEntity {
             String lsSQL;
             if (pnEditMode == EditMode.ADDNEW) {
                 //replace with the primary key column info
-                setStockID(MiscUtil.getNextCode(getTable(), "sStockIDx", false, poGRider.getConnection(), ""));
+//                setStockID(MiscUtil.getNextCode(getTable(), "sStockIDx", false, poGRider.getConnection(), ""));
 
+                setModifiedDate(poGRider.getServerDate());
                 lsSQL = makeSQL();
 
                 if (!lsSQL.isEmpty()) {
@@ -287,6 +288,7 @@ public class Model_Inv_Hist_Ledger implements GEntity {
                 //replace with the primary key column info
                 JSONObject loJSON = loOldEntity.openRecord(this.getStockID());
 
+                setModifiedDate(poGRider.getServerDate());
                 if ("success".equals((String) loJSON.get("result"))) {
                     //replace the condition based on the primary key column of the record
                     lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sStockIDx = " + SQLUtil.toSQL(this.getStockID()),  "xBarCodex»xDescript»xWHouseNm");
@@ -408,8 +410,8 @@ public class Model_Inv_Hist_Ledger implements GEntity {
     /**
      * @return The nLedgerNo of this record.
      */
-    public String getLedgerNo() {
-        return (String) getValue("nLedgerNo");
+    public int getLedgerNo() {
+        return (int) getValue("nLedgerNo");
     }
     
     /**
@@ -418,7 +420,7 @@ public class Model_Inv_Hist_Ledger implements GEntity {
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setLedgerNo(String fsValue) {
+    public JSONObject setLedgerNo(Number fsValue) {
         return setValue("nLedgerNo", fsValue);
     }
 
@@ -481,7 +483,7 @@ public class Model_Inv_Hist_Ledger implements GEntity {
      * @param fsValue 
      * @return  True if the record assignment is successful.
      */
-    public JSONObject setQuantityIn(String fsValue){
+    public JSONObject setQuantityIn(Number fsValue){
         return setValue("nQtyInxxx", fsValue);
     }
     
@@ -499,7 +501,7 @@ public class Model_Inv_Hist_Ledger implements GEntity {
      * @param fsValue 
      * @return  True if the record assignment is successful.
      */
-    public JSONObject setQuantityOut(String fsValue){
+    public JSONObject setQuantityOut(Number fsValue){
         return setValue("nQtyOutxx", fsValue);
     }
     
@@ -518,7 +520,7 @@ public class Model_Inv_Hist_Ledger implements GEntity {
      * @param fsValue 
      * @return  True if the record assignment is successful.
      */
-    public JSONObject setQuantityOrder(String fsValue){
+    public JSONObject setQuantityOrder(Number fsValue){
         return setValue("nQtyOrder", fsValue);
     }
     
@@ -536,7 +538,7 @@ public class Model_Inv_Hist_Ledger implements GEntity {
      * @param fsValue 
      * @return  True if the record assignment is successful.
      */
-    public JSONObject setQuantityIssue(String fsValue){
+    public JSONObject setQuantityIssue(Number fsValue){
         return setValue("nQtyIssue", fsValue);
     }
     
@@ -554,15 +556,15 @@ public class Model_Inv_Hist_Ledger implements GEntity {
      * @param fsValue 
      * @return  True if the record assignment is successful.
      */
-    public JSONObject setPurchasePrice(String fsValue){
+    public JSONObject setPurchasePrice(Number fsValue){
         return setValue("nPurPrice", fsValue);
     }
     
     /**
      * @return The nUnitPrce. 
      */
-    public Double getPurchasePrice(){
-        return (Double) getValue("nPurPrice");
+    public Object getPurchasePrice(){
+        return (Object) getValue("nPurPrice");
     }
     
     /**
@@ -572,15 +574,15 @@ public class Model_Inv_Hist_Ledger implements GEntity {
      * @param fsValue 
      * @return  True if the record assignment is successful.
      */
-    public JSONObject setUnitPrice(String fsValue){
+    public JSONObject setUnitPrice(Number fsValue){
         return setValue("nUnitPrce", fsValue);
     }
     
     /**
      * @return The nUnitPrce. 
      */
-    public Double getUnitPrice(){
-        return (Double) getValue("nUnitPrce");
+    public Object getUnitPrice(){
+        return (Object) getValue("nUnitPrce");
     }
     
     
@@ -590,7 +592,7 @@ public class Model_Inv_Hist_Ledger implements GEntity {
      * @param fsValue 
      * @return  True if the record assignment is successful.
      */
-    public JSONObject setSelPrice(String fsValue){
+    public JSONObject setSelPrice(Number fsValue){
         return setValue("nSelPrice", fsValue);
     }
     
@@ -609,7 +611,7 @@ public class Model_Inv_Hist_Ledger implements GEntity {
      * @param fsValue 
      * @return  True if the record assignment is successful.
      */
-    public JSONObject setQuantityOnHand(String fsValue){
+    public JSONObject setQuantityOnHand(Number fsValue){
         return setValue("nQtyOnHnd", fsValue);
     }
     
@@ -807,7 +809,7 @@ public class Model_Inv_Hist_Ledger implements GEntity {
             poEntity.moveToInsertRow();
 
             MiscUtil.initRowSet(poEntity);
-            poEntity.updateString("cRecdStat", RecordStatus.ACTIVE);
+//            poEntity.updateString("cRecdStat", RecordStatus.ACTIVE);
 
             poEntity.insertRow();
             poEntity.moveToCurrentRow();

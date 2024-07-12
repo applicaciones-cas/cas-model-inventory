@@ -411,8 +411,8 @@ public class Model_Inv_Ledger implements GEntity {
     /**
      * @return The nLedgerNo of this record.
      */
-    public String getLedgerNo() {
-        return (String) getValue("nLedgerNo");
+    public int getLedgerNo() {
+        return (int) getValue("nLedgerNo");
     }
     
     /**
@@ -564,8 +564,8 @@ public class Model_Inv_Ledger implements GEntity {
     /**
      * @return The nUnitPrce. 
      */
-    public Double getPurchasePrice(){
-        return (Double) getValue("nPurPrice");
+    public Object getPurchasePrice(){
+        return (Object) getValue("nPurPrice");
     }
     
     /**
@@ -582,8 +582,8 @@ public class Model_Inv_Ledger implements GEntity {
     /**
      * @return The nUnitPrce. 
      */
-    public Double getUnitPrice(){
-        return (Double) getValue("nUnitPrce");
+    public Object getUnitPrice(){
+        return (Object) getValue("nUnitPrce");
     }
     
     
@@ -600,8 +600,8 @@ public class Model_Inv_Ledger implements GEntity {
     /**
      * @return The nSelPrice. 
      */
-    public Double getSelPrice(){
-        return (Double) getValue("nSelPrice");
+    public Object getSelPrice(){
+        return (Object) getValue("nSelPrice");
     }
     
     
