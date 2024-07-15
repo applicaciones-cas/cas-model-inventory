@@ -306,6 +306,7 @@ public class Model_Inv_Master implements GEntity {
                         }   
                     } else {
                         poJSON.put("result", "success");
+                        poJSON.put("continue", true);
                         poJSON.put("message", "No updates has been made.");
                     }
                 } else {

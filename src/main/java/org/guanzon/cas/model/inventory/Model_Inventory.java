@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
 import javax.sql.rowset.CachedRowSet;
+import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
@@ -304,6 +305,7 @@ public class Model_Inventory implements GEntity {
                         }   
                     } else {
                         poJSON.put("result", "success");
+                        poJSON.put("continue", true);
                         poJSON.put("message", "No updates has been made.");
                     }
                 } else {
@@ -901,9 +903,9 @@ public class Model_Inventory implements GEntity {
     /**
      * @return The nMaxLevel. 
      */
-    public Integer getMaxLevel(){
+    public Number getMaxLevel(){
 //        System.out.println("\nto get nMaxLevel == " + (Integer)getValue("nMaxLevel"));
-        return (Integer) getValue("nMaxLevel");
+        return (Number) getValue("nMaxLevel");
     }
     
    
@@ -1190,7 +1192,7 @@ public class Model_Inventory implements GEntity {
     }
 
     public String getSQL(){
-        return "SELECT" +
+        String lsSQL = "SELECT" +
                             "  a.sStockIDx" +
                             ", a.sBarCodex" +
                             ", a.sDescript" +
@@ -1247,6 +1249,11 @@ public class Model_Inventory implements GEntity {
                             " LEFT JOIN Measure i ON a.sMeasurID = i.sMeasurID" +
                             " LEFT JOIN Inv_Type j ON c.sInvTypCd = j.sInvTypCd" +
                             " LEFT JOIN Inventory k ON a.sSupersed = k.sStockIDx";
+//        /validate result based on the assigned inventory type.
+        if (!System.getProperty("store.inventory.industry").isEmpty())
+            lsSQL = MiscUtil.addCondition(lsSQL, " a.sCategCd1 IN " + CommonUtils.getParameter(System.getProperty("store.inventory.industry")));
+        
+        return lsSQL;
     }
     private void initialize() {
         try {

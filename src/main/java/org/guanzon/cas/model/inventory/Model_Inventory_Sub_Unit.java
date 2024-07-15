@@ -57,6 +57,10 @@ public class Model_Inventory_Sub_Unit implements GEntity {
     public int getEditMode() {
         return pnEditMode;
     }
+    
+    public void setEditMode(int val) {
+        pnEditMode = val;
+    }
 
     /**
      * Gets the column index name.
@@ -268,7 +272,7 @@ public class Model_Inventory_Sub_Unit implements GEntity {
         //replace the condition based on the primary key column of the record
         lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsCondition));
         lsSQL = MiscUtil.addCondition(lsSQL, "a.nEntryNox = " + SQLUtil.toSQL(fnEntryNox));
-        System.out.print("this is lsSQL openrec == " + lsSQL + "\n");
+        System.out.print("this is lsSQL openrec WithCondition == " + lsSQL + "\n");
         ResultSet loRS = poGRider.executeQuery(lsSQL);
         try {
             if (loRS.next()) {
@@ -344,6 +348,7 @@ public class Model_Inventory_Sub_Unit implements GEntity {
                         }   
                     } else {
                         poJSON.put("result", "success");
+                        poJSON.put("continue", true);
                         poJSON.put("message", "No updates has been made.");
                     }
                 } else {
