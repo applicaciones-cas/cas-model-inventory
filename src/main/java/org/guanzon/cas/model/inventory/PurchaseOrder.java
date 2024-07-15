@@ -236,7 +236,7 @@ public class PurchaseOrder implements GTranDet {
         return poModelDetail.size();
     }
 
-    @Override
+//    @Override
     public ArrayList<Model_PO_Detail> getDetailModel() {
         return poModelDetail;
     }
@@ -396,6 +396,11 @@ public class PurchaseOrder implements GTranDet {
     public void RemoveModelDetail(int fnRow) {
         poModelDetail.remove(fnRow - 1);
 
+    }
+
+    @Override
+    public Object getDetailModel(int i) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }
