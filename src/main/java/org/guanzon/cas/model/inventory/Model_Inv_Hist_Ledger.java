@@ -223,7 +223,7 @@ public class Model_Inv_Hist_Ledger implements GEntity {
     public JSONObject openRecord(String fsCondition) {
         poJSON = new JSONObject();
 
-        String lsSQL = makeSelectSQL();
+        String lsSQL = getSQL();
 
         //replace the condition based on the primary key column of the record
         lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsCondition));
@@ -291,7 +291,7 @@ public class Model_Inv_Hist_Ledger implements GEntity {
                 setModifiedDate(poGRider.getServerDate());
                 if ("success".equals((String) loJSON.get("result"))) {
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sStockIDx = " + SQLUtil.toSQL(this.getStockID()),  "xBarCodex»xDescript»xWHouseNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sStockIDx = " + SQLUtil.toSQL(this.getStockID()),  "xBarCodex»xDescript»xWHouseNm»nQtyOnHnd");
                     if (!lsSQL.isEmpty()) {
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
                             poJSON.put("result", "success");
@@ -765,7 +765,7 @@ public class Model_Inv_Hist_Ledger implements GEntity {
      * @return SQL Statement
      */
     public String makeSQL() {
-        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xWHouseNm");
+        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xWHouseNm»nQtyOnHnd");
     }
 
     /**
@@ -774,10 +774,11 @@ public class Model_Inv_Hist_Ledger implements GEntity {
      * @return SelectSQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xWHouseNm");
+        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xWHouseNm»nQtyOnHnd");
     }
+    
     public String getSQL(){
-        return "SELECTF" +
+        return "SELECT" +
                         "   a.sStockIDx" +
                         " , a.sBranchCd" +
                         " , a.sWHouseID" +
@@ -791,7 +792,7 @@ public class Model_Inv_Hist_Ledger implements GEntity {
                         " , a.nQtyIssue" +
                         " , a.nPurPrice" +
                         " , a.nUnitPrce" +
-                        " , a.nQtyOnHnd" +
+//                        " , a.nQtyOnHnd" +
                         " , a.dExpiryxx" +
                         " , a.sModified" +
                         " , a.dModified" +
