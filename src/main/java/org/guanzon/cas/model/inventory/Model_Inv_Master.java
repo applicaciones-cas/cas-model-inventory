@@ -271,6 +271,7 @@ public class Model_Inv_Master implements GEntity {
 //                setStockID(MiscUtil.getNextCode(getTable(), "sStockIDx", false, poGRider.getConnection(), ""));
 
                 setModifiedDate(poGRider.getServerDate());
+                setModifiedBy(poGRider.getUserID());
                 lsSQL = makeSQL();
 
                 if (!lsSQL.isEmpty()) {
@@ -289,6 +290,7 @@ public class Model_Inv_Master implements GEntity {
                 Model_Inv_Master loOldEntity = new Model_Inv_Master(poGRider);
 
                 setModifiedDate(poGRider.getServerDate());
+                setModifiedBy(poGRider.getUserID());
                 //replace with the primary key column info
                 JSONObject loJSON = loOldEntity.openRecord(this.getStockID());
 

@@ -270,6 +270,8 @@ public class Model_Inventory implements GEntity {
                 setStockID(MiscUtil.getNextCode(getTable(), "sStockIDx", true, poGRider.getConnection(), poGRider.getBranchCode()));
 
                 setModifiedDate(poGRider.getServerDate());
+                
+                setModifiedBy(poGRider.getUserID());
                 lsSQL = makeSQL();
 
                 if (!lsSQL.isEmpty()) {
@@ -288,6 +290,8 @@ public class Model_Inventory implements GEntity {
                 Model_Inventory loOldEntity = new Model_Inventory(poGRider);
                 
                 setModifiedDate(poGRider.getServerDate());
+                
+                setModifiedBy(poGRider.getUserID());
                 //replace with the primary key column info
                 JSONObject loJSON = loOldEntity.openRecord(this.getStockID());
 
