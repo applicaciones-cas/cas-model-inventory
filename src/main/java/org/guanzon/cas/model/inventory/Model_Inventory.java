@@ -1277,6 +1277,7 @@ public class Model_Inventory implements GEntity {
             poEntity.updateObject("nMinLevel", 0.0);
             poEntity.updateObject("nMaxLevel", 0.0);
             poEntity.updateObject("nShlfLife", 0);
+            poEntity.updateObject("cSerialze", "0");
 
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
