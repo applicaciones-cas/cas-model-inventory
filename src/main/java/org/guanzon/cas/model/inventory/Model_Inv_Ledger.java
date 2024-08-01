@@ -268,6 +268,7 @@ public class Model_Inv_Ledger implements GEntity {
 //                setStockID(MiscUtil.getNextCode(getTable(), "sStockIDx", false, poGRider.getConnection(), ""));
 
                 setModifiedDate(poGRider.getServerDate());
+                setModifiedBy(poGRider.getUserID());
                 lsSQL = makeSQL();
 
                 if (!lsSQL.isEmpty()) {
@@ -286,6 +287,7 @@ public class Model_Inv_Ledger implements GEntity {
                 Model_Inv_Ledger loOldEntity = new Model_Inv_Ledger(poGRider);
 
                 setModifiedDate(poGRider.getServerDate());
+                setModifiedBy(poGRider.getUserID());
                 //replace with the primary key column info
                 JSONObject loJSON = loOldEntity.openRecord(this.getStockID());
 
@@ -492,8 +494,8 @@ public class Model_Inv_Ledger implements GEntity {
     /**
      * @return The nQtyInxxx. 
      */
-    public int getQuantityIn(){
-        return (int) getValue("nQtyInxxx");
+    public Object getQuantityIn(){
+        return (Object) getValue("nQtyInxxx");
     }
     
     /**
@@ -510,8 +512,8 @@ public class Model_Inv_Ledger implements GEntity {
     /**
      * @return The nQtyOutxx. 
      */
-    public int getQuantityOut(){
-        return (int) getValue("nQtyOutxx");
+    public Object getQuantityOut(){
+        return (Object) getValue("nQtyOutxx");
     }
     
 
@@ -529,8 +531,8 @@ public class Model_Inv_Ledger implements GEntity {
     /**
      * @return The nQtyOrder. 
      */
-    public int getQuantityOrder(){
-        return (int) getValue("nQtyOrder");
+    public Object getQuantityOrder(){
+        return (Object) getValue("nQtyOrder");
     }
 
     /**
@@ -547,8 +549,8 @@ public class Model_Inv_Ledger implements GEntity {
     /**
      * @return The nQtyIssue. 
      */
-    public int getQuantityIssue(){
-        return (int) getValue("nQtyIssue");
+    public Object getQuantityIssue(){
+        return (Object) getValue("nQtyIssue");
     }
     
     /**
@@ -620,8 +622,8 @@ public class Model_Inv_Ledger implements GEntity {
     /**
      * @return The nQtyOnHnd. 
      */
-    public int getQuantityOnHand(){
-        return (int) getValue("nQtyOnHnd");
+    public Object getQuantityOnHand(){
+        return (Object) getValue("nQtyOnHnd");
     }
     
     

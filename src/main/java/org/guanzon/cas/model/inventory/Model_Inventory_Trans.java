@@ -24,7 +24,7 @@ import org.json.simple.JSONObject;
  */
 public class Model_Inventory_Trans implements GEntity {
 
-    final String XML = "Model_Inv_Master.xml";
+    final String XML = "Model_Inventory_Trans.xml";
 
     GRider poGRider;                //application driver
     CachedRowSet poEntity;          //rowset
@@ -339,7 +339,6 @@ public class Model_Inventory_Trans implements GEntity {
         for (Method method : methods) {
             System.out.println(method.getName());
         }
-
         try {
             int lnRow = poEntity.getMetaData().getColumnCount();
 
@@ -413,39 +412,6 @@ public class Model_Inventory_Trans implements GEntity {
         return (String) getValue("sWHouseID");
     }
     
-    /**
-     * Sets the sLocatnCd of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setLocatnCode(String fsValue) {
-        return setValue("sLocatnCd", fsValue);
-    }
-
-    /**
-     * @return The sLocatnCd of this record.
-     */
-    public String getLocatnCode() {
-        return (String) getValue("sLocatnCd");
-    }
-    
-    /**
-     * Sets the nBinNumbr of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setBinNumber(Number fsValue) {
-        return setValue("nBinNumbr", fsValue);
-    }
-
-    /**
-     * @return The nBinNumbr of this record.
-     */
-    public Object getBinNumber() {
-        return (Object) getValue("nBinNumbr");
-    }
     
     /**
      * Sets the dAcquired of this record.
@@ -460,7 +426,7 @@ public class Model_Inventory_Trans implements GEntity {
     /**
      * @return The dAcquired of this record.
      */
-    public Object getcquiredDate() {
+    public Object getAcquiredDate() {
         return (Object) getValue("dAcquired");
     }
     
@@ -482,22 +448,6 @@ public class Model_Inventory_Trans implements GEntity {
     }
     
     /**
-     * Sets the nBegQtyxx of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setBegQtyxx(Number fsValue) {
-        return setValue("nBegQtyxx", fsValue);
-    }
-
-    /**
-     * @return The dBegInvxx of this record.
-     */
-    public Object getBegQtyxx() {
-        return (Object) getValue("nBegQtyxx");
-    }
-    /**
      * Sets the nQtyOnHnd of this record.
      *
      * @param fsValue
@@ -512,6 +462,23 @@ public class Model_Inventory_Trans implements GEntity {
      */
     public Object getQtyOnHnd() {
         return (Object) getValue("nQtyOnHnd");
+    }
+    
+    /**
+     * Sets the nQuantity of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setQuantity(Number fsValue) {
+        return setValue("nQuantity", fsValue);
+    }
+
+    /**
+     * @return The nQuantity of this record.
+     */
+    public Object getQuantity() {
+        return (Object) getValue("nQuantity");
     }
     
     /**
@@ -531,91 +498,6 @@ public class Model_Inventory_Trans implements GEntity {
         return (Object) getValue("nLedgerNo");
     }
      
-    /**
-     * Sets the nMinLevel of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setMinLevel(Number fsValue) {
-        return setValue("nMinLevel", fsValue);
-    }
-
-    /**
-     * @return The nMinLevel of this record.
-     */
-    public Object getMinLevel() {
-        return (Object) getValue("nMinLevel");
-    }
-     
-    /**
-     * Sets the nMaxLevel of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setMaxLevel(Number fsValue) {
-        return setValue("nMaxLevel", fsValue);
-    }
-
-    /**
-     * @return The nMaxLevel of this record.
-     */
-    public Object getMaxLevel() {
-        return (Object) getValue("nMaxLevel");
-    }
-    
-    /**
-     * Sets the nAvgMonSl of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setAvgMonSl(Number fsValue) {
-        return setValue("nAvgMonSl", fsValue);
-    }
-
-    /**
-     * @return The nAvgMonSl of this record.
-     */
-    public Object getAvgMonSl() {
-        return (Object) getValue("nAvgMonSl");
-    }
-    
-    /**
-     * Sets the nAvgCostx of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setAvgCostx(Number fsValue) {
-        return setValue("nAvgCostx", fsValue);
-    }
-
-    /**
-     * @return The nAvgCostx of this record.
-     */
-    public Object getAvgCostx() {
-        return (Object) getValue("nAvgCostx");
-    }
-    
-    
-    /**
-     * Sets the cClassify of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setClassify(String fsValue) {
-        return setValue("cClassify", fsValue);
-    }
-
-    /**
-     * @return The cClassify of this record.
-     */
-    public String getClassify() {
-        return (String) getValue("cClassify");
-    }
     
     /**
      * Sets the nBackOrdr of this record.
@@ -684,24 +566,22 @@ public class Model_Inventory_Trans implements GEntity {
     public Object getLastTranDate() {
         return (Object) getValue("dLastTran");
     }
-    
     /**
-     * Sets the cPrimaryx of this record.
+     * Sets the dExpiryDt of this record.
      *
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setPrimary(String fsValue) {
-        return setValue("cPrimaryx", fsValue);
+    public JSONObject setExpiryDate(String fsValue) {
+        return setValue("dExpiryxx", fsValue);
     }
 
     /**
-     * @return The cPrimaryx of this record.
+     * @return The dExpiryDt of this record.
      */
-    public String getPrimary() {
-        return (String) getValue("cPrimaryx");
+    public Object getExpiryDate() {
+        return (Object) getValue("dExpiryxx");
     }
-
     /**
      * Sets the Inventory RecdStat of this record.
      *
@@ -771,78 +651,166 @@ public class Model_Inventory_Trans implements GEntity {
     }
 
     /**
-     * @return The xBarCodex the record
-     */
-    public String getBarCodex() {
-        return (String) getValue("xBarCodex");
-    }
-
     /**
-     * Sets the xBarCodex of the record was modified.
-     *
-     * @param fdValue
-     * @return result as success/failed
+     * Sets the nQtyInxxx .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
      */
-    public JSONObject setBarCodex(String fdValue) {
-        return setValue("xBarCodex", fdValue);
-    }
-
-    /**
-     * @return The xDescript the record
-     */
-    public String getDescript() {
-        return (String) getValue("xDescript");
-    }
-
-    /**
-     * Sets the xDescript of the record was modified.
-     *
-     * @param fdValue
-     * @return result as success/failed
-     */
-    public JSONObject setDescript(String fdValue) {
-        return setValue("xDescript", fdValue);
+    public JSONObject setQuantityIn(Number fsValue){
+        return setValue("nQtyInxxx", fsValue);
     }
     
     /**
-     * @return The xWHouseNm the record
+     * @return The nQtyInxxx. 
      */
-    public String getWareHouseNm() {
-        return (String) getValue("xWHouseNm");
-    }
-
-    /**
-     * Sets the xWHouseNm of the record was modified.
-     *
-     * @param fdValue
-     * @return result as success/failed
-     */
-    public JSONObject setWareHouseNm(String fdValue) {
-        return setValue("xWHouseNm", fdValue);
+    public Object getQuantityIn(){
+        return (Object) getValue("nQtyInxxx");
     }
     
     /**
-     * @return The xLocatnNm the record
+    /**
+     * Sets the nQtyOutxx .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
      */
-    public String getLocationnName() {
-        return (String) getValue("xLocatnNm");
+    public JSONObject setQuantityOut(Number fsValue){
+        return setValue("nQtyOutxx", fsValue);
+    }
+    
+    /**
+     * @return The nQtyOutxx. 
+     */
+    public Object getQuantityOut(){
+        return (Object) getValue("nQtyOutxx");
+    }
+    
+
+    /**
+    /**
+     * Sets the nQtyOrder .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setQuantityOrder(Number fsValue){
+        return setValue("nQtyOrder", fsValue);
+    }
+    
+    /**
+     * @return The nQtyOrder. 
+     */
+    public Object getQuantityOrder(){
+        return (Object) getValue("nQtyOrder");
     }
 
     /**
-     * Sets the xLocatnNm of the record was modified.
+    /**
+     * Sets the nQtyIssue .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setQuantityIssue(Number fsValue){
+        return setValue("nQtyIssue", fsValue);
+    }
+    
+    /**
+     * @return The nQtyIssue. 
+     */
+    public Object getQuantityIssue(){
+        return (Object) getValue("nQtyIssue");
+    }
+    
+    /**
+    /**
+     * Sets the nPurPrice .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setPurchasePrice(Number fsValue){
+        return setValue("nPurPrice", fsValue);
+    }
+    
+    /**
+     * @return The nUnitPrce. 
+     */
+    public Object getPurchasePrice(){
+        return (Object) getValue("nPurPrice");
+    }
+    
+    /**
+    /**
+     * Sets the nUnitPrce .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setUnitPrice(Number fsValue){
+        return setValue("nUnitPrce", fsValue);
+    }
+    
+    /**
+     * @return The nUnitPrce. 
+     */
+    public Object getUnitPrice(){
+        return (Object) getValue("nUnitPrce");
+    }
+    
+    
+    /**
+     * Sets the nSelPrice .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setSelPrice(Number fsValue){
+        return setValue("nSelPrice", fsValue);
+    }
+    
+    /**
+     * @return The nSelPrice. 
+     */
+    public Object getSelPrice(){
+        return (Object) getValue("nSelPrice");
+    }
+    
+    /**
+     * Sets the sReplacID of this record.
      *
-     * @param fdValue
+     * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setLocationnName(String fdValue) {
-        return setValue("xLocatnNm", fdValue);
+    public JSONObject setReplaceID(String fsValue) {
+        return setValue("sReplacID", fsValue);
     }
 
     /**
-     * @return The xSectnNme the record
+     * @return The sReplacID of this record.
      */
-    public String getSectionName() {
-        return (String) getValue("xSectnNme");
+    public String getReplaceID() {
+        return (String) getValue("sReplacID");
+    }
+    
+    
+    
+    /**
+     * Sets the cNewParts of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject IsNewParts(String fsValue) {
+        return setValue("cNewParts", fsValue);
+    }
+
+    /**
+     * @return The cNewParts of this record.
+     */
+    public String IsNewParts() {
+        return (String) getValue("cNewParts");
     }
     /**
      * Gets the SQL statement for this entity.
@@ -865,39 +833,33 @@ public class Model_Inventory_Trans implements GEntity {
     
     public String getSQL(){
         return "SELECT" +
-                            "   a.sStockIDx" +
-                            " , a.sBranchCd" +
-                            " , a.sWHouseID" +
-                            " , a.sLocatnCd" +
-                            " , a.nBinNumbr" +
-                            " , a.dAcquired" +
-                            " , a.dBegInvxx" +
-                            " , a.nBegQtyxx" +
-                            " , a.nQtyOnHnd" +
-                            " , a.nLedgerNo" +
-                            " , a.nMinLevel" +
-                            " , a.nMaxLevel" +
-                            " , a.nAvgMonSl" +
-                            " , a.nAvgCostx" +
-                            " , a.cClassify" +
-                            " , a.nBackOrdr" +
-                            " , a.nResvOrdr" +
-                            " , a.nFloatQty" +
-                            " , a.dLastTran" +
-                            " , a.cPrimaryx" +
-                            " , a.cRecdStat" +
-                            " , a.sModified" +
-                            " , a.dModified" +
-                            " , b.sBarCodex xBarCodex" +
-                            " , b.sDescript xDescript" +
-                            " , c.sWHouseNm xWHouseNm" +
-                            " , d.sDescript xLocatnNm" +
-                            " , e.sSectnNme xSectnNme" +
-                        " FROM Inv_Master a"+ 
-                            " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                            " LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID" +
-                            " LEFT JOIN Inv_Location d ON a.sLocatnCd = d.sLocatnCd" +
-                            " LEFT JOIN Section e ON e.sSectnIDx = d.sSectnIDx";
+                "  a.sStockIDx" +
+                ", a.sBranchCd" +
+                ", a.sWHouseID" +
+                ", a.nQtyOnHnd nQuantity" +
+                ", b.nQtyInxxx" +
+                ", b.nQtyOutxx" +
+                ", b.nQtyOrder" +
+                ", b.nQtyIssue" +
+                ", b.nQtyOnHnd" +
+                ", a.nBackOrdr" +
+                ", a.nResvOrdr" +
+                ", a.nFloatQty" +
+                ", a.nLedgerNo" +
+                ", a.dAcquired" +
+                ", a.dBegInvxx" +
+                ", a.dLastTran" +
+                ", b.nPurPrice" +
+                ", b.dExpiryxx" +
+                ", c.cUnitType" +
+                ", '0' cNewParts" +
+                ", '' sReplacID" +
+                ", c.cSerialze" +
+                ", a.cRecdStat" +
+
+            " FROM Inv_Master a"+ 
+                " LEFT JOIN Inv_Ledger b ON a.sStockIDx = b.sStockIDx AND a.sBranchCd = b.sBranchCd"+ 
+                " LEFT JOIN Inventory c ON a.sStockIDx = c.sStockIDx";
     }
 
     private void initialize() {
@@ -908,18 +870,8 @@ public class Model_Inventory_Trans implements GEntity {
             poEntity.moveToInsertRow();
 
             MiscUtil.initRowSet(poEntity);
-            poEntity.updateString("cRecdStat", RecordStatus.ACTIVE);
-            poEntity.updateObject("nBinNumbr", 0);
-            poEntity.updateObject("nBegQtyxx", 0);
-            poEntity.updateObject("nQtyOnHnd", 0);
-            poEntity.updateObject("nLedgerNo", 0);
-            poEntity.updateObject("nMinLevel", 0);
-            poEntity.updateObject("nMaxLevel", 0);
-            poEntity.updateObject("nAvgMonSl", 0.0);
-            poEntity.updateObject("nAvgCostx", 0.0);
-            poEntity.updateObject("nBackOrdr", 0.0);
-            poEntity.updateObject("nResvOrdr", 0.0);
-            poEntity.updateObject("nFloatQty", 0.0);
+            poEntity.updateObject("cNewParts", "0");
+            poEntity.updateObject("sReplacID", "");
             
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
