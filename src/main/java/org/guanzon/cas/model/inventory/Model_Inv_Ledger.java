@@ -235,6 +235,39 @@ public class Model_Inv_Ledger implements GEntity {
                 for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++) {
                     setValue(lnCtr, loRS.getObject(lnCtr));
                 }
+                pnEditMode = EditMode.UPDATE;
+
+                poJSON.put("result", "success");
+                poJSON.put("message", "Record loaded successfully.");
+            } else {
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record to load.");
+            }
+        } catch (SQLException e) {
+            poJSON.put("result", "error");
+            poJSON.put("message", e.getMessage());
+        }
+
+        return poJSON;
+    }
+    
+    public JSONObject openRecord(String lsFilter, String fsCondition) {
+        poJSON = new JSONObject();
+
+        String lsSQL = getSQL();
+        //replace the condition based on the primary key column of the record
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(lsFilter));
+        lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
+        
+        System.out.println(lsSQL);
+
+        ResultSet loRS = poGRider.executeQuery(lsSQL);
+
+        try {
+            if (loRS.next()) {
+                for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++) {
+                    setValue(lnCtr, loRS.getObject(lnCtr));
+                }
 
                 pnEditMode = EditMode.UPDATE;
 
@@ -251,6 +284,7 @@ public class Model_Inv_Ledger implements GEntity {
 
         return poJSON;
     }
+
 
     /**
      * Save the entity.
