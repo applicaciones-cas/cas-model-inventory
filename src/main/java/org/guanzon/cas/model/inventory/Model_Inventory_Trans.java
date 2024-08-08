@@ -735,7 +735,7 @@ public class Model_Inventory_Trans implements GEntity {
     }
     
     /**
-     * @return The nUnitPrce. 
+     * @return The nPurPrice. 
      */
     public Object getPurchasePrice(){
         return (Object) getValue("nPurPrice");
@@ -850,6 +850,7 @@ public class Model_Inventory_Trans implements GEntity {
                 ", a.dBegInvxx" +
                 ", a.dLastTran" +
                 ", b.nPurPrice" +
+                ", b.nUnitPrce" +
                 ", b.dExpiryxx" +
                 ", c.cUnitType" +
                 ", '0' cNewParts" +
@@ -872,6 +873,15 @@ public class Model_Inventory_Trans implements GEntity {
             MiscUtil.initRowSet(poEntity);
             poEntity.updateObject("cNewParts", "0");
             poEntity.updateObject("sReplacID", "");
+            
+            poEntity.updateObject("nQtyInxxx", 0);
+            poEntity.updateObject("nQtyOutxx", 0);
+            poEntity.updateObject("nQtyOrder", 0);
+            poEntity.updateObject("nQtyIssue", 0);
+            poEntity.updateObject("nPurPrice", 0);
+            poEntity.updateObject("nUnitPrce", 0);
+//            poEntity.updateObject("nQuantity", 0);
+            poEntity.updateObject("nQtyOnHnd", 0);
             
             poEntity.insertRow();
             poEntity.moveToCurrentRow();

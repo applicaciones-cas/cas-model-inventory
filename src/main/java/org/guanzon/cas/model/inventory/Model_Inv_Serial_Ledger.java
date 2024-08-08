@@ -22,9 +22,9 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class Model_Inv_Serial implements GEntity {
+public class Model_Inv_Serial_Ledger implements GEntity {
 
-    final String XML = "Model_Inv_Serial.xml";
+    final String XML = "Model_Inv_Serial_Ledger.xml";
 
     GRider poGRider;                //application driver
     CachedRowSet poEntity;          //rowset
@@ -36,7 +36,7 @@ public class Model_Inv_Serial implements GEntity {
      *
      * @param foValue - GhostRider Application Driver
      */
-    public Model_Inv_Serial(GRider foValue) {
+    public Model_Inv_Serial_Ledger(GRider foValue) {
         if (foValue == null) {
             System.err.println("Application Driver is not set.");
             System.exit(1);
@@ -111,9 +111,8 @@ public class Model_Inv_Serial implements GEntity {
      */
     @Override
     public String getTable() {
-        return "Inv_Serial";
+        return "Inv_Serial_Ledger";
     }
-
     /**
      * Gets the value of a column index number.
      *
@@ -219,14 +218,50 @@ public class Model_Inv_Serial implements GEntity {
      * @param fsCondition - filter values
      * @return result as success/failed
      */
-    @Override
+
+@Override
     public JSONObject openRecord(String fsCondition) {
         poJSON = new JSONObject();
 
         String lsSQL = getSQL();
 
         //replace the condition based on the primary key column of the record
-        lsSQL = MiscUtil.addCondition(lsSQL, " a.sSerialID = " + SQLUtil.toSQL(fsCondition));
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sSerialID = " + SQLUtil.toSQL(fsCondition));
+
+        ResultSet loRS = poGRider.executeQuery(lsSQL);
+        System.out.println("openRecord = " + lsSQL);
+        try {
+            if (loRS.next()) {
+                for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++) {
+                    setValue(lnCtr, loRS.getObject(lnCtr));
+                    
+                }
+                System.out.println("-----------------");
+                pnEditMode = EditMode.UPDATE;
+
+                poJSON.put("result", "success");
+                poJSON.put("message", "Record loaded successfully.");
+            } else {
+                poJSON.put("result", "error");
+                poJSON.put("message", "No inventory serialrecord to load.");
+            }
+        } catch (SQLException e) {
+            poJSON.put("result", "error");
+            poJSON.put("message", e.getMessage());
+        }
+
+        return poJSON;
+    }
+    
+    public JSONObject openRecord(String lsFilter, String fsCondition) {
+        poJSON = new JSONObject();
+
+        String lsSQL = getSQL();
+        //replace the condition based on the primary key column of the record
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sSerialID = " + SQLUtil.toSQL(lsFilter));
+        lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
+        
+        System.out.println(lsSQL);
 
         ResultSet loRS = poGRider.executeQuery(lsSQL);
 
@@ -242,7 +277,7 @@ public class Model_Inv_Serial implements GEntity {
                 poJSON.put("message", "Record loaded successfully.");
             } else {
                 poJSON.put("result", "error");
-                poJSON.put("message", "No record to load.");
+                poJSON.put("message", "No record to load for inventory serial ledger.");
             }
         } catch (SQLException e) {
             poJSON.put("result", "error");
@@ -251,7 +286,6 @@ public class Model_Inv_Serial implements GEntity {
 
         return poJSON;
     }
-
     /**
      * Save the entity.
      *
@@ -282,7 +316,7 @@ public class Model_Inv_Serial implements GEntity {
                     poJSON.put("message", "No record to save.");
                 }
             } else {
-                Model_Inv_Serial loOldEntity = new Model_Inv_Serial(poGRider);
+                Model_Inv_Serial_Ledger loOldEntity = new Model_Inv_Serial_Ledger(poGRider);
 
                 setModifiedDate(poGRider.getServerDate());
                 //replace with the primary key column info
@@ -477,6 +511,23 @@ public class Model_Inv_Serial implements GEntity {
     public String getLocation(){
         return (String) getValue("cLocation");
     }
+    /**
+     * @return The nLedgerNo of this record.
+     */
+    public int getLedgerNo() {
+        return (int) getValue("nLedgerNo");
+    }
+    
+    /**
+     * Sets the nLedgerNo of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setLedgerNo(Number fsValue) {
+        return setValue("nLedgerNo", fsValue);
+    }
+
     
     /**
     /**
@@ -741,6 +792,23 @@ public class Model_Inv_Serial implements GEntity {
         return (String) getValue("xCompanyNm");
     }
 
+     /**
+    /**
+     * Sets the sSourceCd .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setSourceCd(String fsValue){
+        return setValue("sSourceCd", fsValue);
+    }
+    
+    /**
+     * @return The sSourceCd. 
+     */
+    public String getSourceCd(){
+        return (String) getValue("sSourceCd");
+    }
     /**
      * Gets the SQL statement for this entity.
      *
@@ -761,26 +829,22 @@ public class Model_Inv_Serial implements GEntity {
     }
 public String getSQL(){
         return "SELECT" +
-                        "   a.sSerialID" +
-                        " , a.sBranchCd" +
-                        " , a.sSerial01" +
-                        " , a.sSerial02" +
-                        " , a.nUnitPrce" +
-                        " , a.sStockIDx" +
-                        " , a.cLocation" +
-                        " , a.cSoldStat" +
-                        " , a.cUnitType" +
-                        " , a.sCompnyID" +
-                        " , a.sWarranty" +
-                        " , a.dModified" +
-                        " , b.sBarCodex xBarCodex" +
-                        " , b.sDescript xDescript" +
-                        " , c.sBranchNm xBranchNm " +
-                        " , d.sCompnyNm xCompanyNm " +
-                        "FROM Inv_Serial a" +
-                        "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                        "    LEFT JOIN Branch c ON a.sBranchCd = c.sBranchCd" +
-                        "    LEFT JOIN Company d ON a.sCompnyID = d.sCompnyID";
+                            	"  a.sSerialID" +
+                                ", a.sBranchCd" +
+                                ", a.nLedgerNo" +
+                                ", a.dTransact" +
+                                ", a.sSourceCd" +
+                                ", a.sSourceNo" +
+                                ", a.cSoldStat" +
+                                ", a.cLocation" +
+                                ", a.dModified" +
+                                ", c.sBarCodex xBarCodex" +
+                                ", c.sDescript xDescript" +
+                                ", b.sSerial01 xSerial01" +
+                                ", b.sSerial02 xSerial02" +
+                        " FROM Inv_Serial_Ledger a"+ 
+                            " LEFT JOIN Inv_Serial b ON a.sSerialID = b.sSerialID" +
+                            " LEFT JOIN Inventory c ON b.sStockIDx = c.sStockIDx";
     }
     private void initialize() {
         try {
