@@ -301,7 +301,7 @@ public class Model_Inv_Serial_Ledger implements GEntity {
                 //replace with the primary key column info
                 setSerialID(MiscUtil.getNextCode(getTable(), "sSerialID", true, poGRider.getConnection(), poGRider.getBranchCode()));
 
-                setModifiedDate(poGRider.getServerDate());
+//                setModifiedDate(poGRider.getServerDate());
                 lsSQL = makeSQL();
                 if (!lsSQL.isEmpty()) {
                     if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
@@ -318,7 +318,7 @@ public class Model_Inv_Serial_Ledger implements GEntity {
             } else {
                 Model_Inv_Serial_Ledger loOldEntity = new Model_Inv_Serial_Ledger(poGRider);
 
-                setModifiedDate(poGRider.getServerDate());
+//                setModifiedDate(poGRider.getServerDate());
                 //replace with the primary key column info
                 JSONObject loJSON = loOldEntity.openRecord(this.getSerialID());
 
@@ -425,6 +425,167 @@ public class Model_Inv_Serial_Ledger implements GEntity {
     }
     
     /**
+     * @return The nLedgerNo of this record.
+     */
+    public int getLedgerNo() {
+        return (int) getValue("nLedgerNo");
+    }
+    
+    /**
+     * Sets the nLedgerNo of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setLedgerNo(Number fsValue) {
+        return setValue("nLedgerNo", fsValue);
+    }
+
+    /**
+     * Sets the Transaction of this record.
+     * 
+     * @param fdValue 
+     * @return result as success/failed
+     */
+    public JSONObject setTransactionDate(Date fdValue){
+        return setValue("dTransact", fdValue);
+    }
+    
+    /**
+     * @return The Transaction of this record. 
+     */
+    public Date getTransactionDate(){
+        return (Date) getValue("dTransact");
+    }
+    
+    
+     /**
+    /**
+     * Sets the sSourceCd .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setSourceCd(String fsValue){
+        return setValue("sSourceCd", fsValue);
+    }
+    
+    /**
+     * @return The sSourceCd. 
+     */
+    public String getSourceCd(){
+        return (String) getValue("sSourceCd");
+    }
+    
+     /**
+    /**
+     * Sets the sSourceNo .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setSourceNo(String fsValue){
+        return setValue("sSourceNo", fsValue);
+    }
+    
+    /**
+     * @return The sSourceNo. 
+     */
+    public String getSourceNo(){
+        return (String) getValue("sSourceNo");
+    }
+    
+    
+    /**
+     * Sets the Inventory cSoldStat of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setSoldStat(String fsValue) {
+        return setValue("cSoldStat", fsValue);
+    }
+
+    /**
+     * @return The Category cSoldStat of this record.
+     */
+    public String getSoldStat() {
+        return (String) getValue("cSoldStat");
+    }
+    
+    
+    /**
+    /**
+     * Sets the cLocation .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setLocation(String fsValue){
+        return setValue("cLocation", fsValue);
+    }
+    
+    /**
+     * @return The cLocation. 
+     */
+    public String getLocation(){
+        return (String) getValue("cLocation");
+    }
+    
+    /**
+     * Sets the date and time the record was modified.
+     *
+     * @param fdValue
+     * @return result as success/failed
+     */
+    public JSONObject setModifiedDate(Date fdValue) {
+        return setValue("dModified", fdValue);
+    }
+
+    /**
+     * @return The date and time the record was modified.
+     */
+    public Date getModifiedDate() {
+        return (Date) getValue("dModified");
+    }
+    
+    
+    /**
+     * Sets the xBarCodex of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setBarcode(String fsValue) {
+        return setValue("xBarCodex", fsValue);
+    }
+
+    /**
+     * @return The xBarCodex of this record.
+     */
+    public String getBarcode() {
+        return (String) getValue("xBarCodex");
+    }
+    
+    /**
+     * Sets the xDescript of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setDescript(String fsValue) {
+        return setValue("xDescript", fsValue);
+    }
+
+    /**
+     * @return The xDescript of this record.
+     */
+    public String getDescript() {
+        return (String) getValue("xDescript");
+    }
+    
+
+    /**
     /**
      * Sets the sSerial01 .
      * 
@@ -460,184 +621,6 @@ public class Model_Inv_Serial_Ledger implements GEntity {
     }
     
     /**
-    /**
-     * Sets the nUnitPrce .
-     * 
-     * @param fsValue 
-     * @return  True if the record assignment is successful.
-     */
-    public JSONObject setUnitPrice(Number fsValue){
-        return setValue("nUnitPrce", fsValue);
-    }
-    
-    /**
-     * @return The nUnitPrce. 
-     */
-    public Double getUnitPrice(){
-        return (Double) getValue("nUnitPrce");
-    }
-    
-    /**
-     * Sets the sStockIDx of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setStockID(String fsValue) {
-        return setValue("sStockIDx", fsValue);
-    }
-
-    /**
-     * @return The sStockIDx of this record.
-     */
-    public String getStockID() {
-        return (String) getValue("sStockIDx");
-    }
-
-    /**
-    /**
-     * Sets the cLocation .
-     * 
-     * @param fsValue 
-     * @return  True if the record assignment is successful.
-     */
-    public JSONObject setLocation(String fsValue){
-        return setValue("cLocation", fsValue);
-    }
-    
-    /**
-     * @return The cLocation. 
-     */
-    public String getLocation(){
-        return (String) getValue("cLocation");
-    }
-    /**
-     * @return The nLedgerNo of this record.
-     */
-    public int getLedgerNo() {
-        return (int) getValue("nLedgerNo");
-    }
-    
-    /**
-     * Sets the nLedgerNo of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setLedgerNo(Number fsValue) {
-        return setValue("nLedgerNo", fsValue);
-    }
-
-    
-    /**
-    /**
-     * Sets the cSoldStat .
-     * 
-     * @param fsValue 
-     * @return  True if the record assignment is successful.
-     */
-    public JSONObject setSoldStat(String fsValue){
-        return setValue("cSoldStat", fsValue);
-    }
-    
-    /**
-     * @return The cSoldStat. 
-     */
-    public String getSoldStat(){
-        return (String) getValue("cSoldStat");
-    }
-    
-    
-    /**
-    /**
-     * Sets the cUnitType .
-     * 
-     * @param fsValue 
-     * @return  True if the record assignment is successful.
-     */
-    public JSONObject getUnitType(String fsValue){
-        return setValue("cUnitType", fsValue);
-    }
-    
-    /**
-     * @return The cUnitType. 
-     */
-    public String getUnitType(){
-        return (String) getValue("cUnitType");
-    }
-    
-    
-    /**
-    /**
-     * Sets the sCompnyID .
-     * 
-     * @param fsValue 
-     * @return  True if the record assignment is successful.
-     */
-    public JSONObject setCompnyID(String fsValue){
-        return setValue("sCompnyID", fsValue);
-    }
-    
-    /**
-     * @return The sCompnyID. 
-     */
-    public String getCompnyID(){
-        return (String) getValue("sCompnyID");
-    }
-    
-    /**
-    /**
-     * Sets the sWarranty .
-     * 
-     * @param fsValue 
-     * @return  True if the record assignment is successful.
-     */
-    public JSONObject setWarranty(String fsValue){
-        return setValue("sWarranty", fsValue);
-    }
-    
-    /**
-     * @return The sWarranty. 
-     */
-    public String getWarranty(){
-        return (String) getValue("sWarranty");
-    }
-    
-
-    /**
-     * Sets the xBarCodex of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setBarcode(String fsValue) {
-        return setValue("xBarCodex", fsValue);
-    }
-
-    /**
-     * @return The xBarCodex of this record.
-     */
-    public String getBarcode() {
-        return (String) getValue("xBarCodex");
-    }
-    
-    /**
-     * Sets the xDescript of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setDescript(String fsValue) {
-        return setValue("xDescript", fsValue);
-    }
-
-    /**
-     * @return The xDescript of this record.
-     */
-    public String getDescript() {
-        return (String) getValue("xDescript");
-    }
-    /**
      * Sets the xBranchNm of this record.
      *
      * @param fsValue
@@ -653,162 +636,7 @@ public class Model_Inv_Serial_Ledger implements GEntity {
     public String getBranchName() {
         return (String) getValue("xBranchNm");
     }
-
-    /**
-     * Sets the Inventory RecdStat of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setRecdStat(String fsValue) {
-        return setValue("cRecdStat", fsValue);
-    }
-
-    /**
-     * @return The Category RecdStat of this record.
-     */
-    public String getRecdStat() {
-        return (String) getValue("cRecdStat");
-    }
-
-    /**
-     * Sets record as active.
-     *
-     * @param fbValue
-     * @return result as success/failed
-     */
-    public JSONObject setActive(boolean fbValue) {
-        return setValue("cRecdStat", fbValue ? "1" : "0");
-    }
-
-    /**
-     * @return If record is active.
-     */
-    public boolean isActive() {
-        return ((String) getValue("cRecdStat")).equals("1");
-    }
-
-    /**
-     * Sets the user encoded/updated the record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setModifiedBy(String fsValue) {
-        return setValue("sModified", fsValue);
-    }
-
-    /**
-     * @return The user encoded/updated the record
-     */
-    public String getModifiedBy() {
-        return (String) getValue("sModified");
-    }
-
-    /**
-     * Sets the date and time the record was modified.
-     *
-     * @param fdValue
-     * @return result as success/failed
-     */
-    public JSONObject setModifiedDate(Date fdValue) {
-        return setValue("dModified", fdValue);
-    }
-
-    /**
-     * @return The date and time the record was modified.
-     */
-    public Date getModifiedDate() {
-        return (Date) getValue("dModified");
-    }
-
-    /**
-     * Sets the xInvTypNm.
-     *
-     * @param fdValue
-     * @return result as success/failed
-     */
-    public JSONObject setInvTypNm(Date fdValue) {
-        return setValue("xInvTypNm", fdValue);
-    }
-
-    /**
-     * @return The xInvTypNm.
-     */
-    public String getInvTypNm() {
-        return (String) getValue("xInvTypNm");
-    }
     
-    /**
-     * Sets the xSuperCde.
-     *
-     * @param fdValue
-     * @return result as success/failed
-     */
-    public JSONObject setSuperCde(Date fdValue) {
-        return setValue("xSuperCde", fdValue);
-    }
-
-    /**
-     * @return The xInvTypNm.
-     */
-    public String getSuperCde() {
-        return (String) getValue("xSuperCde");
-    }
-
-    
-    /**
-     * Sets the xSuperDsc.
-     *
-     * @param fdValue
-     * @return result as success/failed
-     */
-    public JSONObject setSuperDsc(Date fdValue) {
-        return setValue("xSuperDsc", fdValue);
-    }
-
-    /**
-     * @return The xSuperDsc.
-     */
-    public String getSuperDsc() {
-        return (String) getValue("xSuperDsc");
-    }
-    
-    /**
-    /**
-     * Sets the xCompanyNm .
-     * 
-     * @param fsValue 
-     * @return  True if the record assignment is successful.
-     */
-    public JSONObject setCompnyName(String fsValue){
-        return setValue("xCompanyNm", fsValue);
-    }
-    
-    /**
-     * @return The xCompanyNm. 
-     */
-    public String getCompnyName(){
-        return (String) getValue("xCompanyNm");
-    }
-
-     /**
-    /**
-     * Sets the sSourceCd .
-     * 
-     * @param fsValue 
-     * @return  True if the record assignment is successful.
-     */
-    public JSONObject setSourceCd(String fsValue){
-        return setValue("sSourceCd", fsValue);
-    }
-    
-    /**
-     * @return The sSourceCd. 
-     */
-    public String getSourceCd(){
-        return (String) getValue("sSourceCd");
-    }
     /**
      * Gets the SQL statement for this entity.
      *
@@ -829,22 +657,24 @@ public class Model_Inv_Serial_Ledger implements GEntity {
     }
 public String getSQL(){
         return "SELECT" +
-                            	"  a.sSerialID" +
-                                ", a.sBranchCd" +
-                                ", a.nLedgerNo" +
-                                ", a.dTransact" +
-                                ", a.sSourceCd" +
-                                ", a.sSourceNo" +
-                                ", a.cSoldStat" +
-                                ", a.cLocation" +
-                                ", a.dModified" +
-                                ", c.sBarCodex xBarCodex" +
-                                ", c.sDescript xDescript" +
-                                ", b.sSerial01 xSerial01" +
-                                ", b.sSerial02 xSerial02" +
-                        " FROM Inv_Serial_Ledger a"+ 
-                            " LEFT JOIN Inv_Serial b ON a.sSerialID = b.sSerialID" +
-                            " LEFT JOIN Inventory c ON b.sStockIDx = c.sStockIDx";
+                    "  a.sSerialID" +
+                    ", a.sBranchCd" +
+                    ", a.nLedgerNo" +
+                    ", a.dTransact" +
+                    ", a.sSourceCd" +
+                    ", a.sSourceNo" +
+                    ", a.cSoldStat" +
+                    ", a.cLocation" +
+                    ", a.dModified" +
+                    ", c.sBarCodex xBarCodex" +
+                    ", c.sDescript xDescript" +
+                    ", b.sSerial01 xSerial01" +
+                    ", b.sSerial02 xSerial02" +
+                    ", d.sBranchNm xBranchNm " +
+            " FROM Inv_Serial_Ledger a"+ 
+                " LEFT JOIN Inv_Serial b ON a.sSerialID = b.sSerialID" +
+                " LEFT JOIN Inventory c ON b.sStockIDx = c.sStockIDx" +
+                " LEFT JOIN Branch d ON a.sBranchCd = d.sBranchCd";
     }
     private void initialize() {
         try {

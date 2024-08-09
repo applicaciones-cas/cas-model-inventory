@@ -327,7 +327,7 @@ public class Model_Inv_Ledger implements GEntity {
 
                 if ("success".equals((String) loJSON.get("result"))) {
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sStockIDx = " + SQLUtil.toSQL(this.getStockID()),  "xBarCodex»xDescript»xWHouseNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sStockIDx = " + SQLUtil.toSQL(this.getStockID()),  "xBarCodex»xDescript»xWHouseNm»xBranchNm");
 
                     if (!lsSQL.isEmpty()) {
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
@@ -729,6 +729,23 @@ public class Model_Inv_Ledger implements GEntity {
     }
 
     /**
+     * Sets the xBranchNm of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setBranchName(String fsValue) {
+        return setValue("xBranchNm", fsValue);
+    }
+
+    /**
+     * @return The xBranchNm of this record.
+     */
+    public String getBranchName() {
+        return (String) getValue("xBranchNm");
+    }
+    
+    /**
      * Sets the Inventory RecdStat of this record.
      *
      * @param fsValue
@@ -817,9 +834,11 @@ public class Model_Inv_Ledger implements GEntity {
                         " , b.sBarCodex xBarCodex" +
                         " , b.sDescript xDescript" +
                         " , c.sWHouseNm xWHouseNm" +
+                        " , d.sBranchNm xBranchNm" +
                         " FROM Inv_Ledger a" +
                         "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID";
+                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID" +
+                        "    LEFT JOIN Branch d ON a.sBranchCd = d.sBranchCd";
     }
     /**
      * Gets the SQL statement for this entity.
@@ -827,7 +846,7 @@ public class Model_Inv_Ledger implements GEntity {
      * @return SQL Statement
      */
     public String makeSQL() {
-        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xWHouseNm");
+        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xWHouseNm»xBranchNm");
     }
 
     /**
@@ -836,7 +855,7 @@ public class Model_Inv_Ledger implements GEntity {
      * @return SelectSQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xWHouseNm");
+        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xWHouseNm»xBranchNm");
     }
 
     private void initialize() {
