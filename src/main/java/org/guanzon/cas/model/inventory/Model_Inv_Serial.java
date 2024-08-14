@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
 import javax.sql.rowset.CachedRowSet;
+import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
@@ -290,7 +291,7 @@ public class Model_Inv_Serial implements GEntity {
 
                 if ("success".equals((String) loJSON.get("result"))) {
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sSerialID = " + SQLUtil.toSQL(this.getSerialID()),  "xBarCodex»xDescript»xBranchNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sSerialID = " + SQLUtil.toSQL(this.getSerialID()),  "xBarCodex»xDescript»xBrandNme»xModelNme»xColorNme»xMeasurNm»xCategrNm»xBranchNm»xCompanyNm");
 
                     if (!lsSQL.isEmpty()) {
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
@@ -439,8 +440,8 @@ public class Model_Inv_Serial implements GEntity {
     /**
      * @return The nUnitPrce. 
      */
-    public Double getUnitPrice(){
-        return (Double) getValue("nUnitPrce");
+    public Object getUnitPrice(){
+        return (Object) getValue("nUnitPrce");
     }
     
     /**
@@ -504,7 +505,7 @@ public class Model_Inv_Serial implements GEntity {
      * @param fsValue 
      * @return  True if the record assignment is successful.
      */
-    public JSONObject getUnitType(String fsValue){
+    public JSONObject setUnitType(String fsValue){
         return setValue("cUnitType", fsValue);
     }
     
@@ -600,7 +601,7 @@ public class Model_Inv_Serial implements GEntity {
      * @return The xBranchNm of this record.
      */
     public String getBranchName() {
-        return (String) getValue("xBranchNm");
+        return (String) getValue("xBranchNm");  
     }
 
     /**
@@ -637,22 +638,6 @@ public class Model_Inv_Serial implements GEntity {
         return ((String) getValue("cRecdStat")).equals("1");
     }
 
-    /**
-     * Sets the user encoded/updated the record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setModifiedBy(String fsValue) {
-        return setValue("sModified", fsValue);
-    }
-
-    /**
-     * @return The user encoded/updated the record
-     */
-    public String getModifiedBy() {
-        return (String) getValue("sModified");
-    }
 
     /**
      * Sets the date and time the record was modified.
@@ -670,57 +655,113 @@ public class Model_Inv_Serial implements GEntity {
     public Date getModifiedDate() {
         return (Date) getValue("dModified");
     }
-
+        
     /**
-     * Sets the xInvTypNm.
-     *
-     * @param fdValue
-     * @return result as success/failed
-     */
-    public JSONObject setInvTypNm(Date fdValue) {
-        return setValue("xInvTypNm", fdValue);
-    }
-
     /**
-     * @return The xInvTypNm.
+     * Sets the xCompanyNm .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
      */
-    public String getInvTypNm() {
-        return (String) getValue("xInvTypNm");
+    public JSONObject setCompnyName(String fsValue){
+        return setValue("xCompanyNm", fsValue);
     }
     
     /**
-     * Sets the xSuperCde.
-     *
-     * @param fdValue
-     * @return result as success/failed
+     * @return The xCompanyNm. 
      */
-    public JSONObject setSuperCde(Date fdValue) {
-        return setValue("xSuperCde", fdValue);
+    public String getCompnyName(){
+        return (String) getValue("xCompanyNm");
     }
-
-    /**
-     * @return The xInvTypNm.
-     */
-    public String getSuperCde() {
-        return (String) getValue("xSuperCde");
-    }
-
     
     /**
-     * Sets the xSuperDsc.
-     *
-     * @param fdValue
-     * @return result as success/failed
-     */
-    public JSONObject setSuperDsc(Date fdValue) {
-        return setValue("xSuperDsc", fdValue);
-    }
-
     /**
-     * @return The xSuperDsc.
+     * Sets the xBrandNme .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
      */
-    public String getSuperDsc() {
-        return (String) getValue("xSuperDsc");
+    public JSONObject setBrandName(String fsValue){
+        return setValue("xBrandNme", fsValue);
+    }
+    
+    /**
+     * @return The xBrandNme. 
+     */
+    public String getBrandName(){
+        return (String) getValue("xBrandNme");
+    }
+    
+    /**
+    /**
+     * Sets the xModelNme .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setModelName(String fsValue){
+        return setValue("xModelNme", fsValue);
+    }
+    
+    /**
+     * @return The xModelNme. 
+     */
+    public String getModelName(){
+        return (String) getValue("xModelNme");
+    }
+    
+    /**
+    /**
+     * Sets the xColorNme .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setColorName(String fsValue){
+        return setValue("xColorNme", fsValue);
+    }
+    
+    /**
+     * @return The xColorNme    . 
+     */
+    public String getColorName(){
+        return (String) getValue("xColorNme");
+    }
+    
+    /**
+    /**
+     * Sets the xMeasurNm .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setMeasure(String fsValue){
+        return setValue("xMeasurNm", fsValue);
+    }
+    
+    /**
+     * @return The xMeasurNm    . 
+     */
+    public String getMeasure(){
+        return (String) getValue("xMeasurNm");
+    }
+    
+    /**
+    /**
+     * Sets the xCategrNm .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setCategoryName(String fsValue){
+        return setValue("xCategrNm", fsValue);
+    }
+    
+    /**
+     * @return The xCategrNm    . 
+     */
+    public String getCategoryName(){
+        return (String) getValue("xCategrNm");
     }
 
     /**
@@ -728,8 +769,9 @@ public class Model_Inv_Serial implements GEntity {
      *
      * @return SQL Statement
      */
+    
     public String makeSQL() {
-        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xBranchNm");
+        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xBrandNme»xModelNme»xColorNme»xMeasurNm»xCategrNm»xBranchNm»xCompanyNm");
     }
 
     /**
@@ -738,28 +780,47 @@ public class Model_Inv_Serial implements GEntity {
      * @return SelectSQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xBranchNm");
+        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xBrandNme»xModelNme»xColorNme»xMeasurNm»xCategrNm»xBranchNm»xCompanyNm");
     }
 public String getSQL(){
-        return "SELECT" +
-                        "   a.sSerialID" +
-                        " , a.sBranchCd" +
-                        " , a.sSerial01" +
-                        " , a.sSerial02" +
-                        " , a.nUnitPrce" +
-                        " , a.sStockIDx" +
-                        " , a.cLocation" +
-                        " , a.cSoldStat" +
-                        " , a.cUnitType" +
-                        " , a.sCompnyID" +
-                        " , a.sWarranty" +
-                        " , a.dModified" +
-                        " , b.sBarCodex xBarCodex" +
-                        " , b.sDescript xDescript" +
-                        " , c.sBranchNm xBranchNm " +
-                        "FROM Inv_Serial a" +
-                        "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                        "    LEFT JOIN Branch c ON a.sBranchCd = c.sBranchCd";
+         String lsSQL = "SELECT " +
+                        "     a.sSerialID " +
+                        "   , a.sBranchCd " +
+                        "   , a.sSerial01 " +
+                        "   , a.sSerial02 " +
+                        "   , a.nUnitPrce " +
+                        "   , a.sStockIDx " +
+                        "   , a.cLocation " +
+                        "   , a.cSoldStat " +
+                        "   , a.cUnitType " +
+                        "   , a.sCompnyID " +
+                        "   , a.sWarranty " +
+                        "   , a.dModified " +
+                        "   , b.sBarCodex xBarCodex " +
+                        "   , b.sDescript xDescript " +
+                        "   , c.sDescript xBrandNme " +
+                        "   , d.sModelNme xModelNme " +
+                        "   , e.sDescript xColorNme " +
+                        "   , IFNULL(f.sMeasurNm,'') xMeasurNm " +
+                        "   , IFNULL(g.sDescript,'') xCategrNm " +
+                        "   , h.sBranchNm xBranchNm  " +
+                        "   , i.sCompnyNm xCompanyNm  " +
+                        "  FROM Inv_Serial a " +
+                        "      LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx " +
+                        "      LEFT JOIN Brand c ON b.sBrandCde = c.sBrandCde " +
+                        "      LEFT JOIN Model d ON b.sModelCde = d.sModelCde " +
+                        "      LEFT JOIN Color e ON b.sColorCde = e.sColorCde " +
+                        "      LEFT JOIN Measure f ON b.sMeasurID = f.sMeasurID " +
+                        "      LEFT JOIN Category g ON b.sCategCd1 = g.sCategrCd"+
+                        "      LEFT JOIN Branch h ON a.sBranchCd = h.sBranchCd " +
+                        "      LEFT JOIN Company i ON a.sCompnyID = i.sCompnyID " ;
+
+//        /validate result based on the assigned inventory type.
+        if (!System.getProperty("store.inventory.industry").isEmpty())
+            lsSQL = MiscUtil.addCondition(lsSQL, " b.sCategCd1 IN " + CommonUtils.getParameter(System.getProperty("store.inventory.industry")));
+        
+        
+        return lsSQL;
     }
     private void initialize() {
         try {

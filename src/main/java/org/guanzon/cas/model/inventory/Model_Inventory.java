@@ -253,6 +253,7 @@ public class Model_Inventory implements GEntity {
 
         return poJSON;
     }
+    
 
     /**
      * Save the entity.
@@ -1278,6 +1279,11 @@ public class Model_Inventory implements GEntity {
             poEntity.updateObject("nMaxLevel", 0.0);
             poEntity.updateObject("nShlfLife", 0);
             poEntity.updateObject("cSerialze", "0");
+            poEntity.updateObject("sBrandCde", "");
+            poEntity.updateObject("sModelCde", "");
+            poEntity.updateObject("sColorCde", "");
+            poEntity.updateObject("sMeasurID", "");
+            poEntity.updateObject("sCategCd2", "");
 
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
