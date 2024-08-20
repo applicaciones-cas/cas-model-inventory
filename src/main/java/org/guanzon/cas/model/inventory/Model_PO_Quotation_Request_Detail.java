@@ -1,6 +1,7 @@
 package org.guanzon.cas.model.inventory;
 
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -20,46 +21,48 @@ import org.json.simple.JSONObject;
  */
 public class Model_PO_Quotation_Request_Detail implements GEntity{
     final String XML = "Model_PO_Quotation_Request_Detail.xml";
-    
+
     GRider poGRider;                //application driver
     CachedRowSet poEntity;          //rowset
     JSONObject poJSON;              //json container
     int pnEditMode;                 //edit mode
-    
+
     /**
      * Entity constructor
-     * 
+     *
      * @param foValue - GhostRider Application Driver
      */
-    public Model_PO_Quotation_Request_Detail(GRider foValue){
-        if (foValue == null){
+    public Model_PO_Quotation_Request_Detail(GRider foValue) {
+        if (foValue == null) {
             System.err.println("Application Driver is not set.");
             System.exit(1);
         }
-        
+
         poGRider = foValue;
-        
+
         initialize();
     }
-    
+
     /**
      * Gets edit mode of the record
+     *
      * @return edit mode
      */
     @Override
     public int getEditMode() {
         return pnEditMode;
     }
-    
+
     /**
      * Gets the column index name.
+     *
      * @param fnValue - column index number
      * @return column index name
      */
     @Override
     public String getColumn(int fnValue) {
         try {
-            return poEntity.getMetaData().getColumnLabel(fnValue); 
+            return poEntity.getMetaData().getColumnLabel(fnValue);
         } catch (SQLException e) {
         }
         return "";
@@ -67,6 +70,7 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
 
     /**
      * Gets the column index number.
+     *
      * @param fsValue - column index name
      * @return column index number
      */
@@ -82,31 +86,33 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
 
     /**
      * Gets the total number of column.
+     *
      * @return total number of column
      */
     @Override
     public int getColumnCount() {
         try {
-            return poEntity.getMetaData().getColumnCount(); 
+            return poEntity.getMetaData().getColumnCount();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return -1;
     }
 
     /**
      * Gets the table name.
+     *
      * @return table name
      */
     @Override
     public String getTable() {
         return "PO_Quotation_Request_Detail";
     }
-    
+
     /**
      * Gets the value of a column index number.
-     * 
+     *
      * @param fnColumn - column index number
      * @return object value
      */
@@ -122,7 +128,7 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
 
     /**
      * Gets the value of a column index name.
-     * 
+     *
      * @param fsColumn - column index name
      * @return object value
      */
@@ -135,23 +141,25 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
         }
         return null;
     }
-    
+
     /**
      * Sets column value.
-     * 
+     *
      * @param fnColumn - column index number
      * @param foValue - value
      * @return result as success/failed
      */
     @Override
     public JSONObject setValue(int fnColumn, Object foValue) {
-        try {  
+        try {
             poJSON = MiscUtil.validateColumnValue(System.getProperty("sys.default.path.metadata") + XML, MiscUtil.getColumnLabel(poEntity, fnColumn), foValue);
-            if ("error".equals((String) poJSON.get("result"))) return poJSON;
-            
+            if ("error".equals((String) poJSON.get("result"))) {
+                return poJSON;
+            }
+
             poEntity.updateObject(fnColumn, foValue);
             poEntity.updateRow();
-            
+
             poJSON = new JSONObject();
             poJSON.put("result", "success");
             poJSON.put("value", getValue(fnColumn));
@@ -160,13 +168,13 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
             poJSON.put("result", "error");
             poJSON.put("message", e.getMessage());
         }
-        
+
         return poJSON;
     }
 
     /**
      * Sets column value.
-     * 
+     *
      * @param fsColumn - column index name
      * @param foValue - value
      * @return result as success/failed
@@ -174,7 +182,7 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
     @Override
     public JSONObject setValue(String fsColumn, Object foValue) {
         poJSON = new JSONObject();
-        
+
         try {
             return setValue(MiscUtil.getColumnIndex(poEntity, fsColumn), foValue);
         } catch (SQLException e) {
@@ -184,18 +192,16 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
         }
         return poJSON;
     }
-    
+
     /**
      * Set the edit mode of the entity to new.
-     * 
+     *
      * @return result as success/failed
      */
     @Override
     public JSONObject newRecord() {
         pnEditMode = EditMode.ADDNEW;
-        
-        //replace with the primary key column info
-        setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
+
         
         poJSON = new JSONObject();
         poJSON.put("result", "success");
@@ -203,30 +209,45 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
     }
 
     /**
-     * Opens a record.
-     * 
+     * Opens a record by single condition. Not supported yet on detail model.
+     *
      * @param fsCondition - filter values
      * @return result as success/failed
      */
     @Override
     public JSONObject openRecord(String fsCondition) {
         poJSON = new JSONObject();
-        
+        poJSON.put("result", "information");
+        poJSON.put("message", "Not supported yet.");
+
+        return poJSON;
+    }
+
+    /**
+     * Opens a record.
+     *
+     * @param fsCondition - filter values
+     * @return result as success/failed
+     */
+    public JSONObject openRecord(String lsFilter, String fsCondition) {
+        poJSON = new JSONObject();
+
         String lsSQL = MiscUtil.makeSelect(this, "xCategrNm»xInvTypNm");
-        
+
         //replace the condition based on the primary key column of the record
-        lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
-        
+        lsSQL = MiscUtil.addCondition(lsSQL, "sTransNox = " + SQLUtil.toSQL(lsFilter)
+                + "AND sStockIDx = " + SQLUtil.toSQL(fsCondition));
+
         ResultSet loRS = poGRider.executeQuery(lsSQL);
-        
+
         try {
-            if (loRS.next()){
-                for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++){
+            if (loRS.next()) {
+                for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++) {
                     setValue(lnCtr, loRS.getObject(lnCtr));
                 }
-                
+
                 pnEditMode = EditMode.UPDATE;
-                
+
                 poJSON.put("result", "success");
                 poJSON.put("message", "Record loaded successfully.");
             } else {
@@ -237,29 +258,26 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
             poJSON.put("result", "error");
             poJSON.put("message", e.getMessage());
         }
-        
+
         return poJSON;
     }
 
     /**
      * Save the entity.
-     * 
+     *
      * @return result as success/failed
      */
     @Override
     public JSONObject saveRecord() {
         poJSON = new JSONObject();
-        
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
+
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             String lsSQL;
-            if (pnEditMode == EditMode.ADDNEW){
-                //replace with the primary key column info
-                setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
-                
+            if (pnEditMode == EditMode.ADDNEW) {
                 lsSQL = makeSQL();
-                
-                if (!lsSQL.isEmpty()){
-                    if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
+
+                if (!lsSQL.isEmpty()) {
+                    if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
                         poJSON.put("result", "success");
                         poJSON.put("message", "Record saved successfully.");
                     } else {
@@ -272,16 +290,17 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
                 }
             } else {
                 Model_PO_Quotation_Request_Detail loOldEntity = new Model_PO_Quotation_Request_Detail(poGRider);
-                
-                //replace with the primary key column info
-                JSONObject loJSON = loOldEntity.openRecord(this.getTransactionNumber());
-                
-                if ("success".equals((String) loJSON.get("result"))){
-                    //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()), "xCategrNm»xInvTypNm");
-                    
-                    if (!lsSQL.isEmpty()){
-                        if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
+
+                //replace with the primary key column info  and additional primary column
+                JSONObject loJSON = loOldEntity.openRecord(this.getTransactionNo(), this.getStockID());
+
+                if ("success".equals((String) loJSON.get("result"))) {
+                    //replace the condition based on the primary key column of the record and additional primary column
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNo())
+                            +  "sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xCategrNm»xInvTypNm");
+
+                    if (!lsSQL.isEmpty()) {
+                        if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
                             poJSON.put("result", "success");
                             poJSON.put("message", "Record saved successfully.");
                         } else {
@@ -302,10 +321,10 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
             poJSON.put("message", "Invalid update mode. Unable to save record.");
             return poJSON;
         }
-        
+
         return poJSON;
     }
-    
+
     /**
      * Prints all the public methods used<br>
      * and prints the column names of this entity.
@@ -313,186 +332,170 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
     @Override
     public void list() {
         Method[] methods = this.getClass().getMethods();
-        
+
         System.out.println("--------------------------------------------------------------------");
         System.out.println("LIST OF PUBLIC METHODS FOR " + this.getClass().getName() + ":");
         System.out.println("--------------------------------------------------------------------");
         for (Method method : methods) {
             System.out.println(method.getName());
         }
-        
+
         try {
             int lnRow = poEntity.getMetaData().getColumnCount();
-        
+
             System.out.println("--------------------------------------------------------------------");
             System.out.println("ENTITY COLUMN INFO");
             System.out.println("--------------------------------------------------------------------");
             System.out.println("Total number of columns: " + lnRow);
             System.out.println("--------------------------------------------------------------------");
 
-            for (int lnCtr = 1; lnCtr <= lnRow; lnCtr++){
+            for (int lnCtr = 1; lnCtr <= lnRow; lnCtr++) {
                 System.out.println("Column index: " + (lnCtr) + " --> Label: " + poEntity.getMetaData().getColumnLabel(lnCtr));
-                if (poEntity.getMetaData().getColumnType(lnCtr) == Types.CHAR ||
-                    poEntity.getMetaData().getColumnType(lnCtr) == Types.VARCHAR){
+                if (poEntity.getMetaData().getColumnType(lnCtr) == Types.CHAR
+                        || poEntity.getMetaData().getColumnType(lnCtr) == Types.VARCHAR) {
 
                     System.out.println("Column index: " + (lnCtr) + " --> Size: " + poEntity.getMetaData().getColumnDisplaySize(lnCtr));
                 }
             }
         } catch (SQLException e) {
         }
-        
+
     }
-    
+
     /**
-     * Sets the Transaction Number of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
+     * Description: Sets the sTransNox of this record.
+     *
+     * @param fsValue
+     * @return True if the record assignment is successful.
      */
-    public JSONObject setTransactionNumber(String fsValue){
+    public JSONObject setTransactionNo(String fsValue) {
         return setValue("sTransNox", fsValue);
     }
-    
+
     /**
-     * @return The Transaction Number of this record.
+     * @return The sTransNox of this record.
      */
-    public String getTransactionNumber(){
+    public String getTransactionNo() {
         return (String) getValue("sTransNox");
     }
-    
+
     /**
-     * Sets the Entry Number of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
+     * Description: Sets the nEntryNox of this record.
+     *
+     * @param fsValue
+     * @return True if the record assignment is successful.
      */
-    public JSONObject setEntryNumber(String fsValue){
+    public JSONObject setEntryNo(int fsValue) {
         return setValue("nEntryNox", fsValue);
     }
-    
-    /**
-     * @return The Entry Number of this record. 
-     */
-    public String getEntryNumber(){
-        return (String) getValue("nEntryNox");
-    }
-    
-     /**
-     * Sets the Stock ID of this record.
-     * 
-     * @param fdValue 
-     * @return result as success/failed
-     */
-    public JSONObject setStockID(Date fdValue){
-        return setValue("sStockIDx", fdValue);
-    }
-    
-    /**
-     * @return The Stock ID of this record. 
-     */
-    public Date getStockID(){
-        return (Date) getValue("sStockIDx");
-    }
-    
-     /**
-     * Sets the Description of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setDescription(String fsValue){
-        return setValue("sDescript", fsValue);
-    }
-    
-    /**
-     * @return The Description of this record. 
-     */
-    public String getDescription(){
-        return (String) getValue("sDescript");
-    }
-    
-     /**
-     * Sets the Quantity of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setQuantity(String fnValue){
-        return setValue("nQuantity", fnValue);
-    }
-    
-    /**
-     * @return The Quantity of this record. 
-     */
-    public int getQuantity(){
-        return (int) getValue("nQuantity");
-    }
-    
-         /**
-     * Sets the Unit Price of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setUnitPrice(String fnValue){
-        return setValue("nUnitPrce", fnValue);
-    }
-    
-    /**
-     * @return The Unit Price of this record. 
-     */
-    public int getUnitPrice(){
-        return (int) getValue("nUnitPrce");
-    }
-    
-    
-
 
     /**
-     * Sets the date and time the record was modified.
-     * 
-     * @param fdValue 
-     * @return result as success/failed
+     * @return The nEntryNox of this record.
      */
-    public JSONObject setModified(Date fdValue){
+    public int getEntryNo() {
+        return (Integer) getValue("nEntryNox");
+    }
+
+    /**
+     * Description: Sets the sStockIDx of this record.
+     *
+     * @param fsValue
+     * @return True if the record assignment is successful.
+     */
+    public JSONObject setStockID(String fsValue) {
+        return setValue("sStockIDx", fsValue);
+    }
+    
+    /**
+     * @return The nEntryNox of this record.
+     */
+    public String getStockID() {
+        return (String) getValue("sStockIDx");
+    }
+
+    /**
+     * Description: Sets the nQuantity of this record.
+     *
+     * @param fsValue
+     * @return True if the record assignment is successful.
+     */
+    public JSONObject setQuantity(int fsValue) {
+        return setValue("nQuantity", fsValue);
+    }
+
+    /**
+     * @return The nQuantity of this record.
+     */
+    public int getQuantity() {
+        return (Integer) getValue("nQuantity");
+    }
+
+    /**
+     * Description: Sets the nUnitPrce of this record.
+     *
+     * @param fsValue
+     * @return True if the record assignment is successful.
+     */
+    public JSONObject setUnitPrice(BigDecimal fsValue) {
+        return setValue("nUnitPrce", fsValue);
+    }
+
+    /**
+     * @return The nUnitPrce of this record.
+     */
+    public BigDecimal getUnitPrice() {
+        return (BigDecimal) getValue("nUnitPrce");
+    }
+
+    /**
+     * Description: Sets the dModified of this record.
+     *
+     * @param fsValue
+     * @return True if the record assignment is successful.
+     */
+    public JSONObject setModifiedDate(Date fdValue) {
         return setValue("dModified", fdValue);
     }
-    
+
     /**
-     * @return The date and time the record was modified.
+     * @return The dModified of this record.
      */
-    public Date getModified(){
+    public Date getModifiedDate() {
         return (Date) getValue("dModified");
     }
-    
+
     /**
      * Gets the SQL statement for this entity.
-     * 
+     *
      * @return SQL Statement
      */
-    public String makeSQL(){
+    public String makeSQL() {
         return MiscUtil.makeSQL(this, "xCategrNm»xInvTypNm");
     }
-    
-    private void initialize(){
+
+    public String makeSelectSQL() {
+        return MiscUtil.makeSelect(this, "xCategrNm»xInvTypNm");
+    }
+
+    private void initialize() {
         try {
             poEntity = MiscUtil.xml2ResultSet(System.getProperty("sys.default.path.metadata") + XML, getTable());
-            
+
             poEntity.last();
             poEntity.moveToInsertRow();
 
-            MiscUtil.initRowSet(poEntity);      
-            poEntity.updateString("cRecdStat", RecordStatus.ACTIVE);
-            
+            MiscUtil.initRowSet(poEntity);
+
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
 
             poEntity.absolute(1);
-            
+
             pnEditMode = EditMode.UNKNOWN;
         } catch (SQLException e) {
             e.printStackTrace();
             System.exit(1);
         }
-    } 
+    }
+
 }

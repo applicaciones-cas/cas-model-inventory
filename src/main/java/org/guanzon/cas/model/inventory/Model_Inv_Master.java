@@ -920,7 +920,6 @@ public class Model_Inv_Master implements GEntity {
             poEntity.updateObject("nBackOrdr", 0.0);
             poEntity.updateObject("nResvOrdr", 0.0);
             poEntity.updateObject("nFloatQty", 0.0);
-            poEntity.updateObject("cClassify", "F");
             
             poEntity.insertRow();
             poEntity.moveToCurrentRow();

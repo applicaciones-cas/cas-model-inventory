@@ -235,39 +235,6 @@ public class Model_Inv_Ledger implements GEntity {
                 for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++) {
                     setValue(lnCtr, loRS.getObject(lnCtr));
                 }
-                pnEditMode = EditMode.UPDATE;
-
-                poJSON.put("result", "success");
-                poJSON.put("message", "Record loaded successfully.");
-            } else {
-                poJSON.put("result", "error");
-                poJSON.put("message", "No record to load.");
-            }
-        } catch (SQLException e) {
-            poJSON.put("result", "error");
-            poJSON.put("message", e.getMessage());
-        }
-
-        return poJSON;
-    }
-    
-    public JSONObject openRecord(String lsFilter, String fsCondition) {
-        poJSON = new JSONObject();
-
-        String lsSQL = getSQL();
-        //replace the condition based on the primary key column of the record
-        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(lsFilter));
-        lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
-        
-        System.out.println(lsSQL);
-
-        ResultSet loRS = poGRider.executeQuery(lsSQL);
-
-        try {
-            if (loRS.next()) {
-                for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++) {
-                    setValue(lnCtr, loRS.getObject(lnCtr));
-                }
 
                 pnEditMode = EditMode.UPDATE;
 
@@ -284,7 +251,6 @@ public class Model_Inv_Ledger implements GEntity {
 
         return poJSON;
     }
-
 
     /**
      * Save the entity.
@@ -302,7 +268,6 @@ public class Model_Inv_Ledger implements GEntity {
 //                setStockID(MiscUtil.getNextCode(getTable(), "sStockIDx", false, poGRider.getConnection(), ""));
 
                 setModifiedDate(poGRider.getServerDate());
-                setModifiedBy(poGRider.getUserID());
                 lsSQL = makeSQL();
 
                 if (!lsSQL.isEmpty()) {
@@ -321,13 +286,12 @@ public class Model_Inv_Ledger implements GEntity {
                 Model_Inv_Ledger loOldEntity = new Model_Inv_Ledger(poGRider);
 
                 setModifiedDate(poGRider.getServerDate());
-                setModifiedBy(poGRider.getUserID());
                 //replace with the primary key column info
                 JSONObject loJSON = loOldEntity.openRecord(this.getStockID());
 
                 if ("success".equals((String) loJSON.get("result"))) {
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sStockIDx = " + SQLUtil.toSQL(this.getStockID()),  "xBarCodex»xDescript»xWHouseNm»xBranchNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sStockIDx = " + SQLUtil.toSQL(this.getStockID()),  "xBarCodex»xDescript»xWHouseNm");
 
                     if (!lsSQL.isEmpty()) {
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
@@ -528,8 +492,8 @@ public class Model_Inv_Ledger implements GEntity {
     /**
      * @return The nQtyInxxx. 
      */
-    public Object getQuantityIn(){
-        return (Object) getValue("nQtyInxxx");
+    public int getQuantityIn(){
+        return (int) getValue("nQtyInxxx");
     }
     
     /**
@@ -546,8 +510,8 @@ public class Model_Inv_Ledger implements GEntity {
     /**
      * @return The nQtyOutxx. 
      */
-    public Object getQuantityOut(){
-        return (Object) getValue("nQtyOutxx");
+    public int getQuantityOut(){
+        return (int) getValue("nQtyOutxx");
     }
     
 
@@ -565,8 +529,8 @@ public class Model_Inv_Ledger implements GEntity {
     /**
      * @return The nQtyOrder. 
      */
-    public Object getQuantityOrder(){
-        return (Object) getValue("nQtyOrder");
+    public int getQuantityOrder(){
+        return (int) getValue("nQtyOrder");
     }
 
     /**
@@ -583,8 +547,8 @@ public class Model_Inv_Ledger implements GEntity {
     /**
      * @return The nQtyIssue. 
      */
-    public Object getQuantityIssue(){
-        return (Object) getValue("nQtyIssue");
+    public int getQuantityIssue(){
+        return (int) getValue("nQtyIssue");
     }
     
     /**
@@ -656,8 +620,8 @@ public class Model_Inv_Ledger implements GEntity {
     /**
      * @return The nQtyOnHnd. 
      */
-    public Object getQuantityOnHand(){
-        return (Object) getValue("nQtyOnHnd");
+    public int getQuantityOnHand(){
+        return (int) getValue("nQtyOnHnd");
     }
     
     
@@ -728,23 +692,6 @@ public class Model_Inv_Ledger implements GEntity {
         return (String) getValue("xWHouseNm");
     }
 
-    /**
-     * Sets the xBranchNm of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setBranchName(String fsValue) {
-        return setValue("xBranchNm", fsValue);
-    }
-
-    /**
-     * @return The xBranchNm of this record.
-     */
-    public String getBranchName() {
-        return (String) getValue("xBranchNm");
-    }
-    
     /**
      * Sets the Inventory RecdStat of this record.
      *
@@ -834,11 +781,9 @@ public class Model_Inv_Ledger implements GEntity {
                         " , b.sBarCodex xBarCodex" +
                         " , b.sDescript xDescript" +
                         " , c.sWHouseNm xWHouseNm" +
-                        " , d.sBranchNm xBranchNm" +
                         " FROM Inv_Ledger a" +
                         "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID" +
-                        "    LEFT JOIN Branch d ON a.sBranchCd = d.sBranchCd";
+                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID";
     }
     /**
      * Gets the SQL statement for this entity.
@@ -846,7 +791,7 @@ public class Model_Inv_Ledger implements GEntity {
      * @return SQL Statement
      */
     public String makeSQL() {
-        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xWHouseNm»xBranchNm");
+        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xWHouseNm");
     }
 
     /**
@@ -855,7 +800,7 @@ public class Model_Inv_Ledger implements GEntity {
      * @return SelectSQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xWHouseNm»xBranchNm");
+        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xWHouseNm");
     }
 
     private void initialize() {

@@ -361,6 +361,9 @@ public class Model_PO_Quotation_Master implements GEntity{
         return (String) getValue("sTransNox");
     }
     
+    
+    
+    
     /**
      * Sets the ReferenceNumber of this record.
      * 
