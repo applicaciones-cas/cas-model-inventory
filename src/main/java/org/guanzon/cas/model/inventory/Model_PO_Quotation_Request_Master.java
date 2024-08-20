@@ -325,9 +325,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
     public JSONObject searchCategory(String fsValue) {
         JSONObject loJSON = new JSONObject();
 
-        // Example query to search the category from the master table (assuming you have a category table)
-        String lsSQL = "SELECT sCategrCD, sDescript FROM Category_Master WHERE sCategrCD = " + SQLUtil.toSQL(fsValue);
-
+        String lsSQL = "SELECT sCategrCd, sDescript FROM Category WHERE";
         ResultSet loRS = poGRider.executeQuery(lsSQL);
         try {
             if (!loRS.next()) {

@@ -81,7 +81,7 @@ GRider poGRider;
             loJSON.put("message", "Category not found.");
         } else {
             loJSON.put("result", "success");
-            loJSON.put("category", loJSON.get("sCategoryName")); // Assuming your model returns 'sCategoryName'
+            loJSON.put("category", loJSON.get("sDescript")); 
         }
 
         return loJSON;
