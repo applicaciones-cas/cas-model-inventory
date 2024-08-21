@@ -1,7 +1,6 @@
-package org.guanzon.cas.model.inventory;
+package org.guanzon.cas.inventory.models;
 
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -19,8 +18,8 @@ import org.json.simple.JSONObject;
 /**
  * @author Michael Cuison
  */
-public class Model_PO_Quotation_Detail implements GEntity{
-    final String XML = "Model_PO_Quotation_Detail.xml";
+public class Model_PO_Quotation_Request_Detail implements GEntity{
+    final String XML = "Model_PO_Quotation_Request_Detail.xml";
     
     GRider poGRider;                //application driver
     CachedRowSet poEntity;          //rowset
@@ -32,7 +31,7 @@ public class Model_PO_Quotation_Detail implements GEntity{
      * 
      * @param foValue - GhostRider Application Driver
      */
-    public Model_PO_Quotation_Detail(GRider foValue){
+    public Model_PO_Quotation_Request_Detail(GRider foValue){
         if (foValue == null){
             System.err.println("Application Driver is not set.");
             System.exit(1);
@@ -102,7 +101,7 @@ public class Model_PO_Quotation_Detail implements GEntity{
      */
     @Override
     public String getTable() {
-        return "Made";
+        return "PO_Quotation_Request_Detail";
     }
     
     /**
@@ -196,7 +195,7 @@ public class Model_PO_Quotation_Detail implements GEntity{
         pnEditMode = EditMode.ADDNEW;
         
         //replace with the primary key column info
-        setTransactionNumber(MiscUtil.getNextCode(getTable(), "sMadeIDxx", true, poGRider.getConnection(), poGRider.getBranchCode()));
+        setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
         
         poJSON = new JSONObject();
         poJSON.put("result", "success");
@@ -255,7 +254,7 @@ public class Model_PO_Quotation_Detail implements GEntity{
             String lsSQL;
             if (pnEditMode == EditMode.ADDNEW){
                 //replace with the primary key column info
-                setTransactionNumber(MiscUtil.getNextCode(getTable(), "sMadeIDxx", true, poGRider.getConnection(), poGRider.getBranchCode()));
+                setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
                 
                 lsSQL = makeSQL();
                 
@@ -272,14 +271,14 @@ public class Model_PO_Quotation_Detail implements GEntity{
                     poJSON.put("message", "No record to save.");
                 }
             } else {
-                Model_PO_Quotation_Detail loOldEntity = new Model_PO_Quotation_Detail(poGRider);
+                Model_PO_Quotation_Request_Detail loOldEntity = new Model_PO_Quotation_Request_Detail(poGRider);
                 
                 //replace with the primary key column info
                 JSONObject loJSON = loOldEntity.openRecord(this.getTransactionNumber());
                 
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sMadeIDxx = " + SQLUtil.toSQL(this.getTransactionNumber()), "xCategrNm»xInvTypNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()), "xCategrNm»xInvTypNm");
                     
                     if (!lsSQL.isEmpty()){
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
@@ -345,7 +344,7 @@ public class Model_PO_Quotation_Detail implements GEntity{
     }
     
     /**
-     * Sets the TransactionNumber of this record.
+     * Sets the Transaction Number of this record.
      * 
      * @param fsValue 
      * @return result as success/failed
@@ -355,44 +354,44 @@ public class Model_PO_Quotation_Detail implements GEntity{
     }
     
     /**
-     * @return The TransactionNumber of this record.
+     * @return The Transaction Number of this record.
      */
     public String getTransactionNumber(){
         return (String) getValue("sTransNox");
     }
     
     /**
-     * Sets the EntryNumber of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setEntryNumber(Integer fnValue){
-        return setValue("nEntryNox", fnValue);
-    }
-    
-    /**
-     * @return The EntryNumber of this record. 
-     */
-    public Integer getEntryNumber(){
-        return (Integer) getValue("nEntryNox");
-    }
-    
-     /**
-     * Sets the StockID of this record.
+     * Sets the Entry Number of this record.
      * 
      * @param fsValue 
      * @return result as success/failed
      */
-    public JSONObject setStockID(String fsValue){
-        return setValue("sStockIDx", fsValue);
+    public JSONObject setEntryNumber(String fsValue){
+        return setValue("nEntryNox", fsValue);
     }
     
     /**
-     * @return The StockID of this record. 
+     * @return The Entry Number of this record. 
      */
-    public String getStockID(){
-        return (String) getValue("sStockIDx");
+    public String getEntryNumber(){
+        return (String) getValue("nEntryNox");
+    }
+    
+     /**
+     * Sets the Stock ID of this record.
+     * 
+     * @param fdValue 
+     * @return result as success/failed
+     */
+    public JSONObject setStockID(Date fdValue){
+        return setValue("sStockIDx", fdValue);
+    }
+    
+    /**
+     * @return The Stock ID of this record. 
+     */
+    public Date getStockID(){
+        return (Date) getValue("sStockIDx");
     }
     
      /**
@@ -418,133 +417,51 @@ public class Model_PO_Quotation_Detail implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setQuantity(Integer fnValue){
+    public JSONObject setQuantity(String fnValue){
         return setValue("nQuantity", fnValue);
     }
     
     /**
      * @return The Quantity of this record. 
      */
-    public Integer getQuantity(){
-        return (Integer) getValue("nQuantity");
+    public int getQuantity(){
+        return (int) getValue("nQuantity");
     }
     
-    /**
-     * Sets the UnitPrce of this record.
+         /**
+     * Sets the Unit Price of this record.
      * 
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setUnitPrice(BigDecimal fnValue){
+    public JSONObject setUnitPrice(String fnValue){
         return setValue("nUnitPrce", fnValue);
     }
     
     /**
-     * @return The UnitPrce of this record. 
+     * @return The Unit Price of this record. 
      */
-    public BigDecimal getUnitPrice(){
-        return (BigDecimal) getValue("nUnitPrce");
+    public int getUnitPrice(){
+        return (int) getValue("nUnitPrce");
     }
     
-    /**
-     * Sets the DiscRate of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setDiscRate(BigDecimal fnValue){
-        return setValue("nDiscRate", fnValue);
-    }
     
-    /**
-     * @return The DiscRate of this record. 
-     */
-    public BigDecimal getDiscRate(){
-        return (BigDecimal) getValue("nDiscRate");
-    }
-    
-    /**
-     * Sets the Bank Branch Name of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setDiscAmtx(BigDecimal fnValue){
-        return setValue("nDiscAmtx", fnValue);
-    }
-    
-    /**
-     * @return The Bank Branch Name of this record. 
-     */
-    public BigDecimal getDiscAmtx(){
-        return (BigDecimal) getValue("nDiscAmtx");
-    }
-    
-    /**
-     * Sets the RecordStatus of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setRecordStatus(String fsValue){
-        return setValue("cRecdStat", fsValue);
-    }
-    
-    /**
-     * @return The RecordStatus of this record. 
-     */
-    public String getRecordStatus(){
-        return (String) getValue("cRecdStat");
-    }
-    
-    /**
-     * Sets record as active.
-     * 
-     * @param fbValue
-     * @return result as success/failed
-     */
-    public JSONObject setActive(boolean fbValue){
-        return setValue("cRecdStat", fbValue ? "1" : "0");
-    }
-    
-    /**
-     * @return If record is active. 
-     */
-    public boolean isActive(){
-        return ((String) getValue("cRecdStat")).equals("1");
-    }
-    
-    /**
-     * Sets the user encoded/updated the record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setModifiedBy(String fsValue){
-        return setValue("sModified", fsValue);
-    }
-    
-    /**
-     * @return The user encoded/updated the record 
-     */
-    public String getModifiedBy(){
-        return (String) getValue("sModified");
-    }
-    
+
+
     /**
      * Sets the date and time the record was modified.
      * 
      * @param fdValue 
      * @return result as success/failed
      */
-    public JSONObject setModifiedDate(Date fdValue){
+    public JSONObject setModified(Date fdValue){
         return setValue("dModified", fdValue);
     }
     
     /**
      * @return The date and time the record was modified.
      */
-    public Date getModifiedDate(){
+    public Date getModified(){
         return (Date) getValue("dModified");
     }
     

@@ -1,4 +1,4 @@
-package org.guanzon.cas.model.inventory;
+package org.guanzon.cas.inventory.models;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;

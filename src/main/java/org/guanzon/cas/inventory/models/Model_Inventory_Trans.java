@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package org.guanzon.cas.model.inventory;
+package org.guanzon.cas.inventory.models;
 
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
@@ -22,9 +22,9 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class Model_Inv_Serial_Ledger implements GEntity {
+public class Model_Inventory_Trans implements GEntity {
 
-    final String XML = "Model_Inv_Serial_Ledger.xml";
+    final String XML = "Model_Inventory_Trans.xml";
 
     GRider poGRider;                //application driver
     CachedRowSet poEntity;          //rowset
@@ -36,7 +36,7 @@ public class Model_Inv_Serial_Ledger implements GEntity {
      *
      * @param foValue - GhostRider Application Driver
      */
-    public Model_Inv_Serial_Ledger(GRider foValue) {
+    public Model_Inventory_Trans(GRider foValue) {
         if (foValue == null) {
             System.err.println("Application Driver is not set.");
             System.exit(1);
@@ -111,8 +111,9 @@ public class Model_Inv_Serial_Ledger implements GEntity {
      */
     @Override
     public String getTable() {
-        return "Inv_Serial_Ledger";
+        return "Inv_Master";
     }
+
     /**
      * Gets the value of a column index number.
      *
@@ -206,7 +207,9 @@ public class Model_Inv_Serial_Ledger implements GEntity {
         pnEditMode = EditMode.ADDNEW;
 
         //replace with the primary key column info
-        setSerialID(MiscUtil.getNextCode(getTable(), "sSerialID", true, poGRider.getConnection(), poGRider.getBranchCode()));
+//        setStockID(MiscUtil.getNextCode(getTable(), "sStockIDx", false, poGRider.getConnection(), ""));
+        setAcquiredDate(poGRider.getServerDate());
+        setDBegInvxx(poGRider.getServerDate());
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         return poJSON;
@@ -218,51 +221,15 @@ public class Model_Inv_Serial_Ledger implements GEntity {
      * @param fsCondition - filter values
      * @return result as success/failed
      */
-
-@Override
+    @Override
     public JSONObject openRecord(String fsCondition) {
         poJSON = new JSONObject();
 
         String lsSQL = getSQL();
 
         //replace the condition based on the primary key column of the record
-        lsSQL = MiscUtil.addCondition(lsSQL, "a.sSerialID = " + SQLUtil.toSQL(fsCondition));
-
-        ResultSet loRS = poGRider.executeQuery(lsSQL);
-        System.out.println("openRecord = " + lsSQL);
-        try {
-            if (loRS.next()) {
-                for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++) {
-                    setValue(lnCtr, loRS.getObject(lnCtr));
-                    
-                }
-                System.out.println("-----------------");
-                pnEditMode = EditMode.UPDATE;
-
-                poJSON.put("result", "success");
-                poJSON.put("message", "Record loaded successfully.");
-            } else {
-                poJSON.put("result", "error");
-                poJSON.put("message", "No inventory serialrecord to load.");
-            }
-        } catch (SQLException e) {
-            poJSON.put("result", "error");
-            poJSON.put("message", e.getMessage());
-        }
-
-        return poJSON;
-    }
-    
-    public JSONObject openRecord(String lsFilter, String fsCondition) {
-        poJSON = new JSONObject();
-
-        String lsSQL = getSQL();
-        //replace the condition based on the primary key column of the record
-        lsSQL = MiscUtil.addCondition(lsSQL, "a.sSerialID = " + SQLUtil.toSQL(lsFilter));
-        lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
-        
-        System.out.println(lsSQL);
-
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsCondition));
+        System.out.println("lsSQL = " + lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
 
         try {
@@ -271,13 +238,14 @@ public class Model_Inv_Serial_Ledger implements GEntity {
                     setValue(lnCtr, loRS.getObject(lnCtr));
                 }
 
+                
                 pnEditMode = EditMode.UPDATE;
 
                 poJSON.put("result", "success");
                 poJSON.put("message", "Record loaded successfully.");
             } else {
                 poJSON.put("result", "error");
-                poJSON.put("message", "No record to load for inventory serial ledger.");
+                poJSON.put("message", "No record to load.");
             }
         } catch (SQLException e) {
             poJSON.put("result", "error");
@@ -286,6 +254,7 @@ public class Model_Inv_Serial_Ledger implements GEntity {
 
         return poJSON;
     }
+
     /**
      * Save the entity.
      *
@@ -299,10 +268,12 @@ public class Model_Inv_Serial_Ledger implements GEntity {
             String lsSQL;
             if (pnEditMode == EditMode.ADDNEW) {
                 //replace with the primary key column info
-                setSerialID(MiscUtil.getNextCode(getTable(), "sSerialID", true, poGRider.getConnection(), poGRider.getBranchCode()));
+//                setStockID(MiscUtil.getNextCode(getTable(), "sStockIDx", false, poGRider.getConnection(), ""));
 
-//                setModifiedDate(poGRider.getServerDate());
+                setModifiedDate(poGRider.getServerDate());
+                setModifiedBy(poGRider.getUserID());
                 lsSQL = makeSQL();
+
                 if (!lsSQL.isEmpty()) {
                     if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
                         poJSON.put("result", "success");
@@ -316,16 +287,17 @@ public class Model_Inv_Serial_Ledger implements GEntity {
                     poJSON.put("message", "No record to save.");
                 }
             } else {
-                Model_Inv_Serial_Ledger loOldEntity = new Model_Inv_Serial_Ledger(poGRider);
+                Model_Inventory_Trans loOldEntity = new Model_Inventory_Trans(poGRider);
 
-//                setModifiedDate(poGRider.getServerDate());
+                setModifiedDate(poGRider.getServerDate());
+                setModifiedBy(poGRider.getUserID());
                 //replace with the primary key column info
-                JSONObject loJSON = loOldEntity.openRecord(this.getSerialID());
+                JSONObject loJSON = loOldEntity.openRecord(this.getStockID());
 
                 if ("success".equals((String) loJSON.get("result"))) {
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sSerialID = " + SQLUtil.toSQL(this.getSerialID()),  "xBarCodex»xDescript»xBranchNm");
-
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sStockIDx = " + SQLUtil.toSQL(this.getStockID()),  "xBarCodex»xDescript»xWHouseNm»xLocatnNm»xSectnNme");
+                     
                     if (!lsSQL.isEmpty()) {
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
                             poJSON.put("result", "success");
@@ -367,7 +339,6 @@ public class Model_Inv_Serial_Ledger implements GEntity {
         for (Method method : methods) {
             System.out.println(method.getName());
         }
-
         try {
             int lnRow = poEntity.getMetaData().getColumnCount();
 
@@ -391,44 +362,123 @@ public class Model_Inv_Serial_Ledger implements GEntity {
     }
 
     /**
-     * Sets the sSerialID of this record.
+     * Sets the sStockIDx of this record.
      *
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setSerialID(String fsValue) {
-        return setValue("sSerialID", fsValue);
+    public JSONObject setStockID(String fsValue) {
+        return setValue("sStockIDx", fsValue);
     }
 
     /**
-     * @return The sSerialID of this record.
+     * @return The sStockIDx of this record.
      */
-    public String getSerialID() {
-        return (String) getValue("sSerialID");
+    public String getStockID() {
+        return (String) getValue("sStockIDx");
+    }   
+
+    /**
+     * Sets the sBranchCd of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setBranchCd(String fsValue) {
+        return setValue("sBranchCd", fsValue);
     }
 
     /**
      * @return The sBranchCd of this record.
      */
-    public String getBranchCode() {
+    public String getBranchCd() {
         return (String) getValue("sBranchCd");
     }
     
     /**
-     * Sets the sBrandCde of this record.
+     * Sets the sWHouseID of this record.
      *
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setBranchCode(String fsValue) {
-        return setValue("sBranchCd", fsValue);
+    public JSONObject setWareHouseID(String fsValue) {
+        return setValue("sWHouseID", fsValue);
+    }
+
+    /**
+     * @return The sWHouseID of this record.
+     */
+    public String getWareHouseID() {
+        return (String) getValue("sWHouseID");
+    }
+    
+    
+    /**
+     * Sets the dAcquired of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setAcquiredDate(Date  fsValue) {
+        return setValue("dAcquired", fsValue);
+    }
+
+    /**
+     * @return The dAcquired of this record.
+     */
+    public Object getAcquiredDate() {
+        return (Object) getValue("dAcquired");
     }
     
     /**
-     * @return The nLedgerNo of this record.
+     * Sets the dBegInvxx of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
      */
-    public int getLedgerNo() {
-        return (int) getValue("nLedgerNo");
+    public JSONObject setDBegInvxx(Date fsValue) {
+        return setValue("dBegInvxx", fsValue);
+    }
+
+    /**
+     * @return The dBegInvxx of this record.
+     */
+    public Object getDBegInvxx() {
+        return (Object) getValue("dBegInvxx");
+    }
+    
+    /**
+     * Sets the nQtyOnHnd of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setQtyOnHnd(Number fsValue) {
+        return setValue("nQtyOnHnd", fsValue);
+    }
+
+    /**
+     * @return The nQtyOnHnd of this record.
+     */
+    public Object getQtyOnHnd() {
+        return (Object) getValue("nQtyOnHnd");
+    }
+    
+    /**
+     * Sets the nQuantity of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setQuantity(Number fsValue) {
+        return setValue("nQuantity", fsValue);
+    }
+
+    /**
+     * @return The nQuantity of this record.
+     */
+    public Object getQuantity() {
+        return (Object) getValue("nQuantity");
     }
     
     /**
@@ -442,96 +492,147 @@ public class Model_Inv_Serial_Ledger implements GEntity {
     }
 
     /**
-     * Sets the Transaction of this record.
-     * 
-     * @param fdValue 
-     * @return result as success/failed
+     * @return The nLedgerNo of this record.
      */
-    public JSONObject setTransactionDate(Date fdValue){
-        return setValue("dTransact", fdValue);
+    public Object getLedgerNo() {
+        return (Object) getValue("nLedgerNo");
     }
+     
     
     /**
-     * @return The Transaction of this record. 
-     */
-    public Date getTransactionDate(){
-        return (Date) getValue("dTransact");
-    }
-    
-    
-     /**
-    /**
-     * Sets the sSourceCd .
-     * 
-     * @param fsValue 
-     * @return  True if the record assignment is successful.
-     */
-    public JSONObject setSourceCd(String fsValue){
-        return setValue("sSourceCd", fsValue);
-    }
-    
-    /**
-     * @return The sSourceCd. 
-     */
-    public String getSourceCd(){
-        return (String) getValue("sSourceCd");
-    }
-    
-     /**
-    /**
-     * Sets the sSourceNo .
-     * 
-     * @param fsValue 
-     * @return  True if the record assignment is successful.
-     */
-    public JSONObject setSourceNo(String fsValue){
-        return setValue("sSourceNo", fsValue);
-    }
-    
-    /**
-     * @return The sSourceNo. 
-     */
-    public String getSourceNo(){
-        return (String) getValue("sSourceNo");
-    }
-    
-    
-    /**
-     * Sets the Inventory cSoldStat of this record.
+     * Sets the nBackOrdr of this record.
      *
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setSoldStat(String fsValue) {
-        return setValue("cSoldStat", fsValue);
+    public JSONObject setBackOrdr(Number fsValue) {
+        return setValue("nBackOrdr", fsValue);
     }
 
     /**
-     * @return The Category cSoldStat of this record.
+     * @return The nBackOrdr of this record.
      */
-    public String getSoldStat() {
-        return (String) getValue("cSoldStat");
-    }
-    
-    
-    /**
-    /**
-     * Sets the cLocation .
-     * 
-     * @param fsValue 
-     * @return  True if the record assignment is successful.
-     */
-    public JSONObject setLocation(String fsValue){
-        return setValue("cLocation", fsValue);
+    public Object getBackOrdr() {
+        return (Object) getValue("nBackOrdr");
     }
     
     /**
-     * @return The cLocation. 
+     * Sets the nResvOrdr of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
      */
-    public String getLocation(){
-        return (String) getValue("cLocation");
+    public JSONObject setResvOrdr(Number fsValue) {
+        return setValue("nResvOrdr", fsValue);
+    }
+
+    /**
+     * @return The nResvOrdr of this record.
+     */
+    public Object getResvOrdr() {
+        return (Object) getValue("nResvOrdr");
     }
     
+    /**
+     * Sets the nFloatQty of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setFloatQty(Number fsValue) {
+        return setValue("nFloatQty", fsValue);
+    }
+
+    /**
+     * @return The nFloatQty of this record.
+     */
+    public Object getFloatQty() {
+        return (Object) getValue("nFloatQty");
+    }
+    
+    /**
+     * Sets the dLastTran of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setLastTranDate(String fsValue) {
+        return setValue("dLastTran", fsValue);
+    }
+
+    /**
+     * @return The dLastTran of this record.
+     */
+    public Object getLastTranDate() {
+        return (Object) getValue("dLastTran");
+    }
+    /**
+     * Sets the dExpiryDt of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setExpiryDate(String fsValue) {
+        return setValue("dExpiryxx", fsValue);
+    }
+
+    /**
+     * @return The dExpiryDt of this record.
+     */
+    public Object getExpiryDate() {
+        return (Object) getValue("dExpiryxx");
+    }
+    /**
+     * Sets the Inventory RecdStat of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setRecdStat(String fsValue) {
+        return setValue("cRecdStat", fsValue);
+    }
+
+    /**
+     * @return The Category RecdStat of this record.
+     */
+    public String getRecdStat() {
+        return (String) getValue("cRecdStat");
+    }
+
+    /**
+     * Sets record as active.
+     *
+     * @param fbValue
+     * @return result as success/failed
+     */
+    public JSONObject setActive(boolean fbValue) {
+        return setValue("cRecdStat", fbValue ? "1" : "0");
+    }
+
+    /**
+     * @return If record is active.
+     */
+    public boolean isActive() {
+        return ((String) getValue("cRecdStat")).equals("1");
+    }
+
+    /**
+     * Sets the user encoded/updated the record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setModifiedBy(String fsValue) {
+        return setValue("sModified", fsValue);
+    }
+
+    /**
+     * @return The user encoded/updated the record
+     */
+    public String getModifiedBy() {
+        return (String) getValue("sModified");
+    }
+
     /**
      * Sets the date and time the record was modified.
      *
@@ -548,104 +649,178 @@ public class Model_Inv_Serial_Ledger implements GEntity {
     public Date getModifiedDate() {
         return (Date) getValue("dModified");
     }
-    
-    
-    /**
-     * Sets the xBarCodex of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setBarcode(String fsValue) {
-        return setValue("xBarCodex", fsValue);
-    }
-
-    /**
-     * @return The xBarCodex of this record.
-     */
-    public String getBarcode() {
-        return (String) getValue("xBarCodex");
-    }
-    
-    /**
-     * Sets the xDescript of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setDescript(String fsValue) {
-        return setValue("xDescript", fsValue);
-    }
-
-    /**
-     * @return The xDescript of this record.
-     */
-    public String getDescript() {
-        return (String) getValue("xDescript");
-    }
-    
 
     /**
     /**
-     * Sets the sSerial01 .
+     * Sets the nQtyInxxx .
      * 
      * @param fsValue 
      * @return  True if the record assignment is successful.
      */
-    public JSONObject setSerial01(String fsValue){
-        return setValue("sSerial01", fsValue);
+    public JSONObject setQuantityIn(Number fsValue){
+        return setValue("nQtyInxxx", fsValue);
     }
     
     /**
-     * @return The sSerial01. 
+     * @return The nQtyInxxx. 
      */
-    public String getSerial01(){
-        return (String) getValue("sSerial01");
+    public Object getQuantityIn(){
+        return (Object) getValue("nQtyInxxx");
     }
+    
     /**
     /**
-     * Sets the sSerial02 .
+     * Sets the nQtyOutxx .
      * 
      * @param fsValue 
      * @return  True if the record assignment is successful.
      */
-    public JSONObject setSerial02(String fsValue){
-        return setValue("sSerial02", fsValue);
+    public JSONObject setQuantityOut(Number fsValue){
+        return setValue("nQtyOutxx", fsValue);
     }
     
     /**
-     * @return The sSerial02. 
+     * @return The nQtyOutxx. 
      */
-    public String getSerial02(){
-        return (String) getValue("sSerial02");
+    public Object getQuantityOut(){
+        return (Object) getValue("nQtyOutxx");
+    }
+    
+
+    /**
+    /**
+     * Sets the nQtyOrder .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setQuantityOrder(Number fsValue){
+        return setValue("nQtyOrder", fsValue);
     }
     
     /**
-     * Sets the xBranchNm of this record.
+     * @return The nQtyOrder. 
+     */
+    public Object getQuantityOrder(){
+        return (Object) getValue("nQtyOrder");
+    }
+
+    /**
+    /**
+     * Sets the nQtyIssue .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setQuantityIssue(Number fsValue){
+        return setValue("nQtyIssue", fsValue);
+    }
+    
+    /**
+     * @return The nQtyIssue. 
+     */
+    public Object getQuantityIssue(){
+        return (Object) getValue("nQtyIssue");
+    }
+    
+    /**
+    /**
+     * Sets the nPurPrice .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setPurchasePrice(Number fsValue){
+        return setValue("nPurPrice", fsValue);
+    }
+    
+    /**
+     * @return The nPurPrice. 
+     */
+    public Object getPurchasePrice(){
+        return (Object) getValue("nPurPrice");
+    }
+    
+    /**
+    /**
+     * Sets the nUnitPrce .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setUnitPrice(Number fsValue){
+        return setValue("nUnitPrce", fsValue);
+    }
+    
+    /**
+     * @return The nUnitPrce. 
+     */
+    public Object getUnitPrice(){
+        return (Object) getValue("nUnitPrce");
+    }
+    
+    
+    /**
+     * Sets the nSelPrice .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setSelPrice(Number fsValue){
+        return setValue("nSelPrice", fsValue);
+    }
+    
+    /**
+     * @return The nSelPrice. 
+     */
+    public Object getSelPrice(){
+        return (Object) getValue("nSelPrice");
+    }
+    
+    /**
+     * Sets the sReplacID of this record.
      *
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setBranchName(String fsValue) {
-        return setValue("xBranchNm", fsValue);
+    public JSONObject setReplaceID(String fsValue) {
+        return setValue("sReplacID", fsValue);
     }
 
     /**
-     * @return The xBranchNm of this record.
+     * @return The sReplacID of this record.
      */
-    public String getBranchName() {
-        return (String) getValue("xBranchNm");
+    public String getReplaceID() {
+        return (String) getValue("sReplacID");
     }
     
+    
+    
+    /**
+     * Sets the cNewParts of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject IsNewParts(String fsValue) {
+        return setValue("cNewParts", fsValue);
+    }
+
+    /**
+     * @return The cNewParts of this record.
+     */
+    public String IsNewParts() {
+        return (String) getValue("cNewParts");
+    }
     /**
      * Gets the SQL statement for this entity.
      *
      * @return SQL Statement
      */
-    
     public String makeSQL() {
-        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xBranchNm");
+        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xWHouseNm»xLocatnNm»dLastTran»xSectnNme");
     }
+    
 
     /**
      * Gets the SQL Select statement for this entity.
@@ -653,29 +828,41 @@ public class Model_Inv_Serial_Ledger implements GEntity {
      * @return SelectSQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xBranchNm");
+        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xWHouseNm»xLocatnNm»xSectnNme");
     }
-public String getSQL(){
+    
+    public String getSQL(){
         return "SELECT" +
-                    "  a.sSerialID" +
-                    ", a.sBranchCd" +
-                    ", a.nLedgerNo" +
-                    ", a.dTransact" +
-                    ", a.sSourceCd" +
-                    ", a.sSourceNo" +
-                    ", a.cSoldStat" +
-                    ", a.cLocation" +
-                    ", a.dModified" +
-                    ", c.sBarCodex xBarCodex" +
-                    ", c.sDescript xDescript" +
-                    ", b.sSerial01 xSerial01" +
-                    ", b.sSerial02 xSerial02" +
-                    ", d.sBranchNm xBranchNm " +
-            " FROM Inv_Serial_Ledger a"+ 
-                " LEFT JOIN Inv_Serial b ON a.sSerialID = b.sSerialID" +
-                " LEFT JOIN Inventory c ON b.sStockIDx = c.sStockIDx" +
-                " LEFT JOIN Branch d ON a.sBranchCd = d.sBranchCd";
+                "  a.sStockIDx" +
+                ", a.sBranchCd" +
+                ", a.sWHouseID" +
+                ", a.nQtyOnHnd nQuantity" +
+                ", b.nQtyInxxx" +
+                ", b.nQtyOutxx" +
+                ", b.nQtyOrder" +
+                ", b.nQtyIssue" +
+                ", b.nQtyOnHnd" +
+                ", a.nBackOrdr" +
+                ", a.nResvOrdr" +
+                ", a.nFloatQty" +
+                ", a.nLedgerNo" +
+                ", a.dAcquired" +
+                ", a.dBegInvxx" +
+                ", a.dLastTran" +
+                ", b.nPurPrice" +
+                ", b.nUnitPrce" +
+                ", b.dExpiryxx" +
+                ", c.cUnitType" +
+                ", '0' cNewParts" +
+                ", '' sReplacID" +
+                ", c.cSerialze" +
+                ", a.cRecdStat" +
+
+            " FROM Inv_Master a"+ 
+                " LEFT JOIN Inv_Ledger b ON a.sStockIDx = b.sStockIDx AND a.sBranchCd = b.sBranchCd"+ 
+                " LEFT JOIN Inventory c ON a.sStockIDx = c.sStockIDx";
     }
+
     private void initialize() {
         try {
             poEntity = MiscUtil.xml2ResultSet(System.getProperty("sys.default.path.metadata") + XML, getTable());
@@ -684,8 +871,18 @@ public String getSQL(){
             poEntity.moveToInsertRow();
 
             MiscUtil.initRowSet(poEntity);
-//            poEntity.updateString("cRecdStat", RecordStatus.ACTIVE);
-
+            poEntity.updateObject("cNewParts", "0");
+            poEntity.updateObject("sReplacID", "");
+            
+            poEntity.updateObject("nQtyInxxx", 0);
+            poEntity.updateObject("nQtyOutxx", 0);
+            poEntity.updateObject("nQtyOrder", 0);
+            poEntity.updateObject("nQtyIssue", 0);
+            poEntity.updateObject("nPurPrice", 0);
+            poEntity.updateObject("nUnitPrce", 0);
+//            poEntity.updateObject("nQuantity", 0);
+            poEntity.updateObject("nQtyOnHnd", 0);
+            
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
 

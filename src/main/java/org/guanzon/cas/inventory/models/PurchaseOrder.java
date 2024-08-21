@@ -1,4 +1,4 @@
-package org.guanzon.cas.model.inventory;
+package org.guanzon.cas.inventory.models;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
