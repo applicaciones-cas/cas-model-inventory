@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package org.guanzon.cas.model.inventory;
+package org.guanzon.cas.inventory.models;
 
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
@@ -22,9 +22,9 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class Model_Inv_Master implements GEntity {
+public class Model_Inv_Ledger implements GEntity {
 
-    final String XML = "Model_Inv_Master.xml";
+    final String XML = "Model_Inv_Ledger.xml";
 
     GRider poGRider;                //application driver
     CachedRowSet poEntity;          //rowset
@@ -36,7 +36,7 @@ public class Model_Inv_Master implements GEntity {
      *
      * @param foValue - GhostRider Application Driver
      */
-    public Model_Inv_Master(GRider foValue) {
+    public Model_Inv_Ledger(GRider foValue) {
         if (foValue == null) {
             System.err.println("Application Driver is not set.");
             System.exit(1);
@@ -82,7 +82,7 @@ public class Model_Inv_Master implements GEntity {
     public int getColumn(String fsValue) {
         try {
             return MiscUtil.getColumnIndex(poEntity, fsValue);
-        } catch (SQLException e) {
+        } catch (SQLException e) {  
             e.printStackTrace();
         }
         return -1;
@@ -111,7 +111,7 @@ public class Model_Inv_Master implements GEntity {
      */
     @Override
     public String getTable() {
-        return "Inv_Master";
+        return "Inv_Ledger";
     }
 
     /**
@@ -208,8 +208,6 @@ public class Model_Inv_Master implements GEntity {
 
         //replace with the primary key column info
 //        setStockID(MiscUtil.getNextCode(getTable(), "sStockIDx", false, poGRider.getConnection(), ""));
-        setAcquiredDate(poGRider.getServerDate());
-        setDBegInvxx(poGRider.getServerDate());
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         return poJSON;
@@ -229,7 +227,7 @@ public class Model_Inv_Master implements GEntity {
 
         //replace the condition based on the primary key column of the record
         lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsCondition));
-        System.out.println("lsSQL = " + lsSQL);
+
         ResultSet loRS = poGRider.executeQuery(lsSQL);
 
         try {
@@ -237,8 +235,6 @@ public class Model_Inv_Master implements GEntity {
                 for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++) {
                     setValue(lnCtr, loRS.getObject(lnCtr));
                 }
-
-                
                 pnEditMode = EditMode.UPDATE;
 
                 poJSON.put("result", "success");
@@ -254,6 +250,41 @@ public class Model_Inv_Master implements GEntity {
 
         return poJSON;
     }
+    
+    public JSONObject openRecord(String lsFilter, String fsCondition) {
+        poJSON = new JSONObject();
+
+        String lsSQL = getSQL();
+        //replace the condition based on the primary key column of the record
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(lsFilter));
+        lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
+        
+        System.out.println(lsSQL);
+
+        ResultSet loRS = poGRider.executeQuery(lsSQL);
+
+        try {
+            if (loRS.next()) {
+                for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++) {
+                    setValue(lnCtr, loRS.getObject(lnCtr));
+                }
+
+                pnEditMode = EditMode.UPDATE;
+
+                poJSON.put("result", "success");
+                poJSON.put("message", "Record loaded successfully.");
+            } else {
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record to load.");
+            }
+        } catch (SQLException e) {
+            poJSON.put("result", "error");
+            poJSON.put("message", e.getMessage());
+        }
+
+        return poJSON;
+    }
+
 
     /**
      * Save the entity.
@@ -287,7 +318,7 @@ public class Model_Inv_Master implements GEntity {
                     poJSON.put("message", "No record to save.");
                 }
             } else {
-                Model_Inv_Master loOldEntity = new Model_Inv_Master(poGRider);
+                Model_Inv_Ledger loOldEntity = new Model_Inv_Ledger(poGRider);
 
                 setModifiedDate(poGRider.getServerDate());
                 setModifiedBy(poGRider.getUserID());
@@ -296,8 +327,8 @@ public class Model_Inv_Master implements GEntity {
 
                 if ("success".equals((String) loJSON.get("result"))) {
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sStockIDx = " + SQLUtil.toSQL(this.getStockID()),  "xBarCodex»xDescript»xWHouseNm»xLocatnNm»xSectnNme");
-                     
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sStockIDx = " + SQLUtil.toSQL(this.getStockID()),  "xBarCodex»xDescript»xWHouseNm»xBranchNm");
+
                     if (!lsSQL.isEmpty()) {
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
                             poJSON.put("result", "success");
@@ -377,23 +408,31 @@ public class Model_Inv_Master implements GEntity {
      */
     public String getStockID() {
         return (String) getValue("sStockIDx");
-    }   
-
-    /**
-     * Sets the sBranchCd of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setBranchCd(String fsValue) {
-        return setValue("sBranchCd", fsValue);
     }
 
     /**
      * @return The sBranchCd of this record.
      */
-    public String getBranchCd() {
+    public String getBranchCode() {
         return (String) getValue("sBranchCd");
+    }
+    
+    /**
+     * Sets the sBrandCde of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setBranchCode(String fsValue) {
+        return setValue("sBranchCd", fsValue);
+    }
+    
+  
+    /**
+     * @return The sWHouseID of this record.
+     */
+    public String getWHouseID() {
+        return (String) getValue("sWHouseID");
     }
     
     /**
@@ -402,116 +441,15 @@ public class Model_Inv_Master implements GEntity {
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setWareHouseID(String fsValue) {
+    public JSONObject setWHouseID(String fsValue) {
         return setValue("sWHouseID", fsValue);
     }
-
-    /**
-     * @return The sWHouseID of this record.
-     */
-    public String getWareHouseID() {
-        return (String) getValue("sWHouseID");
-    }
     
     /**
-     * Sets the sLocatnCd of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
+     * @return The nLedgerNo of this record.
      */
-    public JSONObject setLocatnCode(String fsValue) {
-        return setValue("sLocatnCd", fsValue);
-    }
-
-    /**
-     * @return The sLocatnCd of this record.
-     */
-    public String getLocatnCode() {
-        return (String) getValue("sLocatnCd");
-    }
-    
-    /**
-     * Sets the nBinNumbr of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setBinNumber(Number fsValue) {
-        return setValue("nBinNumbr", fsValue);
-    }
-
-    /**
-     * @return The nBinNumbr of this record.
-     */
-    public Object getBinNumber() {
-        return (Object) getValue("nBinNumbr");
-    }
-    
-    /**
-     * Sets the dAcquired of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setAcquiredDate(Date  fsValue) {
-        return setValue("dAcquired", fsValue);
-    }
-
-    /**
-     * @return The dAcquired of this record.
-     */
-    public Object getcquiredDate() {
-        return (Object) getValue("dAcquired");
-    }
-    
-    /**
-     * Sets the dBegInvxx of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setDBegInvxx(Date fsValue) {
-        return setValue("dBegInvxx", fsValue);
-    }
-
-    /**
-     * @return The dBegInvxx of this record.
-     */
-    public Object getDBegInvxx() {
-        return (Object) getValue("dBegInvxx");
-    }
-    
-    /**
-     * Sets the nBegQtyxx of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setBegQtyxx(Number fsValue) {
-        return setValue("nBegQtyxx", fsValue);
-    }
-
-    /**
-     * @return The dBegInvxx of this record.
-     */
-    public Object getBegQtyxx() {
-        return (Object) getValue("nBegQtyxx");
-    }
-    /**
-     * Sets the nQtyOnHnd of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setQtyOnHnd(Number fsValue) {
-        return setValue("nQtyOnHnd", fsValue);
-    }
-
-    /**
-     * @return The nQtyOnHnd of this record.
-     */
-    public Object getQtyOnHnd() {
-        return (Object) getValue("nQtyOnHnd");
+    public int getLedgerNo() {
+        return (int) getValue("nLedgerNo");
     }
     
     /**
@@ -525,183 +463,288 @@ public class Model_Inv_Master implements GEntity {
     }
 
     /**
-     * @return The nLedgerNo of this record.
-     */
-    public Object getLedgerNo() {
-        return (Object) getValue("nLedgerNo");
-    }
-     
-    /**
-     * Sets the nMinLevel of this record.
+     * Sets the date and time the record was transact.
      *
-     * @param fsValue
+     * @param fdValue
      * @return result as success/failed
      */
-    public JSONObject setMinLevel(Number fsValue) {
-        return setValue("nMinLevel", fsValue);
+    public JSONObject setTransactDate(Date fdValue) {
+        return setValue("dTransact", fdValue);
     }
 
     /**
-     * @return The nMinLevel of this record.
+     * @return The date and time the record was transact.
      */
-    public Object getMinLevel() {
-        return (Object) getValue("nMinLevel");
-    }
-     
-    /**
-     * Sets the nMaxLevel of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setMaxLevel(Number fsValue) {
-        return setValue("nMaxLevel", fsValue);
+    public Date getTransactDate() {
+        return (Date) getValue("dTransact");
     }
 
+    
     /**
-     * @return The nMaxLevel of this record.
+     * @return The sSourceCd of this record.
      */
-    public Object getMaxLevel() {
-        return (Object) getValue("nMaxLevel");
+    public String getSourceCode() {
+        return (String) getValue("sSourceCd");
     }
     
     /**
-     * Sets the nAvgMonSl of this record.
+     * Sets the sSourceCd of this record.
      *
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setAvgMonSl(Number fsValue) {
-        return setValue("nAvgMonSl", fsValue);
-    }
-
-    /**
-     * @return The nAvgMonSl of this record.
-     */
-    public Object getAvgMonSl() {
-        return (Object) getValue("nAvgMonSl");
+    public JSONObject setSourceCode(String fsValue) {
+        return setValue("sSourceCd", fsValue);
     }
     
     /**
-     * Sets the nAvgCostx of this record.
+     * @return The sSourceNo of this record.
+     */
+    public String getSourceNo() {
+        return (String) getValue("sSourceNo");
+    }
+    
+    /**
+     * Sets the sSourceNo of this record.
      *
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setAvgCostx(Number fsValue) {
-        return setValue("nAvgCostx", fsValue);
+    public JSONObject setSourceNo(String fsValue) {
+        return setValue("sSourceNo", fsValue);
     }
 
     /**
-     * @return The nAvgCostx of this record.
+    /**
+     * Sets the nQtyInxxx .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
      */
-    public Object getAvgCostx() {
-        return (Object) getValue("nAvgCostx");
+    public JSONObject setQuantityIn(Number fsValue){
+        return setValue("nQtyInxxx", fsValue);
+    }
+    
+    /**
+     * @return The nQtyInxxx. 
+     */
+    public Object getQuantityIn(){
+        return (Object) getValue("nQtyInxxx");
+    }
+    
+    /**
+    /**
+     * Sets the nQtyOutxx .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setQuantityOut(Number fsValue){
+        return setValue("nQtyOutxx", fsValue);
+    }
+    
+    /**
+     * @return The nQtyOutxx. 
+     */
+    public Object getQuantityOut(){
+        return (Object) getValue("nQtyOutxx");
+    }
+    
+
+    /**
+    /**
+     * Sets the nQtyOrder .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setQuantityOrder(Number fsValue){
+        return setValue("nQtyOrder", fsValue);
+    }
+    
+    /**
+     * @return The nQtyOrder. 
+     */
+    public Object getQuantityOrder(){
+        return (Object) getValue("nQtyOrder");
+    }
+
+    /**
+    /**
+     * Sets the nQtyIssue .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setQuantityIssue(Number fsValue){
+        return setValue("nQtyIssue", fsValue);
+    }
+    
+    /**
+     * @return The nQtyIssue. 
+     */
+    public Object getQuantityIssue(){
+        return (Object) getValue("nQtyIssue");
+    }
+    
+    /**
+    /**
+     * Sets the nPurPrice .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setPurchasePrice(Number fsValue){
+        return setValue("nPurPrice", fsValue);
+    }
+    
+    /**
+     * @return The nUnitPrce. 
+     */
+    public Object getPurchasePrice(){
+        return (Object) getValue("nPurPrice");
+    }
+    
+    /**
+    /**
+     * Sets the nUnitPrce .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setUnitPrice(Number fsValue){
+        return setValue("nUnitPrce", fsValue);
+    }
+    
+    /**
+     * @return The nUnitPrce. 
+     */
+    public Object getUnitPrice(){
+        return (Object) getValue("nUnitPrce");
     }
     
     
     /**
-     * Sets the cClassify of this record.
+     * Sets the nSelPrice .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setSelPrice(Number fsValue){
+        return setValue("nSelPrice", fsValue);
+    }
+    
+    /**
+     * @return The nSelPrice. 
+     */
+    public Object getSelPrice(){
+        return (Object) getValue("nSelPrice");
+    }
+    
+    
+    /**
+    /**
+     * Sets the nQtyOnHnd .
+     * 
+     * @param fsValue 
+     * @return  True if the record assignment is successful.
+     */
+    public JSONObject setQuantityOnHand(Number fsValue){
+        return setValue("nQtyOnHnd", fsValue);
+    }
+    
+    /**
+     * @return The nQtyOnHnd. 
+     */
+    public Object getQuantityOnHand(){
+        return (Object) getValue("nQtyOnHnd");
+    }
+    
+    
+    /**
+     * Sets the date and time the record expiration date.
+     *
+     * @param fdValue
+     * @return result as success/failed
+     */
+    public JSONObject setExpiryDate(Date fdValue) {
+        return setValue("dExpiryxx", fdValue);
+    }
+
+    /**
+     * @return The date and time the record expiration date.
+     */
+    public Date getExpiryDate() {
+        return (Date) getValue("dExpiryxx");
+    } 
+    
+    /**
+     * Sets the xBarCodex of this record.
      *
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setClassify(String fsValue) {
-        return setValue("cClassify", fsValue);
+    public JSONObject setBarcode(String fsValue) {
+        return setValue("xBarCodex", fsValue);
     }
 
     /**
-     * @return The cClassify of this record.
+     * @return The xBarCodex of this record.
      */
-    public String getClassify() {
-        return (String) getValue("cClassify");
+    public String getBarcode() {
+        return (String) getValue("xBarCodex");
     }
     
     /**
-     * Sets the nBackOrdr of this record.
+     * Sets the xDescript of this record.
      *
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setBackOrdr(Number fsValue) {
-        return setValue("nBackOrdr", fsValue);
+    public JSONObject setDescript(String fsValue) {
+        return setValue("xDescript", fsValue);
     }
 
     /**
-     * @return The nBackOrdr of this record.
+     * @return The xDescript of this record.
      */
-    public Object getBackOrdr() {
-        return (Object) getValue("nBackOrdr");
+    public String getDescript() {
+        return (String) getValue("xDescript");
     }
-    
     /**
-     * Sets the nResvOrdr of this record.
+     * Sets the xWHouseNm of this record.
      *
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setResvOrdr(Number fsValue) {
-        return setValue("nResvOrdr", fsValue);
+    public JSONObject setWareHouseName(String fsValue) {
+        return setValue("xWHouseNm", fsValue);
     }
 
     /**
-     * @return The nResvOrdr of this record.
+     * @return The xWHouseNm of this record.
      */
-    public Object getResvOrdr() {
-        return (Object) getValue("nResvOrdr");
+    public String getWareHouseName() {
+        return (String) getValue("xWHouseNm");
     }
-    
+
     /**
-     * Sets the nFloatQty of this record.
+     * Sets the xBranchNm of this record.
      *
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setFloatQty(Number fsValue) {
-        return setValue("nFloatQty", fsValue);
+    public JSONObject setBranchName(String fsValue) {
+        return setValue("xBranchNm", fsValue);
     }
 
     /**
-     * @return The nFloatQty of this record.
+     * @return The xBranchNm of this record.
      */
-    public Object getFloatQty() {
-        return (Object) getValue("nFloatQty");
+    public String getBranchName() {
+        return (String) getValue("xBranchNm");
     }
     
-    /**
-     * Sets the dLastTran of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setLastTranDate(String fsValue) {
-        return setValue("dLastTran", fsValue);
-    }
-
-    /**
-     * @return The dLastTran of this record.
-     */
-    public Object getLastTranDate() {
-        return (Object) getValue("dLastTran");
-    }
-    
-    /**
-     * Sets the cPrimaryx of this record.
-     *
-     * @param fsValue
-     * @return result as success/failed
-     */
-    public JSONObject setPrimary(String fsValue) {
-        return setValue("cPrimaryx", fsValue);
-    }
-
-    /**
-     * @return The cPrimaryx of this record.
-     */
-    public String getPrimary() {
-        return (String) getValue("cPrimaryx");
-    }
-
     /**
      * Sets the Inventory RecdStat of this record.
      *
@@ -769,80 +812,33 @@ public class Model_Inv_Master implements GEntity {
     public Date getModifiedDate() {
         return (Date) getValue("dModified");
     }
-
-    /**
-     * @return The xBarCodex the record
-     */
-    public String getBarCodex() {
-        return (String) getValue("xBarCodex");
-    }
-
-    /**
-     * Sets the xBarCodex of the record was modified.
-     *
-     * @param fdValue
-     * @return result as success/failed
-     */
-    public JSONObject setBarCodex(String fdValue) {
-        return setValue("xBarCodex", fdValue);
-    }
-
-    /**
-     * @return The xDescript the record
-     */
-    public String getDescript() {
-        return (String) getValue("xDescript");
-    }
-
-    /**
-     * Sets the xDescript of the record was modified.
-     *
-     * @param fdValue
-     * @return result as success/failed
-     */
-    public JSONObject setDescript(String fdValue) {
-        return setValue("xDescript", fdValue);
-    }
-    
-    /**
-     * @return The xWHouseNm the record
-     */
-    public String getWareHouseNm() {
-        return (String) getValue("xWHouseNm");
-    }
-
-    /**
-     * Sets the xWHouseNm of the record was modified.
-     *
-     * @param fdValue
-     * @return result as success/failed
-     */
-    public JSONObject setWareHouseNm(String fdValue) {
-        return setValue("xWHouseNm", fdValue);
-    }
-    
-    /**
-     * @return The xLocatnNm the record
-     */
-    public String getLocationnName() {
-        return (String) getValue("xLocatnNm");
-    }
-
-    /**
-     * Sets the xLocatnNm of the record was modified.
-     *
-     * @param fdValue
-     * @return result as success/failed
-     */
-    public JSONObject setLocationnName(String fdValue) {
-        return setValue("xLocatnNm", fdValue);
-    }
-
-    /**
-     * @return The xSectnNme the record
-     */
-    public String getSectionName() {
-        return (String) getValue("xSectnNme");
+    public String getSQL(){
+        return "SELECT" +
+                        "   a.sStockIDx" +
+                        " , a.sBranchCd" +
+                        " , a.sWHouseID" +
+                        " , a.nLedgerNo" +
+                        " , a.dTransact" +
+                        " , a.sSourceCd" +
+                        " , a.sSourceNo" +
+                        " , a.nQtyInxxx" +
+                        " , a.nQtyOutxx" +
+                        " , a.nQtyOrder" +
+                        " , a.nQtyIssue" +
+                        " , a.nPurPrice" +
+                        " , a.nUnitPrce" +
+                        " , a.nQtyOnHnd" +
+                        " , a.dExpiryxx" +
+                        " , a.sModified" +
+                        " , a.dModified" +
+                        " , b.sBarCodex xBarCodex" +
+                        " , b.sDescript xDescript" +
+                        " , c.sWHouseNm xWHouseNm" +
+                        " , d.sBranchNm xBranchNm" +
+                        " FROM Inv_Ledger a" +
+                        "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
+                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID" +
+                        "    LEFT JOIN Branch d ON a.sBranchCd = d.sBranchCd";
     }
     /**
      * Gets the SQL statement for this entity.
@@ -850,9 +846,8 @@ public class Model_Inv_Master implements GEntity {
      * @return SQL Statement
      */
     public String makeSQL() {
-        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xWHouseNm»xLocatnNm»dLastTran»xSectnNme");
+        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xWHouseNm»xBranchNm");
     }
-    
 
     /**
      * Gets the SQL Select statement for this entity.
@@ -860,44 +855,7 @@ public class Model_Inv_Master implements GEntity {
      * @return SelectSQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xWHouseNm»xLocatnNm»xSectnNme");
-    }
-    
-    public String getSQL(){
-        return "SELECT" +
-                            "   a.sStockIDx" +
-                            " , a.sBranchCd" +
-                            " , a.sWHouseID" +
-                            " , a.sLocatnCd" +
-                            " , a.nBinNumbr" +
-                            " , a.dAcquired" +
-                            " , a.dBegInvxx" +
-                            " , a.nBegQtyxx" +
-                            " , a.nQtyOnHnd" +
-                            " , a.nLedgerNo" +
-                            " , a.nMinLevel" +
-                            " , a.nMaxLevel" +
-                            " , a.nAvgMonSl" +
-                            " , a.nAvgCostx" +
-                            " , a.cClassify" +
-                            " , a.nBackOrdr" +
-                            " , a.nResvOrdr" +
-                            " , a.nFloatQty" +
-                            " , a.dLastTran" +
-                            " , a.cPrimaryx" +
-                            " , a.cRecdStat" +
-                            " , a.sModified" +
-                            " , a.dModified" +
-                            " , b.sBarCodex xBarCodex" +
-                            " , b.sDescript xDescript" +
-                            " , c.sWHouseNm xWHouseNm" +
-                            " , d.sDescript xLocatnNm" +
-                            " , e.sSectnNme xSectnNme" +
-                        " FROM Inv_Master a"+ 
-                            " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                            " LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID" +
-                            " LEFT JOIN Inv_Location d ON a.sLocatnCd = d.sLocatnCd" +
-                            " LEFT JOIN Section e ON e.sSectnIDx = d.sSectnIDx";
+        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xWHouseNm»xBranchNm");
     }
 
     private void initialize() {
@@ -908,20 +866,8 @@ public class Model_Inv_Master implements GEntity {
             poEntity.moveToInsertRow();
 
             MiscUtil.initRowSet(poEntity);
-            poEntity.updateString("cRecdStat", RecordStatus.ACTIVE);
-            poEntity.updateObject("nBinNumbr", 0);
-            poEntity.updateObject("nBegQtyxx", 0);
-            poEntity.updateObject("nQtyOnHnd", 0);
-            poEntity.updateObject("nLedgerNo", 0);
-            poEntity.updateObject("nMinLevel", 0);
-            poEntity.updateObject("nMaxLevel", 0);
-            poEntity.updateObject("nAvgMonSl", 0.0);
-            poEntity.updateObject("nAvgCostx", 0.0);
-            poEntity.updateObject("nBackOrdr", 0.0);
-            poEntity.updateObject("nResvOrdr", 0.0);
-            poEntity.updateObject("nFloatQty", 0.0);
-            poEntity.updateObject("cClassify", "F");
-            
+//            poEntity.updateString("cRecdStat", RecordStatus.ACTIVE);
+
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
 

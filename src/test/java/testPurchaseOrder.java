@@ -4,7 +4,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.TransactionStatus;
-import org.guanzon.cas.model.inventory.PurchaseOrder;
+import org.guanzon.cas.inventory.models.PurchaseOrder;
 import org.json.simple.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Assert;
