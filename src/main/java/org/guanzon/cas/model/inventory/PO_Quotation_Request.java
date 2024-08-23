@@ -79,10 +79,22 @@ public class PO_Quotation_Request implements GTransaction, GTranDet {
     public void setDetaila(ArrayList<Model_PO_Quotation_Request_Detail> foObj){poModelDetail = foObj;}
     
     
-    public void setDetaila(int fnRow, int fnIndex, Object foValue){ poModelDetail.get(fnRow).setValue(fnIndex, foValue);}
-    public void setDetaila(int fnRow, String fsIndex, Object foValue){ poModelDetail.get(fnRow).setValue(fsIndex, foValue);}
-    public Object getDetail(int fnRow, int fnIndex){return poModelDetail.get(fnRow).getValue(fnIndex);}
-    public Object getDetail(int fnRow, String fsIndex){return poModelDetail.get(fnRow).getValue(fsIndex);}
+    public void setDetaila(int fnRow, int fnIndex, Object foValue){ 
+        poModelDetail.get(fnRow).setValue(fnIndex, foValue);
+    }
+    
+    public void setDetaila(int fnRow, String fsIndex, Object foValue){ 
+        poModelDetail.get(fnRow).setValue(fsIndex, foValue);
+    }
+    
+    public Object getDetail(int fnRow, int fnIndex){
+        return poModelDetail.get(fnRow).getValue(fnIndex);
+    }
+    public Object getDetail(int fnRow, String fsIndex){
+        return poModelDetail.get(fnRow).getValue(fsIndex);
+    }
+    
+    
     
 
     @Override
