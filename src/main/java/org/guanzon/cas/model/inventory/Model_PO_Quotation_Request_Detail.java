@@ -2,10 +2,14 @@ package org.guanzon.cas.model.inventory;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 import javax.sql.rowset.CachedRowSet;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
@@ -26,7 +30,8 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
     CachedRowSet poEntity;          //rowset
     JSONObject poJSON;              //json container
     int pnEditMode;                 //edit mode
-
+    
+    
     /**
      * Entity constructor
      *
@@ -42,7 +47,6 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
 
         initialize();
     }
-
     /**
      * Gets edit mode of the record
      *

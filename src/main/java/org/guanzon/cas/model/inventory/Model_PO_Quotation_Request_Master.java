@@ -18,11 +18,10 @@ import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.iface.GEntity;
 import org.json.simple.JSONObject;
 
-
 /**
  * @author Michael Cuison
  */
-public class Model_PO_Quotation_Request_Master implements GEntity{
+public class Model_PO_Quotation_Request_Master implements GEntity {
 
     final String XML = "Model_PO_Quotation_Request_Master.xml";
 
@@ -156,17 +155,17 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
     @Override
     public JSONObject setValue(int fnColumn, Object foValue) {
         try {
-            poJSON = MiscUtil.validateColumnValue(System.getProperty("sys.default.path.metadata") + XML, MiscUtil.getColumnLabel(poEntity, fnColumn), foValue);
-            if ("error".equals((String) poJSON.get("result"))) {
-                return poJSON;
-            }
+//            poJSON = MiscUtil.validateColumnValue(System.getProperty("sys.default.path.metadata") + XML, MiscUtil.getColumnLabel(poEntity, fnColumn), foValue);
+//            if ("error".equals((String) poJSON.get("result"))) {
+//                return poJSON;
+//            }
 
             poEntity.updateObject(fnColumn, foValue);
             poEntity.updateRow();
 
             poJSON = new JSONObject();
             poJSON.put("result", "success");
-            poJSON.put("value", getValue(fnColumn));
+            poJSON.put(MiscUtil.getColumnLabel(poEntity, fnColumn), getValue(fnColumn));
         } catch (SQLException e) {
             e.printStackTrace();
             poJSON.put("result", "error");
@@ -197,9 +196,22 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
         return poJSON;
     }
 
-    public boolean isActive() {
+    public boolean isOpen() {
         return ((String) getValue("cTranStat")).equals("0");
     }
+
+    public boolean isClosed() {
+        return ((String) getValue("cTranStat")).equals("0");
+    }
+
+    public boolean isPosted() {
+        return ((String) getValue("cTranStat")).equals("0");
+    }
+
+    public boolean isCancelled() {
+        return ((String) getValue("cTranStat")).equals("0");
+    }
+
     /**
      * Set the edit mode of the entity to new.
      *
@@ -210,7 +222,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
         pnEditMode = EditMode.ADDNEW;
 
         //replace with the primary key column info
-        setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
+        setTransactionNo(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
 
         poJSON = new JSONObject();
         poJSON.put("result", "success");
@@ -269,8 +281,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
             String lsSQL;
             if (pnEditMode == EditMode.ADDNEW) {
                 //replace with the primary key column info
-                setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
-                
+                setTransactionNo(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
 
                 lsSQL = makeSQL();
 
@@ -321,11 +332,11 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
 
         return poJSON;
     }
-    
+
     public JSONObject searchCategory(String fsValue) {
         JSONObject loJSON = new JSONObject();
 
-        String lsSQL = "SELECT sCategrCd, sDescript FROM Category WHERE";
+        String lsSQL = "SELECT sCategrCd, sDescript FROM Category";
         ResultSet loRS = poGRider.executeQuery(lsSQL);
         try {
             if (!loRS.next()) {
@@ -343,7 +354,6 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
 
         return loJSON;
     }
-
 
     /**
      * Prints all the public methods used<br>
@@ -388,7 +398,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setTransactionNumber(String fsValue) {
+    public JSONObject setTransactionNo(String fsValue) {
         return setValue("sTransNox", fsValue);
     }
 
@@ -415,7 +425,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
     public String getBranchCd() {
         return (String) getValue("sBranchCd");
     }
-    
+
     /**
      * Sets the user encoded/updated the record.
      *
@@ -432,8 +442,8 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
     public String getDestination() {
         return (String) getValue("sDestinat");
     }
-    
-     /**
+
+    /**
      * Sets the date and time the record was modified.
      *
      * @param fdValue
@@ -450,7 +460,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
         return (Date) getValue("dTransact");
     }
 
-        /**
+    /**
      * Sets the user encoded/updated the record.
      *
      * @param fsValue
@@ -466,8 +476,8 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
     public String getReferenceNumber() {
         return (String) getValue("sReferNox");
     }
-    
-     /**
+
+    /**
      * Sets the user encoded/updated the record.
      *
      * @param fsValue
@@ -483,7 +493,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
     public String getRemarks() {
         return (String) getValue("sRemarksx");
     }
-    
+
     /**
      * Sets the date and time the record was modified.
      *
@@ -500,7 +510,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
     public Date getExpectedPurchaseDate() {
         return (Date) getValue("dExpPurch");
     }
-    
+
     /**
      * Sets the user encoded/updated the record.
      *
@@ -517,7 +527,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
     public int getEntryNumber() {
         return (int) getValue("nEntryNox");
     }
-    
+
     /**
      * Sets the user encoded/updated the record.
      *
@@ -534,7 +544,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
     public String getInventoryTypeCode() {
         return (String) getValue("sInvTypCd");
     }
-    
+
     /**
      * Sets the user encoded/updated the record.
      *
@@ -548,10 +558,10 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
     /**
      * @return The user encoded/updated the record
      */
-    public String getTransactionStatus() {
-        return (String) getValue("cTranStat");
+    public Integer getTransactionStatus() {
+        return (Integer) getValue("cTranStat");
     }
-    
+
     /**
      * Sets the user encoded/updated the record.
      *
@@ -585,7 +595,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
     public Date getPreparedDate() {
         return (Date) getValue("dPrepared");
     }
-    
+
     /**
      * Sets the user encoded/updated the record.
      *
@@ -620,6 +630,31 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
         return (Date) getValue("dModified");
     }
 
+    public JSONObject setCategoryCode(String fsValue) {
+        return setValue("sCategrCd", fsValue);
+    }
+
+    /**
+     * @return The sCategrCd of this record.
+     */
+    public String getCategoryCode() {
+        return (String) getValue("sCategrCd");
+    }
+
+    /**
+     * @return The Category Name of this record.
+     */
+    public String getCategoryName() {
+        return (String) getValue("xCategrNm");
+    }
+
+    /*
+     * @return The Category Name of this record. 
+     */
+    public JSONObject setCategoryName(String fsValue) {
+        return setValue("xCategrNm", fsValue);
+    }
+
     /**
      * Gets the SQL statement for this entity.
      *
@@ -635,31 +670,39 @@ public class Model_PO_Quotation_Request_Master implements GEntity{
      * @return SelectSQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this,"xCategrNm");
+        return MiscUtil.makeSelect(this, "xCategrNm");
     }
-    
-    public String getSQL(){
-        String lsSQL = "SELECT" +
-                            "  a.sTransNox" +
-                            ", a.sBranchCd" +
-                            ", a.dTransact" +
-                            ", a.sDestinat" +
-                            ", a.sReferNox" +
-                            ", a.sRemarksx" +
-                            ", a.dExpPurch" +
-                            ", a.nEntryNox" +
-                            ", a.sInvTypCd" +
-                            ", a.cTranStat" +
-                            ", a.sPrepared" +
-                            ", a.dPrepared" +
-                            ", a.sModified" +
-                            ", a.dModified" +
-                            ", b.sBranchNm xBranchNm" +
-                        " FROM PO_Quotation_Request_Master a"+ 
-                            " LEFT JOIN Branch b ON a.sBranchCd = b.sBranchCd";
-        
-        if (!System.getProperty("store.inventory.industry").isEmpty())
+
+    public String getSQL() {
+        String lsSQL = "SELECT"
+                + "  a.sTransNox"
+                + ", a.sBranchCd"
+                + ", a.dTransact"
+                + ", a.sDestinat"
+                + ", a.sReferNox"
+                + ", a.sRemarksx"
+                + ", a.dExpPurch"
+                + ", a.nEntryNox"
+                + ", a.sCategrCd"
+                + ", a.cTranStat"
+                + ", a.sPrepared"
+                + ", a.dPrepared"
+                + ", a.sModified"
+                + ", a.dModified"
+                + ", b.sBranchNm xBranchNm"
+                + ", c.sBranchNm xDestinat"
+                + ", d.sDescript xCategrNm"
+                + ", e.sdescript xInvTypNm"
+                + " FROM " + System.getProperty("sys.table") + " a"
+                + " LEFT JOIN Branch b ON a.sBranchCd = b.sBranchCd"
+                + " LEFT JOIN Branch c ON a.sDestinat = b.sBranchCd"
+                + " LEFT JOIN Category d ON a.sCategrCd = d.sCategrCd"
+                + " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd"
+                + " WHERE 0=1";
+
+        if (!System.getProperty("store.inventory.industry").isEmpty()) {
             lsSQL = MiscUtil.addCondition(lsSQL, " sTransNox IN " + CommonUtils.getParameter(System.getProperty("store.inventory.industry")));
+        }
         return lsSQL;
     }
 

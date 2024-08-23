@@ -7,10 +7,9 @@ package org.guanzon.cas.model.inventory;
 
 
 
-import org.guanzon.cas.model.inventory.Model_PO_Quotation_Request_Master;
 
 
-
+import java.math.BigDecimal;
 import org.guanzon.appdriver.iface.GTranDet;
 
 import org.guanzon.cas.parameters.Category_Level3;
@@ -19,6 +18,7 @@ import org.guanzon.cas.parameters.Color;
 import org.guanzon.cas.parameters.Inv_Type;
 import org.guanzon.cas.parameters.Measure;
 import org.guanzon.cas.parameters.Model;
+import org.guanzon.cas.inventory.base.Inventory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,14 +42,18 @@ import org.json.simple.JSONObject;
  * @author user
  */
 public class PO_Quotation_Request implements GTransaction, GTranDet {
-GRider poGRider;
+    GRider poGRider;
     boolean pbWthParent;
     int pnEditMode;
     String psTranStatus;
     Category catest;
+    String psAccountType = "0";
+    Inventory psInventory;
 
     Model_PO_Quotation_Request_Master poModelMaster;
     ArrayList<Model_PO_Quotation_Request_Detail> poModelDetail;
+    ArrayList<Model_PO_Quotation_Request_Detail> poModelDetail1;
+    ArrayList<Model_PO_Quotation_Request_Master> poModelMasterA;
 
     JSONObject poJSON;
 
@@ -59,36 +63,28 @@ GRider poGRider;
 
         poModelMaster = new Model_PO_Quotation_Request_Master(foGRider);
         poModelDetail = new ArrayList<Model_PO_Quotation_Request_Detail>();
+//        poModelDetail1 = new Model_PO_Quotation_Request_Detail;
         poModelDetail.add(new Model_PO_Quotation_Request_Detail(foGRider));
         pnEditMode = EditMode.UNKNOWN;
     }
 
     @Override
     public JSONObject newTransaction() {
-
+//            poDetail = new Model_PO_Quotation_Request_Detail();
         return poModelMaster.newRecord();
-    }
-    
-    
-    public JSONObject searchCategory(String fsValue) {
-        JSONObject loJSON = new JSONObject();
-
         
-        loJSON = poModelMaster.searchCategory(fsValue);
-
-        if ("error".equalsIgnoreCase(loJSON.get("result").toString())) {
-            loJSON.put("result", "error");
-            loJSON.put("message", "Category not found.");
-        } else {
-            loJSON.put("result", "success");
-            loJSON.put("category", loJSON.get("sDescript")); 
-        }
-
-        return loJSON;
     }
+    
+    public ArrayList<Model_PO_Quotation_Request_Detail> getDetail(){return poModelDetail;}
+    public void setDetaila(ArrayList<Model_PO_Quotation_Request_Detail> foObj){poModelDetail = foObj;}
+    
+    
+    public void setDetaila(int fnRow, int fnIndex, Object foValue){ poModelDetail.get(fnRow).setValue(fnIndex, foValue);}
+    public void setDetaila(int fnRow, String fsIndex, Object foValue){ poModelDetail.get(fnRow).setValue(fsIndex, foValue);}
+    public Object getDetail(int fnRow, int fnIndex){return poModelDetail.get(fnRow).getValue(fnIndex);}
+    public Object getDetail(int fnRow, String fsIndex){return poModelDetail.get(fnRow).getValue(fsIndex);}
+    
 
-    
-    
     @Override
     public JSONObject openTransaction(String fsValue) {
 
@@ -350,11 +346,16 @@ GRider poGRider;
     public JSONObject setMaster(String fsCol, Object foData) {
         return poModelMaster.setValue(fsCol, foData);
     }
+    
+    
 
     @Override
     public int getEditMode() {
         return pnEditMode;
     }
+    
+    
+
     
 
         
@@ -424,6 +425,9 @@ GRider poGRider;
     public Object getDetailModel(int i) {
         return poModelDetail; // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+    public Object getDetailModel1(int i) {
+        return poModelDetail1; 
+    }
 
     public JSONObject SearchMaster(int fnCol, String lsValue, boolean fbByCode){
         String lsHeader = "";
@@ -435,7 +439,35 @@ GRider poGRider;
 //        if (fsValue.equals("") && fbByCode) return null;
 
         switch(fnCol){
+            case 5: //Inventory-Barcode Search (Currently Testing)
+
+                Inventory loInventory = new Inventory(poGRider, true);
+                loInventory.setRecordStatus(psTranStatus);
+                loJSON = loInventory.searchRecord(fsValue, fbByCode);
+
+                if (loJSON != null){
+
+//                    setMaster(1, (String) loInventory.getMaster(1));
+//                    setMaster("xCategNm1", (String)loCategory.getMaster("sDescript"));
+                    loJSON.put("sBarCodex", loInventory.setMaster("sBarCodex", (String) loInventory.getMaster("sBarCodex")));
+                    loJSON.put("sDescript", loInventory.setMaster("sDescript", (String) loInventory.getMaster("sDescript")));
+                    loJSON.put("xMeasurNm", loInventory.setMaster("xMeasurNm", (String) loInventory.getMaster("xMeasurNm")));
+                    loJSON.put("xColorNme", loInventory.setMaster("xColorNme", (String) loInventory.getMaster("xColorNme")));
+                    loJSON.put("xModelNme", loInventory.setMaster("xModelNme", (String) loInventory.getMaster("xModelNme")));
+                    loJSON.put("sStockIDx", loInventory.setMaster("sStockIDx", (String) loInventory.getMaster("sStockIDx")));
+                    loJSON.put("nUnitPrce", loInventory.setMaster("nUnitPrce", (BigDecimal) loInventory.getMaster("nUnitPrce")));
+//                    return setMaster(1, (String)loInventory.getMaster(2));
+                      return loJSON;
+                    
+                } else {
+                    
+                    loJSON = new JSONObject();
+                    loJSON.put("result", "error");
+                    loJSON.put("message", "No record found.");
+                    return loJSON;
+                }
             case 6: //sCategCd1
+
                 Category loCategory = new Category(poGRider, true);
                 loCategory.setRecordStatus(psTranStatus);
                 loJSON = loCategory.searchRecord(fsValue, fbByCode);
@@ -445,7 +477,8 @@ GRider poGRider;
                     setMaster(fnCol, (String) loCategory.getMaster("sCategrCd"));
 //                    setMaster("xCategNm1", (String)loCategory.getMaster("sDescript"));
 
-                    return setMaster("xCategNm1", (String)loCategory.getMaster("sDescript"));
+                    return setMaster("sCategrCd", (String)loCategory.getMaster("sDescript"));
+                    
                 } else {
                     
                     loJSON = new JSONObject();
@@ -453,6 +486,8 @@ GRider poGRider;
                     loJSON.put("message", "No record found.");
                     return loJSON;
                 }
+                
+                
             case 7: //sCategCd2
 
                 lsSQL = "SELECT" +
@@ -626,10 +661,11 @@ GRider poGRider;
                 return null;
         }
     }
-
+    
     public JSONObject SearchMaster(String fsCol, String fsValue, boolean fbByCode){
         return SearchMaster(poModelMaster.getColumn(fsCol), fsValue, fbByCode);
     }
+    
 
 }
 
