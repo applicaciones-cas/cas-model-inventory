@@ -102,7 +102,7 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
      */
     @Override
     public String getTable() {
-        return "Made";
+        return "Inv_Stock_Request_Master";
     }
     
     /**
@@ -196,7 +196,8 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
         pnEditMode = EditMode.ADDNEW;
         
         //replace with the primary key column info
-        setTransactionNumber(MiscUtil.getNextCode(getTable(), "sMadeIDxx", true, poGRider.getConnection(), poGRider.getBranchCode()));
+//        setTransactionNumber(MiscUtil.getNextCode(getTable(), "sMadeIDxx", true, poGRider.getConnection(), poGRider.getBranchCode()));
+        setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
         
         poJSON = new JSONObject();
         poJSON.put("result", "success");
@@ -255,12 +256,14 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
             String lsSQL;
             if (pnEditMode == EditMode.ADDNEW){
                 //replace with the primary key column info
-                setTransactionNumber(MiscUtil.getNextCode(getTable(), "sMadeIDxx", true, poGRider.getConnection(), poGRider.getBranchCode()));
+                setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
                 
+                setModifiedDate(poGRider.getServerDate());
+                setModifiedBy(poGRider.getUserID());
                 lsSQL = makeSQL();
-                
+                System.out.println(lsSQL);
                 if (!lsSQL.isEmpty()){
-                    if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
+                    if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
                         poJSON.put("result", "success");
                         poJSON.put("message", "Record saved successfully.");
                     } else {
@@ -274,12 +277,14 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
             } else {
                 Model_Inv_Stock_Request_Master loOldEntity = new Model_Inv_Stock_Request_Master(poGRider);
                 
+                setModifiedDate(poGRider.getServerDate());
+                setModifiedBy(poGRider.getUserID());
                 //replace with the primary key column info
                 JSONObject loJSON = loOldEntity.openRecord(this.getTransactionNumber());
                 
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sMadeIDxx = " + SQLUtil.toSQL(this.getTransactionNumber()), "xCategrNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()), "xCategrNm");
                     
                     if (!lsSQL.isEmpty()){
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
@@ -367,7 +372,7 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setBranchCode(Integer fnValue){
+    public JSONObject setBranchCode(String fnValue){
         return setValue("sBranchCd", fnValue);
     }
     
@@ -668,6 +673,23 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
     }
     
     /**
+     * Sets the date and time the record start encoded.
+     * 
+     * @param fdValue 
+     * @return result as success/failed
+     */
+    public JSONObject setStartEncDate(Date fdValue){
+        return setValue("dStartEnc", fdValue);
+    }
+    
+    /**
+     * @return The date and time the record start encoded.
+     */
+    public Date getStartEncDate(){
+        return (Date) getValue("dStartEnc");
+    }
+    
+    /**
      * Sets the user encoded/updated the record.
      * 
      * @param fsValue 
@@ -701,13 +723,91 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
         return (Date) getValue("dModified");
     }
     
+    
+    /**
+     * Sets the branch name of the record.
+     * 
+     * @param fsValue 
+     * @return result as success/failed
+     */
+    public JSONObject setBranchName(String fsValue){
+        return setValue("xBranchNm", fsValue);
+    }
+    
+    /**
+     * @return The branch name of  the record 
+     */
+    public String getBranchName(){
+        return (String) getValue("xBranchNm");
+    }
+    
+    
+    /**
+     * Sets the category name of the record.
+     * 
+     * @param fsValue 
+     * @return result as success/failed
+     */
+    public JSONObject setCategoryName(String fsValue){
+        return setValue("xCategrNm", fsValue);
+    }
+    
+    /**
+     * @return The category name of  the record 
+     */
+    public String getCategoryName(){
+        return (String) getValue("xCategrNm");
+    }
     /**
      * Gets the SQL statement for this entity.
      * 
      * @return SQL Statement
      */
     public String makeSQL(){
-        return MiscUtil.makeSQL(this, "xCategrNm");
+        return MiscUtil.makeSQL(this, "xBranchNm»xCategrNm");
+    }
+    
+    /**
+     * Gets the SQL statement for this entity.
+     * 
+     * @return SQL Statement
+     */
+    public String makeSelectSQL() {
+        return MiscUtil.makeSelect(this, "xBranchNm»xCategrNm");
+    }
+    
+    /**
+     * Gets the SQL statement for this entity.
+     * 
+     * @return SQL Statement
+     */
+    public String getSQL(){
+        return "SELECT" +
+                "  a.sTransNox" +
+                ", a.sBranchCd" +
+                ", a.sCategrCd" +
+                ", a.dTransact" +
+                ", a.sReferNox" +
+                ", a.sRemarksx" +
+                ", a.sIssNotes" +
+                ", a.nCurrInvx" +
+                ", a.nEstInvxx" +
+                ", a.sApproved" +
+                ", a.dApproved" +
+                ", a.sAprvCode" +
+                ", a.nEntryNox" +
+                ", a.sSourceCd" +
+                ", a.sSourceNo" +
+                ", a.cConfirmd" +
+                ", a.cTranStat" +
+                ", a.dStartEnc" +
+                ", a.sModified" +
+                ", a.dModified" +
+                ", b.sBranchNm xBranchNm" +
+                ", c.sDescript xCategrNm" +
+            " FROM Inv_Stock_Request_Master a" + 
+                " LEFT JOIN Branch b ON a.sBranchCd= b.sBranchCd" +
+                " LEFT JOIN Category c ON a.sCategrCd = c.sCategrCd";
     }
     
     private void initialize(){
@@ -718,7 +818,8 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
             poEntity.moveToInsertRow();
 
             MiscUtil.initRowSet(poEntity);      
-            poEntity.updateString("cRecdStat", RecordStatus.ACTIVE);
+            poEntity.updateString("cTranStat", RecordStatus.ACTIVE);
+            poEntity.updateString("dApproved", null);
             
             poEntity.insertRow();
             poEntity.moveToCurrentRow();

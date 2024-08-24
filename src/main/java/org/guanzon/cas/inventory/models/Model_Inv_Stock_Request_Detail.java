@@ -198,8 +198,8 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
     public JSONObject newRecord() {
         pnEditMode = EditMode.ADDNEW;
         
-        //replace with the primary key column info
-        setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
+//        //replace with the primary key column info
+//        setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
         
         poJSON = new JSONObject();
         poJSON.put("result", "success");
@@ -246,6 +246,44 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
     }
 
     /**
+     * Opens a record.
+     *
+     * @param fsCondition - filter values
+     * @return result as success/failed
+     */
+    public JSONObject openRecord(String lsFilter, String fsCondition) {
+        poJSON = new JSONObject();
+
+        String lsSQL = MiscUtil.makeSelect(this, "xCategrNm»xInvTypNm");
+
+        //replace the condition based on the primary key column of the record
+        lsSQL = MiscUtil.addCondition(lsSQL, "sTransNox = " + SQLUtil.toSQL(lsFilter)
+                + "AND sStockIDx = " + SQLUtil.toSQL(fsCondition));
+
+        ResultSet loRS = poGRider.executeQuery(lsSQL);
+
+        try {
+            if (loRS.next()) {
+                for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++) {
+                    setValue(lnCtr, loRS.getObject(lnCtr));
+                }
+
+                pnEditMode = EditMode.UPDATE;
+
+                poJSON.put("result", "success");
+                poJSON.put("message", "Record loaded successfully.");
+            } else {
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record to load.");
+            }
+        } catch (SQLException e) {
+            poJSON.put("result", "error");
+            poJSON.put("message", e.getMessage());
+        }
+
+        return poJSON;
+    }
+    /**
      * Save the entity.
      * 
      * @return result as success/failed
@@ -258,8 +296,9 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
             String lsSQL;
             if (pnEditMode == EditMode.ADDNEW){
                 //replace with the primary key column info
-                setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
+//                setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
                 
+                setModifiedDate(poGRider.getServerDate());
                 lsSQL = makeSQL();
                 
                 if (!lsSQL.isEmpty()){
@@ -277,6 +316,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
             } else {
                 Model_Inv_Stock_Request_Detail loOldEntity = new Model_Inv_Stock_Request_Detail(poGRider);
                 
+                setModifiedDate(poGRider.getServerDate());
                 //replace with the primary key column info
                 JSONObject loJSON = loOldEntity.openRecord(this.getStockID());
                 
@@ -433,7 +473,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
         return (String) getValue("cClassify");
     }
     
-                /**
+    /**
      * Sets the Record Order of this record.
      * 
      * @param fnValue 
@@ -450,7 +490,22 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
         return (int) getValue("nRecOrder");
     }
     
+    /**
+     * Sets the quantity on hand of this record.
+     * 
+     * @param fnValue 
+     * @return result as success/failed
+     */
+    public JSONObject setQuantityOnHand(int fnValue){
+        return setValue("nQtyOnHnd", fnValue);
+    }
     
+    /**
+     * @return The quantity on hand of this record. 
+     */
+    public int getQuantityOnHand(){
+        return (int) getValue("nQtyOnHnd");
+    }
                     /**
      * Sets the Reserved Order of this record.
      * 
@@ -678,9 +733,88 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
     public Date getModifiedDate(){
         return (Date) getValue("dModified");
     }
+                    /**
+     * Sets the inventory barrcode of this record.
+     * 
+     * @param fsValue 
+     * @return result as success/failed
+     */
+    public JSONObject setBarcode(String fsValue){
+        return setValue("xBarCodex", fsValue);
+    }
     
-    
+    /**
+     * @return The inventory barrcode of this record. 
+     */
+    public String getBarcode(){
+        return (String) getValue("xBarCodex");
+    }
    
+                    /**
+     * Sets the inventory description of this record.
+     * 
+     * @param fsValue 
+     * @return result as success/failed
+     */
+    public JSONObject setDescription(String fsValue){
+        return setValue("xDescript", fsValue);
+    }
+    
+    /**
+     * @return The inventory description of this record. 
+     */
+    public String getDescription(){
+        return (String) getValue("xDescript");
+    }
+    /**
+     * Sets the inventory category name of this record.
+     * 
+     * @param fsValue 
+     * @return result as success/failed
+     */
+    public JSONObject setCategoryName(String fsValue){
+        return setValue("xCategr01", fsValue);
+    }
+    
+    /**
+     * @return The inventory category name  of this record. 
+     */
+    public String getCategoryName(){
+        return (String) getValue("xCategr01");
+    }
+    
+    /**
+     * Sets the inventory category name 2 of this record.
+     * 
+     * @param fsValue 
+     * @return result as success/failed
+     */
+    public JSONObject setCategoryName2(String fsValue){
+        return setValue("xCategr02", fsValue);
+    }
+    
+    /**
+     * @return The inventory category name 2  of this record. 
+     */
+    public String getCategoryName2(){
+        return (String) getValue("xCategr02");
+    }
+    /**
+     * Sets the inventory category type of this record.
+     * 
+     * @param fsValue 
+     * @return result as success/failed
+     */
+    public JSONObject setCategoryType(String fsValue){
+        return setValue("xInvTypNm", fsValue);
+    }
+    
+    /**
+     * @return The inventory category type of this record. 
+     */
+    public String getCategoryType(){
+        return (String) getValue("xInvTypNm");
+    }
     
 
     
@@ -690,7 +824,55 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
      * @return SQL Statement
      */
     public String makeSQL(){
-        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xCategrNm»xInvTypNm");
+        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm");
+    }
+    
+    /**
+     * Gets the SQL statement for this entity.
+     * 
+     * @return SQL Statement
+     */
+    public String makeSelectSQL() {
+        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm");
+    }
+    
+    /**
+     * Gets the SQL statement for this entity.
+     * 
+     * @return SQL Statement
+     */
+    public String getSQL(){
+        return "SELECT" +
+                            "  a.sTransNox" +
+                            ", a.nEntryNox" +
+                            ", a.sStockIDx" +
+                            ", a.nQuantity" +
+                            ", a.cClassify" +
+                            ", a.nRecOrder" +
+                            ", a.nQtyOnHnd" +
+                            ", a.nResvOrdr" +
+                            ", a.nBackOrdr" +
+                            ", a.nOnTranst" +
+                            ", a.nAvgMonSl" +
+                            ", a.nMaxLevel" +
+                            ", a.nApproved" +
+                            ", a.nCancelld" +
+                            ", a.nIssueQty" +
+                            ", a.nOrderQty" +
+                            ", a.nAllocQty" +
+                            ", a.nReceived" +
+                            ", a.sNotesxxx" +
+                            ", a.dModified" +
+                            ", b.sBarCodex xBarCodex" +
+                            ", b.sDescript xDescript" +
+                            ", c.sDescript xCategr01" +
+                            ", d.sDescript xCategr02" +
+                            ", d.sDescript xInvTypNm" +
+                        " FROM Inv_Stock_Request_Detail a" + 
+                            " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
+                            " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
+                            " LEFT JOIN Category_Level2 d ON b.sCategCd2 = d.sCategrCd" +
+                            " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd";
     }
     
     private void initialize(){
@@ -701,7 +883,6 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
             poEntity.moveToInsertRow();
 
             MiscUtil.initRowSet(poEntity);      
-            poEntity.updateString("cRecdStat", RecordStatus.ACTIVE);
             
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
