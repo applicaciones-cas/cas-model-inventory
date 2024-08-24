@@ -221,8 +221,8 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
     public JSONObject newRecord() {
         pnEditMode = EditMode.ADDNEW;
 
-        //replace with the primary key column info
-        setTransactionNo(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
+//        //replace with the primary key column info
+//        setTransactionNo(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
 
         poJSON = new JSONObject();
         poJSON.put("result", "success");
@@ -282,7 +282,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
             if (pnEditMode == EditMode.ADDNEW) {
                 //replace with the primary key column info
                 setTransactionNo(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
-
+                
                 lsSQL = makeSQL();
 
                 if (!lsSQL.isEmpty()) {
@@ -558,8 +558,8 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
     /**
      * @return The user encoded/updated the record
      */
-    public Integer getTransactionStatus() {
-        return (Integer) getValue("cTranStat");
+    public String getTransactionStatus() {
+        return (String) getValue("cTranStat");
     }
 
     /**
