@@ -223,7 +223,9 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
 
 //        //replace with the primary key column info
 //        setTransactionNo(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
-
+        setTransactionDate(poGRider.getSysDate());
+        setExpectedPurchaseDate(poGRider.getSysDate());
+        
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         return poJSON;
@@ -282,7 +284,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
             if (pnEditMode == EditMode.ADDNEW) {
                 //replace with the primary key column info
                 setTransactionNo(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
-                
+
                 lsSQL = makeSQL();
 
                 if (!lsSQL.isEmpty()) {
@@ -443,6 +445,14 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
         return (String) getValue("sDestinat");
     }
 
+    public JSONObject setDestinationName(String fsValue) {
+        return setValue("xDestinat", fsValue);
+    }
+
+    public String getDestinationName() {
+        return (String) getValue("xDestinat");
+    }
+
     /**
      * Sets the date and time the record was modified.
      *
@@ -517,7 +527,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setEntryNumber(String fsValue) {
+    public JSONObject setEntryNumber(int fsValue) {
         return setValue("nEntryNox", fsValue);
     }
 
