@@ -503,8 +503,8 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
     /**
      * @return The quantity on hand of this record. 
      */
-    public int getQuantityOnHand(){
-        return (int) getValue("nQtyOnHnd");
+    public Object getQuantityOnHand(){
+        return (Object) getValue("nQtyOnHnd");
     }
                     /**
      * Sets the Reserved Order of this record.
@@ -519,8 +519,8 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
     /**
      * @return The Reserved Order of this record. 
      */
-    public int getReservedOrder(){
-        return (int) getValue("nResvOrdr");
+    public Object getReservedOrder(){
+        return (Object) getValue("nResvOrdr");
     }
     
     
@@ -537,8 +537,8 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
     /**
      * @return The Back Order of this record. 
      */
-    public int getBackOrder(){
-        return (int) getValue("nBackOrdr");
+    public Object getBackOrder(){
+        return (Object) getValue("nBackOrdr");
     }
     
                             /**
@@ -554,8 +554,8 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
     /**
      * @return The On Transit of this record. 
      */
-    public int getOnTransit(){
-        return (int) getValue("nOnTranst");
+    public Object getOnTransit(){
+        return (Object) getValue("nOnTranst");
     }
     
                                 /**
@@ -883,6 +883,21 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
             poEntity.moveToInsertRow();
 
             MiscUtil.initRowSet(poEntity);      
+            poEntity.updateObject("nQuantity", 0);
+            poEntity.updateObject("nRecOrder", 0);
+            poEntity.updateObject("nQtyOnHnd", 0);
+            poEntity.updateObject("nResvOrdr", 0);
+            poEntity.updateObject("nBackOrdr", 0);
+            poEntity.updateObject("nOnTranst", 0);
+            poEntity.updateObject("nAvgMonSl", 0);
+            poEntity.updateObject("nMaxLevel", 0);
+            poEntity.updateObject("nApproved", 0);
+            poEntity.updateObject("nCancelld", 0);
+            poEntity.updateObject("nIssueQty", 0);
+            poEntity.updateObject("nOrderQty", 0);
+            poEntity.updateObject("nAllocQty", 0);
+            poEntity.updateObject("nReceived", 0);
+            poEntity.updateObject("cClassify", "");
             
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
