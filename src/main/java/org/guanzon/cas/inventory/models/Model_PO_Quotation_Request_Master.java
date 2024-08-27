@@ -241,7 +241,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
     public JSONObject openRecord(String fsCondition) {
         poJSON = new JSONObject();
 
-        String lsSQL = makeSelectSQL();
+        String lsSQL = getSQL();
 
         //replace the condition based on the primary key column of the record
         lsSQL = MiscUtil.addCondition(lsSQL, " sTransNox = " + SQLUtil.toSQL(fsCondition));
@@ -671,7 +671,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
      * @return SQL Statement
      */
     public String makeSQL() {
-        return MiscUtil.makeSQL(this, "xCategrNm");
+        return MiscUtil.makeSQL(this, "xCategrNm»xBranchNm»xDestinat»xInvTypNm");
     }
 
     /**

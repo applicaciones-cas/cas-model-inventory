@@ -19,19 +19,18 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.iface.GEntity;
 import org.json.simple.JSONObject;
 
-
 /**
  * @author Michael Cuison
  */
-public class Model_PO_Quotation_Request_Detail implements GEntity{
+public class Model_PO_Quotation_Request_Detail implements GEntity {
+
     final String XML = "Model_PO_Quotation_Request_Detail.xml";
 
     GRider poGRider;                //application driver
     CachedRowSet poEntity;          //rowset
     JSONObject poJSON;              //json container
     int pnEditMode;                 //edit mode
-    
-    
+
     /**
      * Entity constructor
      *
@@ -47,6 +46,7 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
 
         initialize();
     }
+
     /**
      * Gets edit mode of the record
      *
@@ -206,7 +206,6 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
     public JSONObject newRecord() {
         pnEditMode = EditMode.ADDNEW;
 
-        
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         return poJSON;
@@ -274,7 +273,7 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
     @Override
     public JSONObject saveRecord() {
         poJSON = new JSONObject();
-
+        setModifiedDate(poGRider.getServerDate());
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             String lsSQL;
             if (pnEditMode == EditMode.ADDNEW) {
@@ -301,7 +300,7 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
                 if ("success".equals((String) loJSON.get("result"))) {
                     //replace the condition based on the primary key column of the record and additional primary column
                     lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNo())
-                            +  "sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xCategrNm»xInvTypNm");
+                            + "sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xCategrNm»xInvTypNm");
 
                     if (!lsSQL.isEmpty()) {
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
@@ -409,12 +408,29 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
     public JSONObject setStockID(String fsValue) {
         return setValue("sStockIDx", fsValue);
     }
-    
+
     /**
      * @return The nEntryNox of this record.
      */
     public String getStockID() {
         return (String) getValue("sStockIDx");
+    }
+
+    /**
+     * Description: Sets the sDescript of this record.
+     *
+     * @param fsValue
+     * @return True if the record assignment is successful.
+     */
+    public JSONObject setDescript(String fsValue) {
+        return setValue("sDescript", fsValue);
+    }
+
+    /**
+     * @return The sDescript of this record.
+     */
+    public String getDescript() {
+        return (String) getValue("sDescript");
     }
 
     /**
@@ -440,15 +456,15 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
      * @param fsValue
      * @return True if the record assignment is successful.
      */
-    public JSONObject setUnitPrice(BigDecimal fsValue) {
+    public JSONObject setUnitPrice(Number fsValue) {
         return setValue("nUnitPrce", fsValue);
     }
 
     /**
      * @return The nUnitPrce of this record.
      */
-    public BigDecimal getUnitPrice() {
-        return (BigDecimal) getValue("nUnitPrce");
+    public Number getUnitPrice() {
+        return (Number) getValue("nUnitPrce");
     }
 
     /**
@@ -466,6 +482,40 @@ public class Model_PO_Quotation_Request_Detail implements GEntity{
      */
     public Date getModifiedDate() {
         return (Date) getValue("dModified");
+    }
+
+    /**
+     * Description: Sets the xCategrNm of this record.
+     *
+     * @param fsValue
+     * @return True if the record assignment is successful.
+     */
+    public JSONObject setCategoryName(String fsValue) {
+        return setValue("xCategrNm", fsValue);
+    }
+
+    /**
+     * @return The xCategrNm of this record.
+     */
+    public String getCategoryName() {
+        return (String) getValue("xCategrNm");
+    }
+
+    /**
+     * Description: Sets the xInvTypNm of this record.
+     *
+     * @param fsValue
+     * @return True if the record assignment is successful.
+     */
+    public JSONObject setInventoryName(String fsValue) {
+        return setValue("xInvTypNm", fsValue);
+    }
+
+    /**
+     * @return The xInvTypNm of this record.
+     */
+    public String getInventoryName() {
+        return (String) getValue("xInvTypNm");
     }
 
     /**
