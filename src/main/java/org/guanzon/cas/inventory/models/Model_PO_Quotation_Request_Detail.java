@@ -41,6 +41,7 @@ public class Model_PO_Quotation_Request_Detail implements GEntity {
             System.err.println("Application Driver is not set.");
             System.exit(1);
         }
+       
 
         poGRider = foValue;
 
@@ -205,7 +206,8 @@ public class Model_PO_Quotation_Request_Detail implements GEntity {
     @Override
     public JSONObject newRecord() {
         pnEditMode = EditMode.ADDNEW;
-
+           setQuantity(0);
+           setUnitPrice(0.0);
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         return poJSON;
@@ -544,8 +546,8 @@ public class Model_PO_Quotation_Request_Detail implements GEntity {
             poEntity.moveToCurrentRow();
 
             poEntity.absolute(1);
-
-            pnEditMode = EditMode.UNKNOWN;
+            newRecord();
+            
         } catch (SQLException e) {
             e.printStackTrace();
             System.exit(1);

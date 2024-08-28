@@ -222,10 +222,10 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
         pnEditMode = EditMode.ADDNEW;
 
 //        //replace with the primary key column info
-//        setTransactionNo(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
-        setTransactionDate(poGRider.getSysDate());
-        setExpectedPurchaseDate(poGRider.getSysDate());
-        
+        setTransactionNo(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
+        setTransactionDate(poGRider.getServerDate());
+        setExpectedPurchaseDate(poGRider.getServerDate());
+
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         return poJSON;
@@ -680,7 +680,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
      * @return SelectSQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xCategrNm");
+        return MiscUtil.makeSelect(this, "xCategrNm»xBranchNm»xDestinat»xInvTypNm");
     }
 
     public String getSQL() {
@@ -702,15 +702,15 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
                 + ", b.sBranchNm xBranchNm"
                 + ", c.sBranchNm xDestinat"
                 + ", d.sDescript xCategrNm"
-                + ", e.sdescript xInvTypNm"
-                + " FROM " + System.getProperty("sys.table") + " a"
+                + ", e.sDescript xInvTypNm"
+                + " FROM " + getTable() + " a"
                 + " LEFT JOIN Branch b ON a.sBranchCd = b.sBranchCd"
                 + " LEFT JOIN Branch c ON a.sDestinat = b.sBranchCd"
-                + " LEFT JOIN Category d ON a.sCategrCd = d.sCategrCd"
+                + " LEFT JOIN Category_Level2 d ON a.sCategrCd = d.sCategrCd"
                 + " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd";
 
         if (!System.getProperty("store.inventory.industry").isEmpty()) {
-            lsSQL = MiscUtil.addCondition(lsSQL, " sTransNox IN " + CommonUtils.getParameter(System.getProperty("store.inventory.industry")));
+            lsSQL = MiscUtil.addCondition(lsSQL, " a.sCategrCd IN " + CommonUtils.getParameter(System.getProperty("store.inventory.industry")));
         }
         return lsSQL;
     }
