@@ -216,7 +216,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
     public JSONObject openRecord(String fsCondition) {
         poJSON = new JSONObject();
         
-        String lsSQL = MiscUtil.makeSelect(this, "xBarCodex»xDescript»xCategrNm»xInvTypNm");
+        String lsSQL = makeSelectSQL();
         
         //replace the condition based on the primary key column of the record
         lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
@@ -254,12 +254,12 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
     public JSONObject openRecord(String lsFilter, String fsCondition) {
         poJSON = new JSONObject();
 
-        String lsSQL = MiscUtil.makeSelect(this, "xCategrNm»xInvTypNm");
+        String lsSQL = getSQL();
 
         //replace the condition based on the primary key column of the record
-        lsSQL = MiscUtil.addCondition(lsSQL, "sTransNox = " + SQLUtil.toSQL(lsFilter)
-                + "AND sStockIDx = " + SQLUtil.toSQL(fsCondition));
-
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sTransNox = " + SQLUtil.toSQL(lsFilter)
+                + "AND a.sStockIDx = " + SQLUtil.toSQL(fsCondition));
+        System.out.println("model select = " + lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
 
         try {

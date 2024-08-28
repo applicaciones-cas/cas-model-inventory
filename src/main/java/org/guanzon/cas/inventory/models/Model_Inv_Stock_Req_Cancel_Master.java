@@ -20,7 +20,7 @@ import org.json.simple.JSONObject;
  * @author Michael Cuison
  */
 public class Model_Inv_Stock_Req_Cancel_Master implements GEntity{
-    final String XML = "Inv_Stock_Req_Cancel_Master.xml";
+    final String XML = "Model_Inv_Stock_Req_Cancel_Master.xml";
     
     GRider poGRider;                //application driver
     CachedRowSet poEntity;          //rowset

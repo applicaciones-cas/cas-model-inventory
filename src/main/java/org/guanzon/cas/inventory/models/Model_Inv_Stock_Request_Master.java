@@ -214,7 +214,7 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
     public JSONObject openRecord(String fsCondition) {
         poJSON = new JSONObject();
         
-        String lsSQL = MiscUtil.makeSelect(this, "xCategrNm");
+        String lsSQL = makeSelectSQL();
         
         //replace the condition based on the primary key column of the record
         lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
@@ -379,8 +379,8 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
     /**
      * @return The BranchCode of this record. 
      */
-    public Integer getBranchCode(){
-        return (Integer) getValue("sBranchCd");
+    public Object getBranchCode(){
+        return (Object) getValue("sBranchCd");
     }
     
      /**

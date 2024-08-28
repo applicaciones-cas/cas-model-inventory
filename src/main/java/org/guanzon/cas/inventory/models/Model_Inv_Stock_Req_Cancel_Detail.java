@@ -23,7 +23,7 @@ import org.json.simple.JSONObject;
  * @author Michael Cuison
  */
 public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
-    final String XML = "Inv_Stock_Req_Cancel_Detail.xml";
+    final String XML = "Model_Inv_Stock_Req_Cancel_Detail.xml";
     
     GRider poGRider;                //application driver
     CachedRowSet poEntity;          //rowset
@@ -647,11 +647,6 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
 
             MiscUtil.initRowSet(poEntity);      
             poEntity.updateObject("nQuantity", 0);
-            poEntity.updateObject("xBarCodex", "");
-            poEntity.updateObject("xDescript", "");
-            poEntity.updateObject("xCategr01", "");
-            poEntity.updateObject("xCategr02", "");
-            poEntity.updateObject("xInvTypNm", "");
             
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
