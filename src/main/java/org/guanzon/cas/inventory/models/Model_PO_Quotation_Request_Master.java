@@ -138,7 +138,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
     @Override
     public Object getValue(String fsColumn) {
         try {
-            return poEntity.getObject(MiscUtil.getColumnIndex(poEntity, fsColumn));
+            return getValue(MiscUtil.getColumnIndex(poEntity, fsColumn));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -527,15 +527,15 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setEntryNumber(int fsValue) {
+    public JSONObject setEntryNumber(Number fsValue) {
         return setValue("nEntryNox", fsValue);
     }
 
     /**
      * @return The user encoded/updated the record
      */
-    public int getEntryNumber() {
-        return (int) getValue("nEntryNox");
+    public Number getEntryNumber() {
+        return (Number) getValue("nEntryNox");
     }
 
     /**
@@ -685,33 +685,33 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
 
     public String getSQL() {
         String lsSQL = "SELECT"
-                + "  a.sTransNox"
-                + ", a.sBranchCd"
-                + ", a.dTransact"
-                + ", a.sDestinat"
-                + ", a.sReferNox"
-                + ", a.sRemarksx"
-                + ", a.dExpPurch"
-                + ", a.nEntryNox"
-                + ", a.sCategrCd"
-                + ", a.cTranStat"
-                + ", a.sPrepared"
-                + ", a.dPrepared"
-                + ", a.sModified"
-                + ", a.dModified"
-                + ", b.sBranchNm xBranchNm"
-                + ", c.sBranchNm xDestinat"
-                + ", d.sDescript xCategrNm"
-                + ", e.sDescript xInvTypNm"
+                + "  a.sTransNox sTransNox "
+                + ", a.sBranchCd sBranchCd "
+                + ", a.dTransact dTransact "
+                + ", a.sDestinat sDestinat "
+                + ", a.sReferNox sReferNox "
+                + ", a.sRemarksx sRemarksx "
+                + ", a.dExpPurch dExpPurch "
+                + ", a.nEntryNox nEntryNox "
+                + ", a.sCategrCd sCategrCd " 
+                + ", a.cTranStat cTranStat "
+                + ", a.sPrepared sPrepared "
+                + ", a.dPrepared dPrepared "
+                + ", a.sModified sModified "
+                + ", a.dModified dModified "
+                + ", b.sBranchNm xBranchNm "
+                + ", c.sBranchNm xDestinat "
+                + ", d.sDescript xCategrNm "
+                + ", e.sDescript xInvTypNm "
                 + " FROM " + getTable() + " a"
                 + " LEFT JOIN Branch b ON a.sBranchCd = b.sBranchCd"
                 + " LEFT JOIN Branch c ON a.sDestinat = b.sBranchCd"
                 + " LEFT JOIN Category_Level2 d ON a.sCategrCd = d.sCategrCd"
                 + " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd";
 
-        if (!System.getProperty("store.inventory.industry").isEmpty()) {
-            lsSQL = MiscUtil.addCondition(lsSQL, " a.sCategrCd IN " + CommonUtils.getParameter(System.getProperty("store.inventory.industry")));
-        }
+//        if (!System.getProperty("store.inventory.industry").isEmpty()) {
+//            lsSQL = MiscUtil.addCondition(lsSQL, " a.sCategrCd IN " + CommonUtils.getParameter(System.getProperty("store.inventory.industry")));
+//        }
         return lsSQL;
     }
 

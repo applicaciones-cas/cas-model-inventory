@@ -41,7 +41,6 @@ public class Model_PO_Quotation_Request_Detail implements GEntity {
             System.err.println("Application Driver is not set.");
             System.exit(1);
         }
-       
 
         poGRider = foValue;
 
@@ -206,8 +205,8 @@ public class Model_PO_Quotation_Request_Detail implements GEntity {
     @Override
     public JSONObject newRecord() {
         pnEditMode = EditMode.ADDNEW;
-           setQuantity(0);
-           setUnitPrice(0.0);
+        setQuantity(0);
+        setUnitPrice(0.0);
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         return poJSON;
@@ -237,11 +236,11 @@ public class Model_PO_Quotation_Request_Detail implements GEntity {
     public JSONObject openRecord(String lsFilter, String fsCondition) {
         poJSON = new JSONObject();
 
-        String lsSQL = MiscUtil.makeSelect(this, "xCategrNm»xInvTypNm");
+        String lsSQL =getSQL();
 
         //replace the condition based on the primary key column of the record
         lsSQL = MiscUtil.addCondition(lsSQL, "sTransNox = " + SQLUtil.toSQL(lsFilter)
-                + "AND sStockIDx = " + SQLUtil.toSQL(fsCondition));
+                + "AND nEntryNox = " + SQLUtil.toSQL(fsCondition));
 
         ResultSet loRS = poGRider.executeQuery(lsSQL);
 
@@ -297,12 +296,12 @@ public class Model_PO_Quotation_Request_Detail implements GEntity {
                 Model_PO_Quotation_Request_Detail loOldEntity = new Model_PO_Quotation_Request_Detail(poGRider);
 
                 //replace with the primary key column info  and additional primary column
-                JSONObject loJSON = loOldEntity.openRecord(this.getTransactionNo(), this.getStockID());
+                JSONObject loJSON = loOldEntity.openRecord(this.getTransactionNo(), this.getEntryNo().toString());
 
                 if ("success".equals((String) loJSON.get("result"))) {
                     //replace the condition based on the primary key column of the record and additional primary column
                     lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNo())
-                            + "sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xCategrNm»xInvTypNm");
+                            + "AND nEntryNox = " + SQLUtil.toSQL(this.getEntryNo().toString()), "xCategrNm»xInvTypNm");
 
                     if (!lsSQL.isEmpty()) {
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
@@ -390,15 +389,15 @@ public class Model_PO_Quotation_Request_Detail implements GEntity {
      * @param fsValue
      * @return True if the record assignment is successful.
      */
-    public JSONObject setEntryNo(int fsValue) {
+    public JSONObject setEntryNo(Number fsValue) {
         return setValue("nEntryNox", fsValue);
     }
 
     /**
      * @return The nEntryNox of this record.
      */
-    public int getEntryNo() {
-        return (Integer) getValue("nEntryNox");
+    public Number getEntryNo() {
+        return (Number) getValue("nEntryNox");
     }
 
     /**
@@ -533,6 +532,26 @@ public class Model_PO_Quotation_Request_Detail implements GEntity {
         return MiscUtil.makeSelect(this, "xCategrNm»xInvTypNm");
     }
 
+    public String getSQL() {
+        String lsSQL;
+
+        lsSQL = "SELECT "
+                + " a.sTransNox sTransNox "
+                + ",a.nEntryNox nEntryNox"
+                + ",a.sStockIDx sStockIDx"
+                + ",a.sDescript sDescript"
+                + ",a.nQuantity nQuantity"
+                + ",a.nUnitPrce nUnitPrce"
+                + ",a.dModified  dModified"
+                + ", c.sDescript xCategrNm "
+                + ", d.sDescript xInvTypNm "
+                + " FROM " + getTable() + " a"
+                + " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx"
+                + " LEFT JOIN Category_Level2 c ON b.sCategCd2 = c.sCategrCd"
+                + " LEFT JOIN Inv_Type d ON c.sInvTypCd = d.sInvTypCd";
+        return lsSQL;
+    }
+
     private void initialize() {
         try {
             poEntity = MiscUtil.xml2ResultSet(System.getProperty("sys.default.path.metadata") + XML, getTable());
@@ -547,7 +566,7 @@ public class Model_PO_Quotation_Request_Detail implements GEntity {
 
             poEntity.absolute(1);
             newRecord();
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
             System.exit(1);
