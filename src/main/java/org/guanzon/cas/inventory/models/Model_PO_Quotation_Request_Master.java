@@ -225,6 +225,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
         setTransactionNo(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
         setTransactionDate(poGRider.getServerDate());
         setExpectedPurchaseDate(poGRider.getServerDate());
+        
 
         poJSON = new JSONObject();
         poJSON.put("result", "success");
@@ -561,7 +562,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setTransactionStatus(String fsValue) {
+    public JSONObject setTranStatus(String fsValue) {
         return setValue("cTranStat", fsValue);
     }
 
@@ -723,7 +724,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
             poEntity.moveToInsertRow();
 
             MiscUtil.initRowSet(poEntity);
-            poEntity.updateString("cTranStat", RecordStatus.ACTIVE);
+            poEntity.updateString("cTranStat", TransactionStatus.STATE_OPEN);
 
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
