@@ -706,7 +706,7 @@ public class Model_PO_Quotation_Request_Master implements GEntity {
                 + ", e.sDescript xInvTypNm "
                 + " FROM " + getTable() + " a"
                 + " LEFT JOIN Branch b ON a.sBranchCd = b.sBranchCd"
-                + " LEFT JOIN Branch c ON a.sDestinat = b.sBranchCd"
+                + " LEFT JOIN Branch c ON a.sDestinat = c.sBranchCd"
                 + " LEFT JOIN Category_Level2 d ON a.sCategrCd = d.sCategrCd"
                 + " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd";
 
