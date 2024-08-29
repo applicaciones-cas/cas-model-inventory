@@ -1,7 +1,6 @@
 package org.guanzon.cas.inventory.models;
 
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -214,7 +213,7 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
     public JSONObject openRecord(String fsCondition) {
         poJSON = new JSONObject();
         
-        String lsSQL = makeSelectSQL();
+        String lsSQL = getSQL();
         
         //replace the condition based on the primary key column of the record
         lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);

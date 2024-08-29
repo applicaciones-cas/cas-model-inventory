@@ -4,7 +4,6 @@
 package org.guanzon.cas.inventory.models;
 
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -13,14 +12,13 @@ import javax.sql.rowset.CachedRowSet;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
-import org.guanzon.appdriver.constant.RecordStatus;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.iface.GEntity;
 import org.json.simple.JSONObject;
 
 
 /**
- * @author Michael Cuison
+ * @author unclejo
  */
 public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
     final String XML = "Model_Inv_Stock_Req_Cancel_Detail.xml";
@@ -105,7 +103,7 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
      */
     @Override
     public String getTable() {
-        return "Inv_Stock_Request_Detail";
+        return "Inv_Stock_Req_Cancel_Detail";
     }
     
     /**
@@ -254,12 +252,18 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
     public JSONObject openRecord(String lsFilter, String fsCondition) {
         poJSON = new JSONObject();
 
-        String lsSQL = MiscUtil.makeSelect(this, "xCategrNm»xInvTypNm");
+//        String lsSQL = MiscUtil.makeSelect(this, "xCategrNm»xInvTypNm");
+//
+//        //replace the condition based on the primary key column of the record
+//        lsSQL = MiscUtil.addCondition(lsSQL, "sTransNox = " + SQLUtil.toSQL(lsFilter)
+//                + "AND sStockIDx = " + SQLUtil.toSQL(fsCondition));
+
+        String lsSQL = getSQL();
 
         //replace the condition based on the primary key column of the record
-        lsSQL = MiscUtil.addCondition(lsSQL, "sTransNox = " + SQLUtil.toSQL(lsFilter)
-                + "AND sStockIDx = " + SQLUtil.toSQL(fsCondition));
-
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sTransNox = " + SQLUtil.toSQL(lsFilter)
+                + "AND a.sStockIDx = " + SQLUtil.toSQL(fsCondition));
+        System.out.println("lsSQL = " + lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
 
         try {
@@ -299,6 +303,7 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
 //                setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
                 
                 setModifiedDate(poGRider.getServerDate());
+                
                 lsSQL = makeSQL();
                 
                 if (!lsSQL.isEmpty()){

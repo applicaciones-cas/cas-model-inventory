@@ -1,12 +1,12 @@
 package org.guanzon.cas.inventory.models;
 
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
 import javax.sql.rowset.CachedRowSet;
+import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
@@ -17,7 +17,7 @@ import org.json.simple.JSONObject;
 
 
 /**
- * @author Michael Cuison
+ * @author unclejo
  */
 public class Model_Inv_Stock_Req_Cancel_Master implements GEntity{
     final String XML = "Model_Inv_Stock_Req_Cancel_Master.xml";
@@ -102,7 +102,7 @@ public class Model_Inv_Stock_Req_Cancel_Master implements GEntity{
      */
     @Override
     public String getTable() {
-        return "Inv_Stock_Request_Master";
+        return "Inv_Stock_Req_Cancel_Master";
     }
     
     /**
@@ -214,7 +214,8 @@ public class Model_Inv_Stock_Req_Cancel_Master implements GEntity{
     public JSONObject openRecord(String fsCondition) {
         poJSON = new JSONObject();
         
-        String lsSQL = MiscUtil.makeSelect(this, "xCategrNm");
+//        String lsSQL = MiscUtil.makeSelect(this, "xCategrNm");
+        String lsSQL = getSQL();
         
         //replace the condition based on the primary key column of the record
         lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
@@ -284,7 +285,7 @@ public class Model_Inv_Stock_Req_Cancel_Master implements GEntity{
                 
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()), "xCategrNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()), "xBranchNm»xCategrNm");
                     
                     if (!lsSQL.isEmpty()){
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
@@ -676,8 +677,10 @@ public class Model_Inv_Stock_Req_Cancel_Master implements GEntity{
             poEntity.moveToInsertRow();
 
             MiscUtil.initRowSet(poEntity);      
-            poEntity.updateString("cTranStat", RecordStatus.ACTIVE);
+            poEntity.updateString("cTranStat", RecordStatus.INACTIVE);
             poEntity.updateString("dApproved", null);
+            poEntity.updateObject("dTransact", CommonUtils.dateFormat(poGRider.getServerDate(), "yyyy-MM-dd"));
+            System.out.println(CommonUtils.dateFormat(poGRider.getServerDate(), "yyyy-MM-dd"));
             
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
