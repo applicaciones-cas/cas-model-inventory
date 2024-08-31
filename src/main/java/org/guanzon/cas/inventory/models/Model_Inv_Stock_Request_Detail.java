@@ -219,8 +219,8 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
         String lsSQL = makeSelectSQL();
         
         //replace the condition based on the primary key column of the record
-        lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
-        
+        lsSQL = MiscUtil.addCondition(lsSQL, "sStockIDx = " + SQLUtil.toSQL(fsCondition));
+        System.out.println("lsSQL Detail = " + lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
         
         try {
@@ -318,12 +318,12 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
                 
                 setModifiedDate(poGRider.getServerDate());
                 //replace with the primary key column info
-                JSONObject loJSON = loOldEntity.openRecord(this.getStockID());
+                JSONObject loJSON = loOldEntity.openRecord(this.getTransactionNumber(), this.getStockID());
                 
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getStockID()), "xBarCodex»xDescript»xCategrNm»xInvTypNm");
-                    
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()) +  " AND sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm");
+                    System.out.println(lsSQL);
                     if (!lsSQL.isEmpty()){
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
                             poJSON.put("result", "success");

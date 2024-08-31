@@ -216,8 +216,9 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
         String lsSQL = getSQL();
         
         //replace the condition based on the primary key column of the record
-        lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
+        lsSQL = MiscUtil.addCondition(lsSQL, "sTransNox = " + SQLUtil.toSQL(fsCondition));
         
+        System.out.println(lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
         
         try {
