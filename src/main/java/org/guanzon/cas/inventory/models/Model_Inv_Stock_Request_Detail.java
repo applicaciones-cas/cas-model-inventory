@@ -323,7 +323,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
                     lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()) +  " AND sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm");
-                    System.out.println(lsSQL);
+                    System.out.println("update = " + lsSQL);
                     if (!lsSQL.isEmpty()){
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
                             poJSON.put("result", "success");
@@ -867,7 +867,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
                             ", b.sDescript xDescript" +
                             ", c.sDescript xCategr01" +
                             ", d.sDescript xCategr02" +
-                            ", d.sDescript xInvTypNm" +
+                            ", e.sDescript xInvTypNm" +
                         " FROM Inv_Stock_Request_Detail a" + 
                             " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                             " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
@@ -882,7 +882,8 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
             poEntity.last();
             poEntity.moveToInsertRow();
 
-            MiscUtil.initRowSet(poEntity);      
+            MiscUtil.initRowSet(poEntity);   
+            poEntity.updateObject("sStockIDx", "");   
             poEntity.updateObject("nQuantity", 0);
             poEntity.updateObject("nRecOrder", 0);
             poEntity.updateObject("nQtyOnHnd", 0);

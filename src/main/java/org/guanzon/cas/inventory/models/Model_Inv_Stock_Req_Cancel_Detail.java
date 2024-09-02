@@ -323,11 +323,11 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
                 
                 setModifiedDate(poGRider.getServerDate());
                 //replace with the primary key column info
-                JSONObject loJSON = loOldEntity.openRecord(this.getStockID());
+                JSONObject loJSON = loOldEntity.openRecord(this.getTransactionNumber(), this.getStockID());
                 
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getStockID()), "xBarCodex»xDescript»xCategrNm»xInvTypNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity,  "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()) +  " AND sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xBarCodex»xDescript»xCategrNm»xInvTypNm");
                     
                     if (!lsSQL.isEmpty()){
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
@@ -635,7 +635,7 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
                             ", b.sDescript xDescript" +
                             ", c.sDescript xCategr01" +
                             ", d.sDescript xCategr02" +
-                            ", d.sDescript xInvTypNm" +
+                            ", e.sDescript xInvTypNm" +
                         " FROM Inv_Stock_Req_Cancel_Detail a" + 
                             " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                             " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
