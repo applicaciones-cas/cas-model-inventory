@@ -322,7 +322,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
                 
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()) +  " AND sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()) +  " AND sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm");
                     System.out.println("update = " + lsSQL);
                     if (!lsSQL.isEmpty()){
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
@@ -816,6 +816,96 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
         return (String) getValue("xInvTypNm");
     }
     
+    
+    /**
+     * @return The xBrandNme of this record.
+     */
+     
+    public String getBrandName() {
+         System.out.println("\nto get xBrandNme == " + (String)getValue("xBrandNme"));
+        return (String) getValue("xBrandNme");
+    }
+    /**
+     * Sets the sBrandCde of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setBrandName(String fsValue) {
+         System.out.println("\nto set xBrandNme == " + fsValue);
+        return setValue("xBrandNme", fsValue);
+    }
+
+    /**
+     * @return The sModelCde of this record.
+     */
+    public String getModelName() {
+        return (String) getValue("xModelNme");
+    }
+    
+    /**
+     * Sets the sModelCde of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setModelName(String fsValue) {
+        return setValue("xModelNme", fsValue);
+    }
+    
+    /**
+     * @return The xModelDsc of this record.
+     */
+    public String getModelDescription() {
+        return (String) getValue("xModelDsc");
+    }
+    
+    /**
+     * Sets the xModelDsc of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setModelDescription(String fsValue) {
+        return setValue("xModelDsc", fsValue);
+    }
+    
+   
+
+    /**
+     * @return The sModelCde of this record.
+     */
+    public String getColorName() {
+        return (String) getValue("xColorNme");
+    }
+    
+    /**
+     * Sets the sModelCde of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setColorName(String fsValue) {
+        return setValue("xColorNme", fsValue);
+    }
+    
+    /**
+     * @return The xMeasurNm of this record.
+     */
+    public String getMeasureName() {
+        return (String) getValue("xMeasurNm");
+    }
+    
+    /**
+     * Sets the xMeasurNm of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setMeasureName(String fsValue) {
+        return setValue("xMeasurNm", fsValue);
+    }
+    
 
     
     /**
@@ -824,7 +914,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
      * @return SQL Statement
      */
     public String makeSQL(){
-        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm");
+        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm");
     }
     
     /**
@@ -833,7 +923,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
      * @return SQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm");
+        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm");
     }
     
     /**
@@ -868,11 +958,20 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
                             ", c.sDescript xCategr01" +
                             ", d.sDescript xCategr02" +
                             ", e.sDescript xInvTypNm" +
+                            ", f.sDescript xBrandNme" +
+                            ", g.sModelNme xModelNme" +
+                            ", g.sDescript xModelDsc" +
+                            ", h.sDescript xColorNme" +
+                            ", i.sMeasurNm xMeasurNm" +
                         " FROM Inv_Stock_Request_Detail a" + 
                             " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                             " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
                             " LEFT JOIN Category_Level2 d ON b.sCategCd2 = d.sCategrCd" +
-                            " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd";
+                            " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd" +
+                            " LEFT JOIN Brand f ON b.sBrandCde = f.sBrandCde" +
+                            " LEFT JOIN Model g ON b.sModelCde = g.sModelCde" +
+                            " LEFT JOIN Color h ON b.sColorCde = h.sColorCde" +
+                            " LEFT JOIN Measure i ON b.sMeasurID = i.sMeasurID" ;
     }
     
     private void initialize(){
