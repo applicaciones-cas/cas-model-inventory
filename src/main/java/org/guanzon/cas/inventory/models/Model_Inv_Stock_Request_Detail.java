@@ -55,6 +55,9 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
         return pnEditMode;
     }
     
+    public void setEditMode(int val) {
+        pnEditMode = val;
+    }
     /**
      * Gets the column index name.
      * @param fnValue - column index number
@@ -323,7 +326,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
                     lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()) +  " AND sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm");
-                    System.out.println("update = " + lsSQL);
+                    System.out.println("update sql = " + lsSQL);
                     if (!lsSQL.isEmpty()){
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
                             poJSON.put("result", "success");
@@ -452,8 +455,8 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
     /**
      * @return The Quantity of this record. 
      */
-    public int getQuantity(){
-        return (int) getValue("nQuantity");
+    public Object getQuantity(){
+        return (Object) getValue("nQuantity");
     }
     
             /**
