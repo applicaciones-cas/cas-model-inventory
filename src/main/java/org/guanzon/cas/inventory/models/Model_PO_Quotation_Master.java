@@ -12,6 +12,7 @@ import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.RecordStatus;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.iface.GEntity;
 import org.json.simple.JSONObject;
 
@@ -102,7 +103,7 @@ public class Model_PO_Quotation_Master implements GEntity{
      */
     @Override
     public String getTable() {
-        return "Model";
+        return "PO_Quotation_Master";
     }
     
     /**
@@ -196,7 +197,7 @@ public class Model_PO_Quotation_Master implements GEntity{
         pnEditMode = EditMode.ADDNEW;
         
         //replace with the primary key column info
-        setTransactionNumber(MiscUtil.getNextCode(getTable(), "sModelCde", true, poGRider.getConnection(), poGRider.getBranchCode()));
+        setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
         
         poJSON = new JSONObject();
         poJSON.put("result", "success");
@@ -255,7 +256,7 @@ public class Model_PO_Quotation_Master implements GEntity{
             String lsSQL;
             if (pnEditMode == EditMode.ADDNEW){
                 //replace with the primary key column info
-                setTransactionNumber(MiscUtil.getNextCode(getTable(), "sModelCde", true, poGRider.getConnection(), poGRider.getBranchCode()));
+                setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
                 
                 lsSQL = makeSQL();
                 
@@ -279,7 +280,7 @@ public class Model_PO_Quotation_Master implements GEntity{
                 
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sModelCde = " + SQLUtil.toSQL(this.getTransactionNumber()), "xSupplier»xAddressx»xCPerson1»xCPPosit1»xCPMobil1»xTermName»xCategrNm»xInvTypNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()), "xSupplier»xAddressx»xCPerson1»xCPPosit1»xCPMobil1»xTermName»xCategrNm»xInvTypNm");
                     
                     if (!lsSQL.isEmpty()){
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
@@ -395,6 +396,17 @@ public class Model_PO_Quotation_Master implements GEntity{
         return (String) getValue("sSupplier");
     }
     
+    public JSONObject setSupplierName(String fsValue){
+        return setValue("xSupplier", fsValue);
+    }
+    
+    /**
+     * @return The Supplier of this record. 
+     */
+    public String getSupplierName(){
+        return (String) getValue("xSupplier");
+    }
+    
      /**
      * Sets the AddressID of this record.
      * 
@@ -503,15 +515,15 @@ public class Model_PO_Quotation_Master implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setGrossAmount(BigDecimal fnValue){
+    public JSONObject setGrossAmount(Number fnValue){
         return setValue("nGrossAmt", fnValue);
     }
     
     /**
      * @return The GrossAmount of this record. 
      */
-    public BigDecimal getGrossAmount(){
-        return (BigDecimal) getValue("nGrossAmt");
+    public Number getGrossAmount(){
+        return (Number) getValue("nGrossAmt");
     }
     
     /**
@@ -520,15 +532,15 @@ public class Model_PO_Quotation_Master implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setDiscount(BigDecimal fnValue){
+    public JSONObject setDiscount(Number fnValue){
         return setValue("nDiscount", fnValue);
     }
     
     /**
      * @return The Discount of this record. 
      */
-    public BigDecimal getDiscount(){
-        return (BigDecimal) getValue("nDiscount");
+    public Number getDiscount(){
+        return (Number) getValue("nDiscount");
     }
     
     /**
@@ -537,15 +549,15 @@ public class Model_PO_Quotation_Master implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setAddDiscx(BigDecimal fnValue){
+    public JSONObject setAddDiscx(Number fnValue){
         return setValue("nAddDiscx", fnValue);
     }
     
     /**
      * @return The AddDiscx of this record. 
      */
-    public BigDecimal getAddDiscx(){
-        return (BigDecimal) getValue("nAddDiscx");
+    public Number getAddDiscx(){
+        return (Number) getValue("nAddDiscx");
     }
     
     /**
@@ -554,15 +566,15 @@ public class Model_PO_Quotation_Master implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setVatRatex(BigDecimal fnValue){
+    public JSONObject setVatRatex(Number fnValue){
         return setValue("nVatRatex", fnValue);
     }
     
     /**
      * @return The VatRatex of this record. 
      */
-    public BigDecimal getVatRatex(){
-        return (BigDecimal) getValue("nVatRatex");
+    public Number getVatRatex(){
+        return (Number) getValue("nVatRatex");
     }
     
     /**
@@ -571,15 +583,15 @@ public class Model_PO_Quotation_Master implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setVatAmtxx(BigDecimal fnValue){
+    public JSONObject setVatAmtxx(Number fnValue){
         return setValue("nVatAmtxx", fnValue);
     }
     
     /**
      * @return The VatAmtxx of this record. 
      */
-    public BigDecimal getVatAmtxx(){
-        return (BigDecimal) getValue("nVatAmtxx");
+    public Number getVatAmtxx(){
+        return (Number) getValue("nVatAmtxx");
     }
     
     /**
@@ -605,15 +617,15 @@ public class Model_PO_Quotation_Master implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setTWithHld(BigDecimal fnValue){
+    public JSONObject setTWithHld(Number fnValue){
         return setValue("nTWithHld", fnValue);
     }
     
     /**
      * @return The TWithHld of this record. 
      */
-    public BigDecimal getTWithHld(){
-        return (BigDecimal) getValue("nTWithHld");
+    public Number getTWithHld(){
+        return (Number) getValue("nTWithHld");
     }
     
     /**
@@ -622,15 +634,15 @@ public class Model_PO_Quotation_Master implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setFreightx(BigDecimal fnValue){
+    public JSONObject setFreightx(Number fnValue){
         return setValue("nFreightx", fnValue);
     }
     
     /**
      * @return The Freight of this record. 
      */
-    public BigDecimal getFreightx(){
-        return (BigDecimal) getValue("nFreightx");
+    public Number getFreightx(){
+        return (Number) getValue("nFreightx");
     }
     
     /**
@@ -639,15 +651,15 @@ public class Model_PO_Quotation_Master implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setTransactionTotal(BigDecimal fnValue){
+    public JSONObject setTransactionTotal(Number fnValue){
         return setValue("nTranTotl", fnValue);
     }
     
     /**
      * @return The TransactionTotal of this record. 
      */
-    public BigDecimal getTransactionTotal(){
-        return (BigDecimal) getValue("nTranTotl");
+    public Number getTransactionTotal(){
+        return (Number) getValue("nTranTotl");
     }
     
     /**
@@ -673,15 +685,15 @@ public class Model_PO_Quotation_Master implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setEntryNumber(Integer fnValue){
+    public JSONObject setEntryNumber(Number fnValue){
         return setValue("nEntryNox", fnValue);
     }
     
     /**
      * @return The EntryNumber of this record. 
      */
-    public Integer getEntryNumber(){
-        return (Integer) getValue("nEntryNox");
+    public Number getEntryNumber(){
+        return (Number) getValue("nEntryNox");
     }
     
     /**
@@ -699,6 +711,17 @@ public class Model_PO_Quotation_Master implements GEntity{
      */
     public String getCategoryCode(){
         return (String) getValue("sCategrCd");
+    }
+    
+    public JSONObject setCategoryName(String fsValue){
+        return setValue("xCategrNm", fsValue);
+    }
+    
+    /**
+     * @return The CategoryCode of this record. 
+     */
+    public String getCategoryName(){
+        return (String) getValue("xCategrNm");
     }
     
      /**
@@ -829,25 +852,80 @@ public class Model_PO_Quotation_Master implements GEntity{
         return MiscUtil.makeSQL(this, "xSupplier»xAddressx»xCPerson1»xCPPosit1»xCPMobil1»xTermName»xCategrNm»xInvTypNm");
     }
     
-    private void initialize(){
+    public String makeSelectSQL() {
+        return MiscUtil.makeSelect(this, "xSupplier»xAddressx»xCPerson1»xCPPosit1»xCPMobil1»xTermName»xCategrNm»xInvTypNm");
+    }
+    
+    public String getSQL() {
+        String lsSQL = "SELECT" +
+                            "  a.sTransNox" + 
+                            ", a.sReferNox" + 
+                            ", a.sSupplier" + 
+                            ", a.sAddrssID" + 
+                            ", a.sContctID" + 
+                            ", a.dTransact" + 
+                            ", a.dReferDte" + 
+                            ", a.sTermCode" + 
+                            ", a.dValidity" + 
+                            ", a.nGrossAmt" + 
+                            ", a.nDiscount" + 
+                            ", a.nAddDiscx" + 
+                            ", a.nVatRatex" + 
+                            ", a.nVatAmtxx" + 
+                            ", a.cVATAdded" + 
+                            ", a.nTWithHld" + 
+                            ", a.nFreightx" + 
+                            ", a.nTranTotl" + 
+                            ", a.sRemarksx" + 
+                            ", a.nEntryNox" + 
+                            ", a.sCategrCd" + 
+                            ", a.cTranStat" + 
+                            ", a.sPrepared" + 
+                            ", a.dPrepared" + 
+                            ", a.sModified" + 
+                            ", a.dModified" +
+                            ", b.sCompnyNm xSupplier" + 
+                            ", TRIM(CONCAT(IFNULL(c.sHouseNox, ''), ' ', IFNULL(c.sAddressx, ''), ', ', IFNULL(h.sBrgyName, ''), ' ', IFNULL(i.sTownName, ''))) xAddressx" +
+                            ", d.sCPerson1 xCPerson1" +
+                            ", d.sCPPosit1 xCPPosit1" +
+                            ", d.sMobileNo xCPMobil1" +
+                            ", e.sDescript xTermName" +
+                            ", f.sDescript xCategrNm" +
+                            ", g.sDescript xInvTypNm" +
+                        " FROM " + getTable() + " a"+ 
+                            " LEFT JOIN Client_Master b ON a.sSupplier = b.sClientID" +
+                            " LEFT JOIN Client_Address c" +
+                                " LEFT JOIN Barangay h ON c.sBrgyIDxx = h.sBrgyIDxx" + 
+                                " LEFT JOIN TownCity i ON c.sTownIDxx = i.sTownIDxx" +
+                            " ON a.sAddrssID = c.sAddrssID" +
+                            " LEFT JOIN Client_Institution_Contact_Person d ON a.sContctID = d.sContctID" +
+                            " LEFT JOIN Term e ON a.sTermCode = e.sTermCode" +
+                            " LEFT JOIN Category f" + 
+                                " LEFT JOIN Inv_Type g ON f.sInvTypCd = g.sInvTypCd" +
+                            " ON a.sCategrCd = f.sCategrCd";
+
+        return lsSQL;
+    }
+    
+    private void initialize() {
         try {
             poEntity = MiscUtil.xml2ResultSet(System.getProperty("sys.default.path.metadata") + XML, getTable());
-            
+
             poEntity.last();
             poEntity.moveToInsertRow();
 
-            MiscUtil.initRowSet(poEntity);      
-            poEntity.updateString("cRecdStat", RecordStatus.ACTIVE);
-            
+            MiscUtil.initRowSet(poEntity);
+            poEntity.updateString("cTranStat", TransactionStatus.STATE_OPEN);
+
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
 
             poEntity.absolute(1);
-            
+
             pnEditMode = EditMode.UNKNOWN;
         } catch (SQLException e) {
             e.printStackTrace();
             System.exit(1);
         }
-    } 
+    }
 }
