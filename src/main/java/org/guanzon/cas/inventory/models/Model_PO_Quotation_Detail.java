@@ -451,8 +451,8 @@ public class Model_PO_Quotation_Detail implements GEntity{
     /**
      * @return The UnitPrce of this record. 
      */
-    public Number getUnitPrice(){
-        return (Number) getValue("nUnitPrce");
+    public Object getUnitPrice(){
+        return (Object) getValue("nUnitPrce");
     }
     
     /**

@@ -198,7 +198,9 @@ public class Model_PO_Quotation_Master implements GEntity{
         
         //replace with the primary key column info
         setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
-        
+        setTransaction(poGRider.getServerDate());
+        setModifiedDate(poGRider.getServerDate());
+        setValidity(poGRider.getServerDate());
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         return poJSON;
@@ -214,11 +216,11 @@ public class Model_PO_Quotation_Master implements GEntity{
     public JSONObject openRecord(String fsCondition) {
         poJSON = new JSONObject();
         
-        String lsSQL = MiscUtil.makeSelect(this, "xSupplier»xAddressx»xCPerson1»xCPPosit1»xCPMobil1»xTermName»xCategrNm»xInvTypNm");
-        
+        String lsSQL = getSQL();
+//        
+//        lsSQL = MiscUtil.makeSelect(this, "xSupplier»xAddressx»xCPerson1»xCPPosit1»xCPMobil1»xTermName»xCategrNm»xInvTypNm");
         //replace the condition based on the primary key column of the record
-        lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
-        
+        lsSQL = MiscUtil.addCondition(lsSQL, " sTransNox = " + SQLUtil.toSQL(fsCondition));
         ResultSet loRS = poGRider.executeQuery(lsSQL);
         
         try {
@@ -492,6 +494,17 @@ public class Model_PO_Quotation_Master implements GEntity{
         return (String) getValue("sTermCode");
     }
     
+    public JSONObject setTermName(String fsValue){
+        return setValue("xTermName", fsValue);
+    }
+    
+    /**
+     * @return The TermCode of this record. 
+     */
+    public String getTermName(){
+        return (String) getValue("xTermName");
+    }
+    
     /**
      * Sets the Validity of this record.
      * 
@@ -522,8 +535,8 @@ public class Model_PO_Quotation_Master implements GEntity{
     /**
      * @return The GrossAmount of this record. 
      */
-    public Number getGrossAmount(){
-        return (Number) getValue("nGrossAmt");
+    public Object getGrossAmount(){
+        return (Object) getValue("nGrossAmt");
     }
     
     /**
@@ -539,8 +552,8 @@ public class Model_PO_Quotation_Master implements GEntity{
     /**
      * @return The Discount of this record. 
      */
-    public Number getDiscount(){
-        return (Number) getValue("nDiscount");
+    public Object getDiscount(){
+        return (Object) getValue("nDiscount");
     }
     
     /**
@@ -556,8 +569,8 @@ public class Model_PO_Quotation_Master implements GEntity{
     /**
      * @return The AddDiscx of this record. 
      */
-    public Number getAddDiscx(){
-        return (Number) getValue("nAddDiscx");
+    public Object getAddDiscx(){
+        return (Object) getValue("nAddDiscx");
     }
     
     /**
@@ -573,8 +586,8 @@ public class Model_PO_Quotation_Master implements GEntity{
     /**
      * @return The VatRatex of this record. 
      */
-    public Number getVatRatex(){
-        return (Number) getValue("nVatRatex");
+    public Object getVatRatex(){
+        return (Object) getValue("nVatRatex");
     }
     
     /**
@@ -590,8 +603,8 @@ public class Model_PO_Quotation_Master implements GEntity{
     /**
      * @return The VatAmtxx of this record. 
      */
-    public Number getVatAmtxx(){
-        return (Number) getValue("nVatAmtxx");
+    public Object getVatAmtxx(){
+        return (Object) getValue("nVatAmtxx");
     }
     
     /**
@@ -624,8 +637,8 @@ public class Model_PO_Quotation_Master implements GEntity{
     /**
      * @return The TWithHld of this record. 
      */
-    public Number getTWithHld(){
-        return (Number) getValue("nTWithHld");
+    public Object getTWithHld(){
+        return (Object) getValue("nTWithHld");
     }
     
     /**
@@ -641,8 +654,8 @@ public class Model_PO_Quotation_Master implements GEntity{
     /**
      * @return The Freight of this record. 
      */
-    public Number getFreightx(){
-        return (Number) getValue("nFreightx");
+    public Object getFreightx(){
+        return (Object) getValue("nFreightx");
     }
     
     /**
@@ -658,8 +671,8 @@ public class Model_PO_Quotation_Master implements GEntity{
     /**
      * @return The TransactionTotal of this record. 
      */
-    public Number getTransactionTotal(){
-        return (Number) getValue("nTranTotl");
+    public Object getTransactionTotal(){
+        return (Object) getValue("nTranTotl");
     }
     
     /**
@@ -900,7 +913,7 @@ public class Model_PO_Quotation_Master implements GEntity{
                             " ON a.sAddrssID = c.sAddrssID" +
                             " LEFT JOIN Client_Institution_Contact_Person d ON a.sContctID = d.sContctID" +
                             " LEFT JOIN Term e ON a.sTermCode = e.sTermCode" +
-                            " LEFT JOIN Category f" + 
+                            " LEFT JOIN Category_Level2 f" + 
                                 " LEFT JOIN Inv_Type g ON f.sInvTypCd = g.sInvTypCd" +
                             " ON a.sCategrCd = f.sCategrCd";
 
