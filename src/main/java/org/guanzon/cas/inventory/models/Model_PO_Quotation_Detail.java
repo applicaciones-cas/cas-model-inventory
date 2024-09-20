@@ -283,7 +283,7 @@ public class Model_PO_Quotation_Detail implements GEntity{
                 Model_PO_Quotation_Detail loOldEntity = new Model_PO_Quotation_Detail(poGRider);
                 
                 //replace with the primary key column info
-                JSONObject loJSON = loOldEntity.openRecord(this.getTransactionNumber());
+                JSONObject loJSON = loOldEntity.openRecord(this.getTransactionNumber(), this.getEntryNumber().toString());
                 
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
