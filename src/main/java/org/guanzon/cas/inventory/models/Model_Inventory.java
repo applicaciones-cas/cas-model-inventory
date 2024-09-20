@@ -224,13 +224,13 @@ public class Model_Inventory implements GEntity {
     @Override
     public JSONObject openRecord(String fsCondition) {
         poJSON = new JSONObject();
-
         String lsSQL = getSQL();
 
         //replace the condition based on the primary key column of the record
         lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsCondition));
         System.out.print("this is lsSQL openrec == " + lsSQL + "\n");
         ResultSet loRS = poGRider.executeQuery(lsSQL);
+        
         try {
             if (loRS.next()) {
                 for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++) {
@@ -1197,7 +1197,7 @@ public class Model_Inventory implements GEntity {
     }
 
     public String getSQL(){
-        String lsSQL = "SELECT" +
+        String lsSQL = "SELECT"+
                             "  a.sStockIDx" +
                             ", a.sBarCodex" +
                             ", a.sDescript" +
@@ -1255,9 +1255,9 @@ public class Model_Inventory implements GEntity {
                             " LEFT JOIN Inv_Type j ON c.sInvTypCd = j.sInvTypCd" +
                             " LEFT JOIN Inventory k ON a.sSupersed = k.sStockIDx";
 //        /validate result based on the assigned inventory type.
-        if (!System.getProperty("store.inventory.industry").isEmpty())
-            lsSQL = MiscUtil.addCondition(lsSQL, " a.sCategCd1 IN " + CommonUtils.getParameter(System.getProperty("store.inventory.industry")));
-        
+//        if (System.getProperty("store.inventory.industry").isEmpty())
+//            lsSQL = MiscUtil.addCondition(lsSQL, " a.sCategCd1 IN " + CommonUtils.getParameter(System.getProperty("store.inventory.industry")));
+        System.out.println(lsSQL);
         return lsSQL;
     }
     private void initialize() {
