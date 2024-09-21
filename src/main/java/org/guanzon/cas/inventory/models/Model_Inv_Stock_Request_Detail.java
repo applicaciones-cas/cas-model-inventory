@@ -305,6 +305,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
                 lsSQL = makeSQL();
                 
                 if (!lsSQL.isEmpty()){
+                    System.out.println(lsSQL);
                     if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
                         poJSON.put("result", "success");
                         poJSON.put("message", "Record saved successfully.");
@@ -325,7 +326,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
                 
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()) +  " AND sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()) +  " AND sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm»nMinLevel");
                     System.out.println("update sql = " + lsSQL);
                     if (!lsSQL.isEmpty()){
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
@@ -489,8 +490,8 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
     /**
      * @return The Record Order of this record. 
      */
-    public int getRecordOrder(){
-        return (int) getValue("nRecOrder");
+    public Object getRecordOrder(){
+        return (Object) getValue("nRecOrder");
     }
     
     /**
@@ -909,6 +910,27 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
         return setValue("xMeasurNm", fsValue);
     }
     
+    
+    /**
+     * Sets the nMinLevel of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public Object getMinimumLevel() {
+        return (Object) getValue("nMinLevel");
+    }
+    
+    /**
+     * Sets the nMinLevel of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setMinimumLevel(int fsValue) {
+        return setValue("nMinLevel", fsValue);
+    }
+    
 
     
     /**
@@ -917,7 +939,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
      * @return SQL Statement
      */
     public String makeSQL(){
-        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm");
+        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm»nMinLevel");
     }
     
     /**
@@ -926,7 +948,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
      * @return SQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm");
+        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm»nMinLevel");
     }
     
     /**
@@ -966,6 +988,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
                             ", g.sDescript xModelDsc" +
                             ", h.sDescript xColorNme" +
                             ", i.sMeasurNm xMeasurNm" +
+                            ", j.nMinLevel" +
                         " FROM Inv_Stock_Request_Detail a" + 
                             " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                             " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
@@ -974,7 +997,8 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
                             " LEFT JOIN Brand f ON b.sBrandCde = f.sBrandCde" +
                             " LEFT JOIN Model g ON b.sModelCde = g.sModelCde" +
                             " LEFT JOIN Color h ON b.sColorCde = h.sColorCde" +
-                            " LEFT JOIN Measure i ON b.sMeasurID = i.sMeasurID" ;
+                            " LEFT JOIN Measure i ON b.sMeasurID = i.sMeasurID"+
+                            " LEFT JOIN Inv_Master j ON b.sStockIDx = j.sStockIDx" ;
     }
     
     private void initialize(){
