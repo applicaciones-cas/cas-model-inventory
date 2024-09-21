@@ -102,7 +102,7 @@ public class Model_PO_Quotation_Detail implements GEntity{
      */
     @Override
     public String getTable() {
-        return "Made";
+        return "PO_Quotation_Detail";
     }
     
     /**
@@ -196,7 +196,7 @@ public class Model_PO_Quotation_Detail implements GEntity{
         pnEditMode = EditMode.ADDNEW;
         
         //replace with the primary key column info
-        setTransactionNumber(MiscUtil.getNextCode(getTable(), "sMadeIDxx", true, poGRider.getConnection(), poGRider.getBranchCode()));
+        setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
         
         poJSON = new JSONObject();
         poJSON.put("result", "success");
@@ -212,22 +212,31 @@ public class Model_PO_Quotation_Detail implements GEntity{
     @Override
     public JSONObject openRecord(String fsCondition) {
         poJSON = new JSONObject();
-        
-        String lsSQL = MiscUtil.makeSelect(this, "xCategrNm»xInvTypNm");
-        
+        poJSON.put("result", "information");
+        poJSON.put("message", "Not supported yet.");
+
+        return poJSON;
+    }
+    
+    public JSONObject openRecord(String lsFilter, String fsCondition) {
+        poJSON = new JSONObject();
+
+        String lsSQL =getSQL();
+
         //replace the condition based on the primary key column of the record
-        lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
-        
+        lsSQL = MiscUtil.addCondition(lsSQL, "sTransNox = " + SQLUtil.toSQL(lsFilter)
+                + "AND nEntryNox = " + SQLUtil.toSQL(fsCondition));
+
         ResultSet loRS = poGRider.executeQuery(lsSQL);
-        
+
         try {
-            if (loRS.next()){
-                for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++){
+            if (loRS.next()) {
+                for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++) {
                     setValue(lnCtr, loRS.getObject(lnCtr));
                 }
-                
+
                 pnEditMode = EditMode.UPDATE;
-                
+
                 poJSON.put("result", "success");
                 poJSON.put("message", "Record loaded successfully.");
             } else {
@@ -238,7 +247,7 @@ public class Model_PO_Quotation_Detail implements GEntity{
             poJSON.put("result", "error");
             poJSON.put("message", e.getMessage());
         }
-        
+
         return poJSON;
     }
 
@@ -250,13 +259,12 @@ public class Model_PO_Quotation_Detail implements GEntity{
     @Override
     public JSONObject saveRecord() {
         poJSON = new JSONObject();
-        
+        setModifiedDate(poGRider.getServerDate());
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
             String lsSQL;
             if (pnEditMode == EditMode.ADDNEW){
                 //replace with the primary key column info
-                setTransactionNumber(MiscUtil.getNextCode(getTable(), "sMadeIDxx", true, poGRider.getConnection(), poGRider.getBranchCode()));
-                
+//                setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
                 lsSQL = makeSQL();
                 
                 if (!lsSQL.isEmpty()){
@@ -275,11 +283,12 @@ public class Model_PO_Quotation_Detail implements GEntity{
                 Model_PO_Quotation_Detail loOldEntity = new Model_PO_Quotation_Detail(poGRider);
                 
                 //replace with the primary key column info
-                JSONObject loJSON = loOldEntity.openRecord(this.getTransactionNumber());
+                JSONObject loJSON = loOldEntity.openRecord(this.getTransactionNumber(), this.getEntryNumber().toString());
                 
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sMadeIDxx = " + SQLUtil.toSQL(this.getTransactionNumber()), "xCategrNm»xInvTypNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber())
+                            + "AND nEntryNox = " + SQLUtil.toSQL(this.getEntryNumber().toString()), "xCategrNm»xInvTypNm");
                     
                     if (!lsSQL.isEmpty()){
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
@@ -435,15 +444,15 @@ public class Model_PO_Quotation_Detail implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setUnitPrice(BigDecimal fnValue){
+    public JSONObject setUnitPrice(Number fnValue){
         return setValue("nUnitPrce", fnValue);
     }
     
     /**
      * @return The UnitPrce of this record. 
      */
-    public BigDecimal getUnitPrice(){
-        return (BigDecimal) getValue("nUnitPrce");
+    public Object getUnitPrice(){
+        return (Object) getValue("nUnitPrce");
     }
     
     /**
@@ -452,15 +461,15 @@ public class Model_PO_Quotation_Detail implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setDiscRate(BigDecimal fnValue){
+    public JSONObject setDiscRate(Number fnValue){
         return setValue("nDiscRate", fnValue);
     }
     
     /**
      * @return The DiscRate of this record. 
      */
-    public BigDecimal getDiscRate(){
-        return (BigDecimal) getValue("nDiscRate");
+    public Number getDiscRate(){
+        return (Number) getValue("nDiscRate");
     }
     
     /**
@@ -469,15 +478,15 @@ public class Model_PO_Quotation_Detail implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setDiscAmtx(BigDecimal fnValue){
+    public JSONObject setDiscAmtx(Number fnValue){
         return setValue("nDiscAmtx", fnValue);
     }
     
     /**
      * @return The Bank Branch Name of this record. 
      */
-    public BigDecimal getDiscAmtx(){
-        return (BigDecimal) getValue("nDiscAmtx");
+    public Number getDiscAmtx(){
+        return (Number) getValue("nDiscAmtx");
     }
     
     /**
@@ -557,25 +566,51 @@ public class Model_PO_Quotation_Detail implements GEntity{
         return MiscUtil.makeSQL(this, "xCategrNm»xInvTypNm");
     }
     
-    private void initialize(){
+    public String makeSelectSQL() {
+        return MiscUtil.makeSelect(this, "xCategrNm»xInvTypNm");
+    }
+    
+    public String getSQL() {
+        String lsSQL;
+
+        lsSQL = "SELECT" +
+                            "  a.sTransNox" +
+                            ", a.nEntryNox" +
+                            ", a.sStockIDx" +
+                            ", a.sDescript" +
+                            ", a.nQuantity" +
+                            ", a.nUnitPrce" +
+                            ", a.nDiscRate" +
+                            ", a.nDiscAmtx" +
+                            ", a.dModified" +
+                            ", c.sDescript xCategrNm" +
+                            ", d.sDescript xInvTypNm" +
+                        " FROM " + getTable() + " a"+ 
+                            " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
+                            " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
+                            " LEFT JOIN Inv_Type d ON b.sInvTypCd = d.sInvTypCd";
+        return lsSQL;
+    }
+    
+    private void initialize() {
         try {
             poEntity = MiscUtil.xml2ResultSet(System.getProperty("sys.default.path.metadata") + XML, getTable());
-            
+
             poEntity.last();
             poEntity.moveToInsertRow();
 
-            MiscUtil.initRowSet(poEntity);      
-            poEntity.updateString("cRecdStat", RecordStatus.ACTIVE);
-            
+            MiscUtil.initRowSet(poEntity);
+
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
 
             poEntity.absolute(1);
-            
-            pnEditMode = EditMode.UNKNOWN;
+            newRecord();
+
         } catch (SQLException e) {
             e.printStackTrace();
             System.exit(1);
         }
     } 
 }
+
