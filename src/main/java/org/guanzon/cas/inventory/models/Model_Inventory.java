@@ -600,9 +600,9 @@ public class Model_Inventory implements GEntity {
      * @return The sBrandCde of this record.
      */
     
-    public String getBrandCode() {
+    public String getBrandID() {
          System.out.println("\nto get sBrandCde == " + (String)getValue("sBrandCde"));
-        return (String) getValue("sBrandCde");
+        return (String) getValue("sBrandIDx");
     }
     
     /**
@@ -611,9 +611,9 @@ public class Model_Inventory implements GEntity {
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setBrandCode(String fsValue) {
-        System.out.println("\nto set sBrandCde == " + fsValue);
-        return setValue("sBrandCde", fsValue);
+    public JSONObject setBrandID(String fsValue) {
+        System.out.println("\nto set sBrandIDx == " + fsValue);
+        return setValue("sBrandIDx", fsValue);
     }
     
     /**
@@ -638,9 +638,9 @@ public class Model_Inventory implements GEntity {
     /**
      * @return The sModelCde of this record.
      */
-    public String getModelCode() {
-         System.out.println("\nto get sModelCde == " + (String)getValue("sModelCde"));
-        return (String) getValue("sModelCde");
+    public String getModelID() {
+         System.out.println("\nto get sModelIDx == " + (String)getValue("sModelIDx"));
+        return (String) getValue("sModelIDx");
     }
     
     /**
@@ -649,9 +649,9 @@ public class Model_Inventory implements GEntity {
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setModelCode(String fsValue) {
-        System.out.println("\nto set sModelCde == " + fsValue);
-        return setValue("sModelCde", fsValue);
+    public JSONObject setModelID(String fsValue) {
+        System.out.println("\nto set sModelIDx == " + fsValue);
+        return setValue("sModelIDx", fsValue);
     }
 
 
@@ -676,8 +676,8 @@ public class Model_Inventory implements GEntity {
     /**
      * @return The sColorCde of this record.
      */
-    public String getColorCode() {
-        return (String) getValue("sColorCde");
+    public String getColorID() {
+        return (String) getValue("sColorIDx");
     }
     
     /**
@@ -686,8 +686,8 @@ public class Model_Inventory implements GEntity {
      * @param fsValue
      * @return result as success/failed
      */
-    public JSONObject setColorCode(String fsValue) {
-        return setValue("sColorCde", fsValue);
+    public JSONObject setColorID(String fsValue) {
+        return setValue("sColorIDx", fsValue);
     }
 
 
@@ -1207,9 +1207,9 @@ public class Model_Inventory implements GEntity {
                             ", a.sCategCd2" +
                             ", a.sCategCd3" +
                             ", a.sCategCd4" +
-                            ", a.sBrandCde" +
-                            ", a.sModelCde" +
-                            ", a.sColorCde" +
+                            ", a.sBrandIDx" +
+                            ", a.sModelIDx" +
+                            ", a.sColorIDx" +
                             ", a.sMeasurID" +
                             ", a.sInvTypCd" +
                             ", a.nUnitPrce" +
@@ -1248,9 +1248,9 @@ public class Model_Inventory implements GEntity {
                             " LEFT JOIN Category_Level2 c ON a.sCategCd2 = c.sCategrCd" +
                             " LEFT JOIN Category_Level3 d ON a.sCategCd3 = d.sCategrCd" +
                             " LEFT JOIN Category_Level4 e ON a.sCategCd4 = e.sCategrCd" +
-                            " LEFT JOIN Brand f ON a.sBrandCde = f.sBrandCde" +
-                            " LEFT JOIN Model g ON a.sModelCde = g.sModelCde" +
-                            " LEFT JOIN Color h ON a.sColorCde = h.sColorCde" +
+                            " LEFT JOIN Brand f ON a.sBrandIDx = f.sBrandIDx" +
+                            " LEFT JOIN Model g ON a.sModelIDx = g.sModelIDx" +
+                            " LEFT JOIN Color h ON a.sColorIDx = h.sColorIDx" +
                             " LEFT JOIN Measure i ON a.sMeasurID = i.sMeasurID" +
                             " LEFT JOIN Inv_Type j ON c.sInvTypCd = j.sInvTypCd" +
                             " LEFT JOIN Inventory k ON a.sSupersed = k.sStockIDx";
@@ -1279,9 +1279,9 @@ public class Model_Inventory implements GEntity {
             poEntity.updateObject("nMaxLevel", 0.0);
             poEntity.updateObject("nShlfLife", 0);
             poEntity.updateObject("cSerialze", "0");
-            poEntity.updateObject("sBrandCde", "");
-            poEntity.updateObject("sModelCde", "");
-            poEntity.updateObject("sColorCde", "");
+            poEntity.updateObject("sBrandIDx", "");
+            poEntity.updateObject("sModelIDx", "");
+            poEntity.updateObject("sColorIDx", "");
             poEntity.updateObject("sMeasurID", "");
             poEntity.updateObject("sCategCd2", "");
 
