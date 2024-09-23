@@ -1,27 +1,26 @@
 package org.guanzon.cas.inventory.models;
 
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
 import javax.sql.rowset.CachedRowSet;
+import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.RecordStatus;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.iface.GEntity;
 import org.json.simple.JSONObject;
 
 
 /**
- * @author Michael Cuison
+ * @author unclejo
  */
-public class Model_PO_Quotation_Master implements GEntity{
-    final String XML = "Model_PO_Quotation_Master.xml";
+public class Model_Inv_Stock_Req_Cancel_Master implements GEntity{
+    final String XML = "Model_Inv_Stock_Req_Cancel_Master.xml";
     
     GRider poGRider;                //application driver
     CachedRowSet poEntity;          //rowset
@@ -33,7 +32,7 @@ public class Model_PO_Quotation_Master implements GEntity{
      * 
      * @param foValue - GhostRider Application Driver
      */
-    public Model_PO_Quotation_Master(GRider foValue){
+    public Model_Inv_Stock_Req_Cancel_Master(GRider foValue){
         if (foValue == null){
             System.err.println("Application Driver is not set.");
             System.exit(1);
@@ -103,7 +102,7 @@ public class Model_PO_Quotation_Master implements GEntity{
      */
     @Override
     public String getTable() {
-        return "PO_Quotation_Master";
+        return "Inv_Stock_Req_Cancel_Master";
     }
     
     /**
@@ -197,10 +196,9 @@ public class Model_PO_Quotation_Master implements GEntity{
         pnEditMode = EditMode.ADDNEW;
         
         //replace with the primary key column info
+//        setTransactionNumber(MiscUtil.getNextCode(getTable(), "sMadeIDxx", true, poGRider.getConnection(), poGRider.getBranchCode()));
         setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
-        setTransaction(poGRider.getServerDate());
-        setModifiedDate(poGRider.getServerDate());
-        setValidity(poGRider.getServerDate());
+        
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         return poJSON;
@@ -216,11 +214,14 @@ public class Model_PO_Quotation_Master implements GEntity{
     public JSONObject openRecord(String fsCondition) {
         poJSON = new JSONObject();
         
+//        String lsSQL = MiscUtil.makeSelect(this, "xCategrNm");
         String lsSQL = getSQL();
-//        
-//        lsSQL = MiscUtil.makeSelect(this, "xSupplier»xAddressx»xCPerson1»xCPPosit1»xCPMobil1»xTermName»xCategrNm»xInvTypNm");
+        
         //replace the condition based on the primary key column of the record
-        lsSQL = MiscUtil.addCondition(lsSQL, " sTransNox = " + SQLUtil.toSQL(fsCondition));
+//        lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
+        
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sTransNox = " + SQLUtil.toSQL(fsCondition));
+        
         ResultSet loRS = poGRider.executeQuery(lsSQL);
         
         try {
@@ -260,10 +261,12 @@ public class Model_PO_Quotation_Master implements GEntity{
                 //replace with the primary key column info
                 setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
                 
+                setModifiedDate(poGRider.getServerDate());
+                setModifiedBy(poGRider.getUserID());
                 lsSQL = makeSQL();
-                
+                System.out.println(lsSQL);
                 if (!lsSQL.isEmpty()){
-                    if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
+                    if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
                         poJSON.put("result", "success");
                         poJSON.put("message", "Record saved successfully.");
                     } else {
@@ -275,14 +278,16 @@ public class Model_PO_Quotation_Master implements GEntity{
                     poJSON.put("message", "No record to save.");
                 }
             } else {
-                Model_PO_Quotation_Master loOldEntity = new Model_PO_Quotation_Master(poGRider);
+                Model_Inv_Stock_Req_Cancel_Master loOldEntity = new Model_Inv_Stock_Req_Cancel_Master(poGRider);
                 
+                setModifiedDate(poGRider.getServerDate());
+                setModifiedBy(poGRider.getUserID());
                 //replace with the primary key column info
                 JSONObject loJSON = loOldEntity.openRecord(this.getTransactionNumber());
                 
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()), "xSupplier»xAddressx»xCPerson1»xCPPosit1»xCPMobil1»xTermName»xCategrNm»xInvTypNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()), "xBranchNm»xCategrNm");
                     
                     if (!lsSQL.isEmpty()){
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
@@ -365,85 +370,40 @@ public class Model_PO_Quotation_Master implements GEntity{
     }
     
     /**
-     * Sets the ReferenceNumber of this record.
+     * Sets the BranchCode of this record.
      * 
-     * @param fsValue 
+     * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setReferenceNumber(String fsValue){
-        return setValue("sReferNox", fsValue);
+    public JSONObject setBranchCode(String fnValue){
+        return setValue("sBranchCd", fnValue);
     }
     
     /**
-     * @return The ReferenceNumber of this record. 
+     * @return The BranchCode of this record. 
      */
-    public String getReferenceNumber(){
-        return (String) getValue("sReferNox");
+    public Integer getBranchCode(){
+        return (Integer) getValue("sBranchCd");
     }
     
      /**
-     * Sets the Supplier of this record.
+     * Sets the CategoryCode of this record.
      * 
      * @param fsValue 
      * @return result as success/failed
      */
-    public JSONObject setSupplier(String fsValue){
-        return setValue("sSupplier", fsValue);
+    public JSONObject setCategoryCode(String fsValue){
+        return setValue("sCategrCd", fsValue);
     }
     
     /**
-     * @return The Supplier of this record. 
+     * @return The CategoryCode of this record. 
      */
-    public String getSupplier(){
-        return (String) getValue("sSupplier");
-    }
-    
-    public JSONObject setSupplierName(String fsValue){
-        return setValue("xSupplier", fsValue);
-    }
-    
-    /**
-     * @return The Supplier of this record. 
-     */
-    public String getSupplierName(){
-        return (String) getValue("xSupplier");
+    public String getCategoryCode(){
+        return (String) getValue("sCategrCd");
     }
     
      /**
-     * Sets the AddressID of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setAddressID(String fsValue){
-        return setValue("sAddrssID", fsValue);
-    }
-    
-    /**
-     * @return The AddressID of this record. 
-     */
-    public String getAddressID(){
-        return (String) getValue("sAddrssID");
-    }
-    
-     /**
-     * Sets the ContactID of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setContactID(String fsValue){
-        return setValue("sContctID", fsValue);
-    }
-    
-    /**
-     * @return The ContactID of this record. 
-     */
-    public String getContactID(){
-        return (String) getValue("sContctID");
-    }
-    
-    /**
      * Sets the Transaction of this record.
      * 
      * @param fdValue 
@@ -460,219 +420,21 @@ public class Model_PO_Quotation_Master implements GEntity{
         return (Date) getValue("dTransact");
     }
     
-    /**
-     * Sets the ReferenceDate of this record.
-     * 
-     * @param fdValue 
-     * @return result as success/failed
-     */
-    public JSONObject setReferenceDate(Date fdValue){
-        return setValue("dReferDte", fdValue);
-    }
-    
-    /**
-     * @return The ReferenceDate of this record. 
-     */
-    public Date getReferenceDate(){
-        return (Date) getValue("dReferDte");
-    }
-    
-    /**
-     * Sets the TermCode of this record.
+     /**
+     * Sets the Order Number of this record.
      * 
      * @param fsValue 
      * @return result as success/failed
      */
-    public JSONObject setTermCode(String fsValue){
-        return setValue("sTermCode", fsValue);
+    public JSONObject setOrderNumber(String fsValue){
+        return setValue("sOrderNox", fsValue);
     }
     
     /**
-     * @return The TermCode of this record. 
+     * @return The Order Number of this record. 
      */
-    public String getTermCode(){
-        return (String) getValue("sTermCode");
-    }
-    
-    public JSONObject setTermName(String fsValue){
-        return setValue("xTermName", fsValue);
-    }
-    
-    /**
-     * @return The TermCode of this record. 
-     */
-    public String getTermName(){
-        return (String) getValue("xTermName");
-    }
-    
-    /**
-     * Sets the Validity of this record.
-     * 
-     * @param fdValue 
-     * @return result as success/failed
-     */
-    public JSONObject setValidity(Date fdValue){
-        return setValue("dValidity", fdValue);
-    }
-    
-    /**
-     * @return The Validity of this record. 
-     */
-    public Date getValidity(){
-        return (Date) getValue("dValidity");
-    }
-    
-    /**
-     * Sets the GrossAmount of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setGrossAmount(Number fnValue){
-        return setValue("nGrossAmt", fnValue);
-    }
-    
-    /**
-     * @return The GrossAmount of this record. 
-     */
-    public Object getGrossAmount(){
-        return (Object) getValue("nGrossAmt");
-    }
-    
-    /**
-     * Sets the Discount of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setDiscount(Number fnValue){
-        return setValue("nDiscount", fnValue);
-    }
-    
-    /**
-     * @return The Discount of this record. 
-     */
-    public Object getDiscount(){
-        return (Object) getValue("nDiscount");
-    }
-    
-    /**
-     * Sets the AddDiscx of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setAddDiscx(Number fnValue){
-        return setValue("nAddDiscx", fnValue);
-    }
-    
-    /**
-     * @return The AddDiscx of this record. 
-     */
-    public Object getAddDiscx(){
-        return (Object) getValue("nAddDiscx");
-    }
-    
-    /**
-     * Sets the VatRatex of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setVatRatex(Number fnValue){
-        return setValue("nVatRatex", fnValue);
-    }
-    
-    /**
-     * @return The VatRatex of this record. 
-     */
-    public Object getVatRatex(){
-        return (Object) getValue("nVatRatex");
-    }
-    
-    /**
-     * Sets the VatAmtxx of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setVatAmtxx(Number fnValue){
-        return setValue("nVatAmtxx", fnValue);
-    }
-    
-    /**
-     * @return The VatAmtxx of this record. 
-     */
-    public Object getVatAmtxx(){
-        return (Object) getValue("nVatAmtxx");
-    }
-    
-    /**
-     * Sets the VATAdded of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setVATAdded(String fsValue){
-        return setValue("cVATAdded", fsValue);
-    }
-    
-    /**
-     * @return The VATAdded of this record. 
-     */
-    public String getVATAdded(){
-        return (String) getValue("cVATAdded");
-    }
-    
-    /**
-     * Sets the TWithHld of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setTWithHld(Number fnValue){
-        return setValue("nTWithHld", fnValue);
-    }
-    
-    /**
-     * @return The TWithHld of this record. 
-     */
-    public Object getTWithHld(){
-        return (Object) getValue("nTWithHld");
-    }
-    
-    /**
-     * Sets the Freight of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setFreightx(Number fnValue){
-        return setValue("nFreightx", fnValue);
-    }
-    
-    /**
-     * @return The Freight of this record. 
-     */
-    public Object getFreightx(){
-        return (Object) getValue("nFreightx");
-    }
-    
-    /**
-     * Sets the TransactionTotal of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setTransactionTotal(Number fnValue){
-        return setValue("nTranTotl", fnValue);
-    }
-    
-    /**
-     * @return The TransactionTotal of this record. 
-     */
-    public Object getTransactionTotal(){
-        return (Object) getValue("nTranTotl");
+    public String getOrderNumber(){
+        return (String) getValue("sOrderNox");
     }
     
     /**
@@ -693,51 +455,74 @@ public class Model_PO_Quotation_Master implements GEntity{
     }
     
     /**
+     * Sets the Approved of this record.
+     * 
+     * @param fsValue 
+     * @return result as success/failed
+     */
+    public JSONObject setApproved(String fsValue){
+        return setValue("sApproved", fsValue);
+    }
+    
+    /**
+     * @return The Approved of this record. 
+     */
+    public String getApproved(){
+        return (String) getValue("sApproved");
+    }
+    
+    /**
+     * Sets the Approved of this record.
+     * 
+     * @param fdValue 
+     * @return result as success/failed
+     */
+    public JSONObject setApprovedDate(Date fdValue){
+        return setValue("dApproved", fdValue);
+    }
+    
+    /**
+     * @return The Approved of this record. 
+     */
+    public Date getApprovedDate(){
+        return (Date) getValue("dApproved");
+    }
+    
+    /**
+     * Sets the ApproveCode of this record.
+     * 
+     * @param fsValue 
+     * @return result as success/failed
+     */
+    public JSONObject setApproveCode(String fsValue){
+        return setValue("sAprvCode", fsValue);
+    }
+    
+    /**
+     * @return The ApproveCode of this record. 
+     */
+    public String getApproveCode(){
+        return (String) getValue("sAprvCode");
+    }
+    
+    /**
      * Sets the EntryNumber of this record.
      * 
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setEntryNumber(Number fnValue){
+    public JSONObject setEntryNumber(Integer fnValue){
         return setValue("nEntryNox", fnValue);
     }
     
     /**
      * @return The EntryNumber of this record. 
      */
-    public Number getEntryNumber(){
-        return (Number) getValue("nEntryNox");
+    public Integer getEntryNumber(){
+        return (Integer) getValue("nEntryNox");
     }
     
     /**
-     * Sets the CategoryCode of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setCategoryCode(String fsValue){
-        return setValue("sCategrCd", fsValue);
-    }
-    
-    /**
-     * @return The CategoryCode of this record. 
-     */
-    public String getCategoryCode(){
-        return (String) getValue("sCategrCd");
-    }
-    
-    public JSONObject setCategoryName(String fsValue){
-        return setValue("xCategrNm", fsValue);
-    }
-    
-    /**
-     * @return The CategoryCode of this record. 
-     */
-    public String getCategoryName(){
-        return (String) getValue("xCategrNm");
-    }
-    
-     /**
      * Sets the TransactionStatus of this record.
      * 
      * @param fsValue 
@@ -754,72 +539,21 @@ public class Model_PO_Quotation_Master implements GEntity{
         return (String) getValue("cTranStat");
     }
     
-     /**
-     * Sets the Prepared of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setPrepared(String fsValue){
-        return setValue("sPrepared", fsValue);
-    }
-    
     /**
-     * @return The Prepared of this record. 
-     */
-    public String getPrepared(){
-        return (String) getValue("sPrepared");
-    }
-    
-    /**
-     * Sets the Prepared of this record.
+     * Sets the date and time the record start encoded.
      * 
      * @param fdValue 
      * @return result as success/failed
      */
-    public JSONObject setPreparedDate(Date fdValue){
-        return setValue("dPrepared", fdValue);
+    public JSONObject setStartEncDate(Date fdValue){
+        return setValue("dStartEnc", fdValue);
     }
     
     /**
-     * @return The Prepared of this record. 
+     * @return The date and time the record start encoded.
      */
-    public Date getPreparedDate(){
-        return (Date) getValue("dPrepared");
-    }
-   
-    /**
-     * Sets the RecorddStatus of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setRecorddStatus(String fsValue){
-        return setValue("cRecdStat", fsValue);
-    }
-    
-    /**
-     * @return The RecorddStatus of this record. 
-     */
-    public String getRecorddStatus(){
-        return (String) getValue("cRecdStat");
-    }
-    
-    /**
-     * Sets record as active.
-     * 
-     * @param fbValue
-     * @return result as success/failed
-     */
-    public JSONObject setActive(boolean fbValue){
-        return setValue("cRecdStat", fbValue ? "1" : "0");
-    }
-    
-    /**
-     * @return If record is active. 
-     */
-    public boolean isActive(){
-        return ((String) getValue("cRecdStat")).equals("1");
+    public Date getStartEncDate(){
+        return (Date) getValue("dStartEnc");
     }
     
     /**
@@ -856,89 +590,109 @@ public class Model_PO_Quotation_Master implements GEntity{
         return (Date) getValue("dModified");
     }
     
+    
+    /**
+     * Sets the branch name of the record.
+     * 
+     * @param fsValue 
+     * @return result as success/failed
+     */
+    public JSONObject setBranchName(String fsValue){
+        return setValue("xBranchNm", fsValue);
+    }
+    
+    /**
+     * @return The branch name of  the record 
+     */
+    public String getBranchName(){
+        return (String) getValue("xBranchNm");
+    }
+    
+    
+    /**
+     * Sets the category name of the record.
+     * 
+     * @param fsValue 
+     * @return result as success/failed
+     */
+    public JSONObject setCategoryName(String fsValue){
+        return setValue("xCategrNm", fsValue);
+    }
+    
+    /**
+     * @return The category name of  the record 
+     */
+    public String getCategoryName(){
+        return (String) getValue("xCategrNm");
+    }
     /**
      * Gets the SQL statement for this entity.
      * 
      * @return SQL Statement
      */
     public String makeSQL(){
-        return MiscUtil.makeSQL(this, "xSupplier»xAddressx»xCPerson1»xCPPosit1»xCPMobil1»xTermName»xCategrNm»xInvTypNm");
+        return MiscUtil.makeSQL(this, "xBranchNm»xCategrNm");
     }
     
+    /**
+     * Gets the SQL statement for this entity.
+     * 
+     * @return SQL Statement
+     */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xSupplier»xAddressx»xCPerson1»xCPPosit1»xCPMobil1»xTermName»xCategrNm»xInvTypNm");
+        return MiscUtil.makeSelect(this, "xBranchNm»xCategrNm");
     }
     
-    public String getSQL() {
-        String lsSQL = "SELECT" +
-                            "  a.sTransNox" + 
-                            ", a.sReferNox" + 
-                            ", a.sSupplier" + 
-                            ", a.sAddrssID" + 
-                            ", a.sContctID" + 
-                            ", a.dTransact" + 
-                            ", a.dReferDte" + 
-                            ", a.sTermCode" + 
-                            ", a.dValidity" + 
-                            ", a.nGrossAmt" + 
-                            ", a.nDiscount" + 
-                            ", a.nAddDiscx" + 
-                            ", a.nVatRatex" + 
-                            ", a.nVatAmtxx" + 
-                            ", a.cVATAdded" + 
-                            ", a.nTWithHld" + 
-                            ", a.nFreightx" + 
-                            ", a.nTranTotl" + 
-                            ", a.sRemarksx" + 
-                            ", a.nEntryNox" + 
-                            ", a.sCategrCd" + 
-                            ", a.cTranStat" + 
-                            ", a.sPrepared" + 
-                            ", a.dPrepared" + 
-                            ", a.sModified" + 
-                            ", a.dModified" +
-                            ", b.sCompnyNm xSupplier" + 
-                            ", TRIM(CONCAT(IFNULL(c.sHouseNox, ''), ' ', IFNULL(c.sAddressx, ''), ', ', IFNULL(h.sBrgyName, ''), ' ', IFNULL(i.sTownName, ''))) xAddressx" +
-                            ", d.sCPerson1 xCPerson1" +
-                            ", d.sCPPosit1 xCPPosit1" +
-                            ", d.sMobileNo xCPMobil1" +
-                            ", e.sDescript xTermName" +
-                            ", f.sDescript xCategrNm" +
-                            ", g.sDescript xInvTypNm" +
-                        " FROM " + getTable() + " a"+ 
-                            " LEFT JOIN Client_Master b ON a.sSupplier = b.sClientID" +
-                            " LEFT JOIN Client_Address c" +
-                                " LEFT JOIN Barangay h ON c.sBrgyIDxx = h.sBrgyIDxx" + 
-                                " LEFT JOIN TownCity i ON c.sTownIDxx = i.sTownIDxx" +
-                            " ON a.sAddrssID = c.sAddrssID" +
-                            " LEFT JOIN Client_Institution_Contact_Person d ON a.sContctID = d.sContctID" +
-                            " LEFT JOIN Term e ON a.sTermCode = e.sTermCode" +
-                            " LEFT JOIN Category_Level2 f" + 
-                                " LEFT JOIN Inv_Type g ON f.sInvTypCd = g.sInvTypCd" +
-                            " ON a.sCategrCd = f.sCategrCd";
-
-        return lsSQL;
+    /**
+     * Gets the SQL statement for this entity.
+     * 
+     * @return SQL Statement
+     */
+    public String getSQL(){
+        return "SELECT" +
+                "  a.sTransNox" +
+                ", a.sBranchCd" +
+                ", a.sCategrCd" +
+                ", a.dTransact" +
+                ", a.sOrderNox" +
+                ", a.sRemarksx" +
+                ", a.sApproved" +
+                ", a.dApproved" +
+                ", a.sAprvCode" +
+                ", a.nEntryNox" +
+                ", a.cTranStat" +
+                ", a.dStartEnc" +
+                ", a.sModified" +
+                ", a.dModified" +
+                ", b.sBranchNm xBranchNm" +
+                ", c.sDescript xCategrNm" +
+            " FROM Inv_Stock_Req_Cancel_Master a" + 
+                " LEFT JOIN Branch b ON a.sBranchCd= b.sBranchCd" +
+                " LEFT JOIN Category c ON a.sCategrCd = c.sCategrCd";
     }
     
-    private void initialize() {
+    private void initialize(){
         try {
             poEntity = MiscUtil.xml2ResultSet(System.getProperty("sys.default.path.metadata") + XML, getTable());
-
+            
             poEntity.last();
             poEntity.moveToInsertRow();
 
-            MiscUtil.initRowSet(poEntity);
-            poEntity.updateString("cTranStat", TransactionStatus.STATE_OPEN);
-
+            MiscUtil.initRowSet(poEntity);      
+            poEntity.updateString("cTranStat", RecordStatus.INACTIVE);
+            poEntity.updateString("dApproved", null);
+            poEntity.updateObject("dTransact", CommonUtils.dateFormat(poGRider.getServerDate(), "yyyy-MM-dd"));
+            System.out.println(CommonUtils.dateFormat(poGRider.getServerDate(), "yyyy-MM-dd"));
+            
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
 
             poEntity.absolute(1);
-
+            
             pnEditMode = EditMode.UNKNOWN;
         } catch (SQLException e) {
             e.printStackTrace();
             System.exit(1);
         }
-    }
+    } 
 }
