@@ -327,7 +327,7 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
                 
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity,  "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()) +  " AND sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xBarCodex»xDescript»xCategrNm»xInvTypNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity,  "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()) +  " AND sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xBarCodex»xDescript»xCategrNm»xInvTypNm»nUnserved");
                     
                     if (!lsSQL.isEmpty()){
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
@@ -599,13 +599,28 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
     
 
     
+     /**
+     * Sets the nUnserved of this record.
+     * 
+     * @param fnValue 
+     * @return result as success/failed
+     */
+    public JSONObject setUnserve(int fnValue){
+        return setValue("nUnserved", fnValue);
+    }
+    /**
+     * @return The nUnserved of this record. 
+     */
+    public int getUnserve(){
+        return (int) getValue("nUnserved");
+    }
     /**
      * Gets the SQL statement for this entity.
      * 
      * @return SQL Statement
      */
     public String makeSQL(){
-        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm");
+        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»nUnserved");
     }
     
     /**
@@ -614,7 +629,7 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
      * @return SQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm");
+        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»nUnserved");
     }
     
     /**
@@ -652,6 +667,7 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
 
             MiscUtil.initRowSet(poEntity);      
             poEntity.updateObject("nQuantity", 0);
+            poEntity.updateObject("nUnserved", 0);
             
             poEntity.insertRow();
             poEntity.moveToCurrentRow();

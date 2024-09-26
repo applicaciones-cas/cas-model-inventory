@@ -296,7 +296,7 @@ public class Model_Inventory_Trans implements GEntity {
 
                 if ("success".equals((String) loJSON.get("result"))) {
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sStockIDx = " + SQLUtil.toSQL(this.getStockID()),  "xBarCodex»xDescript»xWHouseNm»xLocatnNm»xSectnNme");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sStockIDx = " + SQLUtil.toSQL(this.getStockID()),  "xBarCodex»xDescript»xWHouseNm»xLocatnNm»xSectnNme»sLocatnID");
                      
                     if (!lsSQL.isEmpty()) {
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0) {
@@ -812,13 +812,30 @@ public class Model_Inventory_Trans implements GEntity {
     public String IsNewParts() {
         return (String) getValue("cNewParts");
     }
+    
+    /**
+     * Sets the sLocatnID of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setLocationID(String fsValue) {
+        return setValue("sLocatnID", fsValue);
+    }
+
+    /**
+     * @return The sLocatnID of this record.
+     */
+    public String getLocationID() {
+        return (String) getValue("sLocatnID");
+    }
     /**
      * Gets the SQL statement for this entity.
      *
      * @return SQL Statement
      */
     public String makeSQL() {
-        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xWHouseNm»xLocatnNm»dLastTran»xSectnNme");
+        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xWHouseNm»xLocatnNm»dLastTran»xSectnNme»sLocatnID");
     }
     
 
@@ -828,7 +845,7 @@ public class Model_Inventory_Trans implements GEntity {
      * @return SelectSQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xWHouseNm»xLocatnNm»xSectnNme");
+        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xWHouseNm»xLocatnNm»xSectnNme»sLocatnID");
     }
     
     public String getSQL(){
@@ -836,6 +853,7 @@ public class Model_Inventory_Trans implements GEntity {
                 "  a.sStockIDx" +
                 ", a.sBranchCd" +
                 ", a.sWHouseID" +
+                ", a.sLocatnID" +
                 ", a.nQtyOnHnd nQuantity" +
                 ", b.nQtyInxxx" +
                 ", b.nQtyOutxx" +
