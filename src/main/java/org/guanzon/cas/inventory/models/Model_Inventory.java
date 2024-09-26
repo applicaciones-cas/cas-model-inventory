@@ -1235,7 +1235,7 @@ public class Model_Inventory implements GEntity {
                             ", d.sDescript xCategNm3" +
                             ", e.sDescript xCategNm4" +
                             ", f.sDescript xBrandNme" +
-                            ", g.sModelNme xModelNme" +
+                            ", g.sDescript xModelNme" +
                             ", g.sDescript xModelDsc" +
                             ", h.sDescript xColorNme" +
                             ", i.sMeasurNm xMeasurNm" +
