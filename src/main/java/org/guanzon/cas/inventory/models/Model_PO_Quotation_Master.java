@@ -201,6 +201,9 @@ public class Model_PO_Quotation_Master implements GEntity{
         setTransaction(poGRider.getServerDate());
         setModifiedDate(poGRider.getServerDate());
         setValidity(poGRider.getServerDate());
+        setVATAdded("0");
+        
+        setTransactionTotal(0.00);
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         return poJSON;
@@ -929,6 +932,9 @@ public class Model_PO_Quotation_Master implements GEntity{
 
             MiscUtil.initRowSet(poEntity);
             poEntity.updateString("cTranStat", TransactionStatus.STATE_OPEN);
+            
+            
+            
 
             poEntity.insertRow();
             poEntity.moveToCurrentRow();

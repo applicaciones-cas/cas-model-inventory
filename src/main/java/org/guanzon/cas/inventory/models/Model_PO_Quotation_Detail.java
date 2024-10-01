@@ -195,9 +195,7 @@ public class Model_PO_Quotation_Detail implements GEntity{
     public JSONObject newRecord() {
         pnEditMode = EditMode.ADDNEW;
         
-        //replace with the primary key column info
-        setTransactionNumber(MiscUtil.getNextCode(getTable(), "sTransNox", true, poGRider.getConnection(), poGRider.getBranchCode()));
-        
+        setUnitPrice(0.00);
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         return poJSON;
@@ -606,6 +604,7 @@ public class Model_PO_Quotation_Detail implements GEntity{
 
             poEntity.absolute(1);
             newRecord();
+            
 
         } catch (SQLException e) {
             e.printStackTrace();
