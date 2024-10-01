@@ -821,6 +821,7 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
             poEntity.updateString("dApproved", null);
             poEntity.updateObject("nCurrInvx", 0);
             poEntity.updateObject("nEstInvxx", 0);
+            poEntity.updateObject("dStartEnc", poGRider.getServerDate());
             poEntity.updateObject("sBranchCd", poGRider.getBranchCode());
             poEntity.updateObject("dTransact", poGRider.getServerDate());
             
