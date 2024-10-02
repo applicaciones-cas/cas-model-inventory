@@ -148,11 +148,11 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
     @Override
     public JSONObject setValue(int fnColumn, Object foValue) {
         try {  
+            
             poJSON = MiscUtil.validateColumnValue(System.getProperty("sys.default.path.metadata") + XML, MiscUtil.getColumnLabel(poEntity, fnColumn), foValue);
             if ("error".equals((String) poJSON.get("result"))) return poJSON;
             poEntity.updateObject(fnColumn, foValue);
             poEntity.updateRow();
-            
             poJSON = new JSONObject();
             poJSON.put("result", "success");
             poJSON.put("value", getValue(fnColumn));
@@ -269,6 +269,7 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
         try {
             if (loRS.next()) {
                 for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++) {
+                    System.out.println("index = " + lnCtr + " -> " + MiscUtil.getColumnLabel(poEntity, lnCtr));
                     setValue(lnCtr, loRS.getObject(lnCtr));
                 }
 
@@ -476,8 +477,8 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
     /**
      * @return The Quantity of this record. 
      */
-    public int getQuantity(){
-        return (int) getValue("nQuantity");
+    public Object getQuantity(){
+        return (Object) getValue("nQuantity");
     }
     
     /**
@@ -609,8 +610,8 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
     /**
      * @return The nUnserved of this record. 
      */
-    public int getUnserve(){
-        return (int) getValue("nUnserved");
+    public Object getUnserve(){
+        return (Object) getValue("nUnserved");
     }
     
      /**
@@ -911,32 +912,50 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
                             ", d.sDescript xCategr02" +
                             ", e.sDescript xInvTypNm" +
                             ", f.cClassify" +
-                            ", f.nQtyOnHnd xQtyOnHnd" +
+                            ", f.nQtyOnHnd" +
                             ", f.nResvOrdr" +
                             ", f.nBackOrdr" +
                             ", f.nOnTranst" +
                             ", f.nAvgMonSl" +
-                            ", f.nQuantity" +
+                            ", f.nQuantity xQuantity" +
                             ", f.nIssueQty" +
                             ", f.nOrderQty" +
+                            ", g.sDescript xBrandNme" +
+                            ", h.sDescript xModelNme" +
+                            ", h.sDescript xModelDsc" +
+                            ", i.sDescript xColorNme" +
+                            ", j.sMeasurNm xMeasurNm" +
+                            ", 0 AS nUnserved" +
                         " FROM Inv_Stock_Req_Cancel_Detail a" + 
                             " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                             " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
                             " LEFT JOIN Category_Level2 d ON b.sCategCd2 = d.sCategrCd" +
                             " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd" +
-                            " LEFT JOIN Inv_Stock_Request_Detail f ON b.sStockIDx = f.sStockIDx";
+                            " LEFT JOIN Inv_Stock_Request_Detail f ON b.sStockIDx = f.sStockIDx" +
+                            " LEFT JOIN Brand g ON b.sBrandIDx = g.sBrandIDx" +
+                            " LEFT JOIN Model h ON b.sModelIDx = h.sModelIDx" +
+                            " LEFT JOIN Color i ON b.sColorIDx = i.sColorIDx" +
+                            " LEFT JOIN Measure j ON b.sMeasurID = j.sMeasurID";
     }
     
     private void initialize(){
         try {
             poEntity = MiscUtil.xml2ResultSet(System.getProperty("sys.default.path.metadata") + XML, getTable());
-            
+            System.out.println(System.getProperty("sys.default.path.metadata") + XML);
             poEntity.last();
             poEntity.moveToInsertRow();
-
+            
             MiscUtil.initRowSet(poEntity);      
             poEntity.updateObject("nQuantity", 0);
             poEntity.updateObject("nUnserved", 0);
+            poEntity.updateObject("nQtyOnHnd", 0);
+            poEntity.updateObject("nResvOrdr", 0);
+            poEntity.updateObject("nBackOrdr", 0);
+            poEntity.updateObject("nOnTranst", 0);
+            poEntity.updateObject("nAvgMonSl", 0);
+            poEntity.updateObject("nIssueQty", 0);
+            poEntity.updateObject("nOrderQty", 0);
+            poEntity.updateObject("cClassify", "");
             
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
