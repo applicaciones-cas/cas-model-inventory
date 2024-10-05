@@ -53,6 +53,16 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
         return pnEditMode;
     }
     
+    
+ 
+    /**
+     * Set edit mode of the record
+     * @param val - value
+     */
+    public void setEditMode(int val) {
+        pnEditMode = val;
+    }
+    
     /**
      * Gets the column index name.
      * @param fnValue - column index number
@@ -269,7 +279,6 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
         try {
             if (loRS.next()) {
                 for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++) {
-                    System.out.println("index = " + lnCtr + " -> " + MiscUtil.getColumnLabel(poEntity, lnCtr));
                     setValue(lnCtr, loRS.getObject(lnCtr));
                 }
 
