@@ -194,7 +194,7 @@ public class Model_PO_Quotation_Detail implements GEntity{
     @Override
     public JSONObject newRecord() {
         pnEditMode = EditMode.ADDNEW;
-        
+        setQuantity(0);
         setUnitPrice(0.00);
         poJSON = new JSONObject();
         poJSON.put("result", "success");
@@ -425,14 +425,14 @@ public class Model_PO_Quotation_Detail implements GEntity{
      * @param fnValue 
      * @return result as success/failed
      */
-    public JSONObject setQuantity(Integer fnValue){
+    public JSONObject setQuantity(int fnValue){
         return setValue("nQuantity", fnValue);
     }
     
     /**
      * @return The Quantity of this record. 
      */
-    public Integer getQuantity(){
+    public int getQuantity(){
         return (Integer) getValue("nQuantity");
     }
     

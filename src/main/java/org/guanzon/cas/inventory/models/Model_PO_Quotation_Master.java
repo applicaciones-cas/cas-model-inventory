@@ -430,6 +430,23 @@ public class Model_PO_Quotation_Master implements GEntity{
     }
     
      /**
+     * Sets the AddressName of this record.
+     * 
+     * @param fsValue 
+     * @return result as success/failed
+     */
+    public JSONObject setAddress(String fsValue){
+        return setValue("xAddressx", fsValue);
+    }
+    
+    /**
+     * @return The AddressName of this record. 
+     */
+    public String getAddress(){
+        return (String) getValue("xAddressx");
+    }
+    
+     /**
      * Sets the ContactID of this record.
      * 
      * @param fsValue 
@@ -444,6 +461,23 @@ public class Model_PO_Quotation_Master implements GEntity{
      */
     public String getContactID(){
         return (String) getValue("sContctID");
+    }
+    
+     /**
+     * Sets the ContactNo of this record.
+     * 
+     * @param fsValue 
+     * @return result as success/failed
+     */
+    public JSONObject setContactNo(String fsValue){
+        return setValue("xCPMobil1", fsValue);
+    }
+    
+    /**
+     * @return The ContactNo of this record. 
+     */
+    public String getContactNo(){
+        return (String) getValue("xCPMobil1");
     }
     
     /**
