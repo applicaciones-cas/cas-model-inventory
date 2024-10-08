@@ -680,7 +680,9 @@ public class Model_Inv_Stock_Req_Cancel_Master implements GEntity{
 
             MiscUtil.initRowSet(poEntity);      
             poEntity.updateString("cTranStat", RecordStatus.INACTIVE);
-            poEntity.updateString("dApproved", null);
+            poEntity.updateString("sBranchCd", poGRider.getBranchCode());
+            poEntity.updateObject("dStartEnc", poGRider.getServerDate());
+            poEntity.updateObject("dApproved", null);
             poEntity.updateObject("dTransact", CommonUtils.dateFormat(poGRider.getServerDate(), "yyyy-MM-dd"));
             System.out.println(CommonUtils.dateFormat(poGRider.getServerDate(), "yyyy-MM-dd"));
             

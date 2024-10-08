@@ -326,7 +326,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
                 
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()) +  " AND sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm»nMinLevel");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()) +  " AND sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm»nMinLevel»sLocatnID");
                     System.out.println("update sql = " + lsSQL);
                     if (!lsSQL.isEmpty()){
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
@@ -930,6 +930,25 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
     public JSONObject setMinimumLevel(int fsValue) {
         return setValue("nMinLevel", fsValue);
     }
+    /**
+     * Sets the sLocatnCd of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public Object getLocationCode() {
+        return (Object) getValue("sLocatnID");
+    }
+    
+    /**
+     * Sets the sLocatnCd of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setLocationCode(int fsValue) {
+        return setValue("sLocatnID", fsValue);
+    }
     
 
     
@@ -939,7 +958,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
      * @return SQL Statement
      */
     public String makeSQL(){
-        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm»nMinLevel");
+        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm»nMinLevel»sLocatnID");
     }
     
     /**
@@ -948,7 +967,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
      * @return SQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm»nMinLevel");
+        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm»nMinLevel»sLocatnID");
     }
     
     /**
@@ -958,47 +977,48 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
      */
     public String getSQL(){
         return "SELECT" +
-                            "  a.sTransNox" +
-                            ", a.nEntryNox" +
-                            ", a.sStockIDx" +
-                            ", a.nQuantity" +
-                            ", a.cClassify" +
-                            ", a.nRecOrder" +
-                            ", a.nQtyOnHnd" +
-                            ", a.nResvOrdr" +
-                            ", a.nBackOrdr" +
-                            ", a.nOnTranst" +
-                            ", a.nAvgMonSl" +
-                            ", a.nMaxLevel" +
-                            ", a.nApproved" +
-                            ", a.nCancelld" +
-                            ", a.nIssueQty" +
-                            ", a.nOrderQty" +
-                            ", a.nAllocQty" +
-                            ", a.nReceived" +
-                            ", a.sNotesxxx" +
-                            ", a.dModified" +
-                            ", b.sBarCodex xBarCodex" +
-                            ", b.sDescript xDescript" +
-                            ", c.sDescript xCategr01" +
-                            ", d.sDescript xCategr02" +
-                            ", e.sDescript xInvTypNm" +
-                            ", f.sDescript xBrandNme" +
-                            ", g.sModelNme xModelNme" +
-                            ", g.sDescript xModelDsc" +
-                            ", h.sDescript xColorNme" +
-                            ", i.sMeasurNm xMeasurNm" +
-                            ", j.nMinLevel" +
-                        " FROM Inv_Stock_Request_Detail a" + 
-                            " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                            " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
-                            " LEFT JOIN Category_Level2 d ON b.sCategCd2 = d.sCategrCd" +
-                            " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd" +
-                            " LEFT JOIN Brand f ON b.sBrandCde = f.sBrandCde" +
-                            " LEFT JOIN Model g ON b.sModelCde = g.sModelCde" +
-                            " LEFT JOIN Color h ON b.sColorCde = h.sColorCde" +
-                            " LEFT JOIN Measure i ON b.sMeasurID = i.sMeasurID"+
-                            " LEFT JOIN Inv_Master j ON b.sStockIDx = j.sStockIDx" ;
+                "  a.sTransNox" +
+                ", a.nEntryNox" +
+                ", a.sStockIDx" +
+                ", a.nQuantity" +
+                ", a.cClassify" +
+                ", a.nRecOrder" +
+                ", a.nQtyOnHnd" +
+                ", a.nResvOrdr" +
+                ", a.nBackOrdr" +
+                ", a.nOnTranst" +
+                ", a.nAvgMonSl" +
+                ", a.nMaxLevel" +
+                ", a.nApproved" +
+                ", a.nCancelld" +
+                ", a.nIssueQty" +
+                ", a.nOrderQty" +
+                ", a.nAllocQty" +
+                ", a.nReceived" +
+                ", a.sNotesxxx" +
+                ", a.dModified" +
+                ", b.sBarCodex xBarCodex" +
+                ", b.sDescript xDescript" +
+                ", c.sDescript xCategr01" +
+                ", d.sDescript xCategr02" +
+                ", e.sDescript xInvTypNm" +
+                ", f.sDescript xBrandNme" +
+                ", g.sDescript xModelNme" +
+                ", g.sDescript xModelDsc" +
+                ", h.sDescript xColorNme" +
+                ", i.sMeasurNm xMeasurNm" +
+                ", j.nMinLevel" +
+                ", j.sLocatnID" +
+            " FROM Inv_Stock_Request_Detail a" + 
+                " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
+                " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
+                " LEFT JOIN Category_Level2 d ON b.sCategCd2 = d.sCategrCd" +
+                " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd" +
+                " LEFT JOIN Brand f ON b.sBrandIDx = f.sBrandIDx" +
+                " LEFT JOIN Model g ON b.sModelIDx = g.sModelIDx" +
+                " LEFT JOIN Color h ON b.sColorIDx = h.sColorIDx" +
+                " LEFT JOIN Measure i ON b.sMeasurID = i.sMeasurID"+
+                " LEFT JOIN Inv_Master j ON b.sStockIDx = j.sStockIDx"  ;
     }
     
     private void initialize(){

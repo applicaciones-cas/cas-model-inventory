@@ -53,6 +53,16 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
         return pnEditMode;
     }
     
+    
+ 
+    /**
+     * Set edit mode of the record
+     * @param val - value
+     */
+    public void setEditMode(int val) {
+        pnEditMode = val;
+    }
+    
     /**
      * Gets the column index name.
      * @param fnValue - column index number
@@ -148,12 +158,11 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
     @Override
     public JSONObject setValue(int fnColumn, Object foValue) {
         try {  
+            
             poJSON = MiscUtil.validateColumnValue(System.getProperty("sys.default.path.metadata") + XML, MiscUtil.getColumnLabel(poEntity, fnColumn), foValue);
             if ("error".equals((String) poJSON.get("result"))) return poJSON;
-            
             poEntity.updateObject(fnColumn, foValue);
             poEntity.updateRow();
-            
             poJSON = new JSONObject();
             poJSON.put("result", "success");
             poJSON.put("value", getValue(fnColumn));
@@ -224,6 +233,7 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
         try {
             if (loRS.next()){
                 for (int lnCtr = 1; lnCtr <= loRS.getMetaData().getColumnCount(); lnCtr++){
+                    
                     setValue(lnCtr, loRS.getObject(lnCtr));
                 }
                 
@@ -327,7 +337,7 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
                 
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity,  "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()) +  " AND sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xBarCodex»xDescript»xCategrNm»xInvTypNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity,  "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()) +  " AND sStockIDx = " + SQLUtil.toSQL(this.getStockID()), "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»nUnserved»cClassify»nQtyOnHnd»nResvOrdr»nBackOrdr»nOnTranst»nAvgMonSl»xQuantity»nIssueQty»nOrderQtyxBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm");
                     
                     if (!lsSQL.isEmpty()){
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
@@ -476,8 +486,8 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
     /**
      * @return The Quantity of this record. 
      */
-    public int getQuantity(){
-        return (int) getValue("nQuantity");
+    public Object getQuantity(){
+        return (Object) getValue("nQuantity");
     }
     
     /**
@@ -597,7 +607,281 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
         return (String) getValue("xInvTypNm");
     }
     
+     /**
+     * Sets the nUnserved of this record.
+     * 
+     * @param fnValue 
+     * @return result as success/failed
+     */
+    public JSONObject setUnserve(int fnValue){
+        return setValue("nUnserved", fnValue);
+    }
+    /**
+     * @return The nUnserved of this record. 
+     */
+    public Object getUnserve(){
+        return (Object) getValue("nUnserved");
+    }
+    
+     /**
+     * Sets the Quantity Request of this record.
+     * 
+     * @param fnValue 
+     * @return result as success/failed
+     */
+    public JSONObject setQuantityRequest(int fnValue){
+        return setValue("xQuantity", fnValue);
+    }
+    
+    /**
+     * @return The Quantity Request of this record. 
+     */
+    public Object getQuantityRequest(){
+        return (Object) getValue("xQuantity");
+    }
+    
+            /**
+     * Sets the Classify of this record.
+     * 
+     * @param fsValue 
+     * @return result as success/failed
+     */
+    public JSONObject setClassify(String fsValue){
+        return setValue("cClassify", fsValue);
+    }
+    
+    /**
+     * @return The Classify of this record. 
+     */
+    public String getClassify(){
+        return (String) getValue("cClassify");
+    }
+    
+    /**
+     * Sets the Record Order of this record.
+     * 
+     * @param fnValue 
+     * @return result as success/failed
+     */
+    public JSONObject setRecordOrder(int fnValue){
+        return setValue("nRecOrder", fnValue);
+    }
+    
+    /**
+     * @return The Record Order of this record. 
+     */
+    public Object getRecordOrder(){
+        return (Object) getValue("nRecOrder");
+    }
+    
+    /**
+     * Sets the quantity on hand of this record.
+     * 
+     * @param fnValue 
+     * @return result as success/failed
+     */
+    public JSONObject setQuantityOnHand(int fnValue){
+        return setValue("nQtyOnHnd", fnValue);
+    }
+    
+    /**
+     * @return The quantity on hand of this record. 
+     */
+    public Object getQuantityOnHand(){
+        return (Object) getValue("nQtyOnHnd");
+    }
+                    /**
+     * Sets the Reserved Order of this record.
+     * 
+     * @param fnValue 
+     * @return result as success/failed
+     */
+    public JSONObject setReservedOrder(int fnValue){
+        return setValue("nResvOrdr", fnValue);
+    }
+    
+    /**
+     * @return The Reserved Order of this record. 
+     */
+    public Object getReservedOrder(){
+        return (Object) getValue("nResvOrdr");
+    }
+    
+    
+                        /**
+     * Sets the Back Order of this record.
+     * 
+     * @param fnValue 
+     * @return result as success/failed
+     */
+    public JSONObject setBackOrder(int fnValue){
+        return setValue("nBackOrdr", fnValue);
+    }
+    
+    /**
+     * @return The Back Order of this record. 
+     */
+    public Object getBackOrder(){
+        return (Object) getValue("nBackOrdr");
+    }
+    
+                            /**
+     * Sets the On Transit of this record.
+     * 
+     * @param fnValue 
+     * @return result as success/failed
+     */
+    public JSONObject setOnTransit(int fnValue){
+        return setValue("nOnTranst", fnValue);
+    }
+    
+    /**
+     * @return The On Transit of this record. 
+     */
+    public Object getOnTransit(){
+        return (Object) getValue("nOnTranst");
+    }
+    
+    /**
+     * Sets the Average Monthly Salary of this record.
+     * 
+     * @param fnValue 
+     * @return result as success/failed
+     */
+    public JSONObject setAverageMonthlySalary(int fnValue){
+        return setValue("nAvgMonSl", fnValue);
+    }
+    
+    /**
+     * @return The Average Monthly Salary of this record. 
+     */
+    public Object getAverageMonthlySalary(){
+        return (Object) getValue("nAvgMonSl");
+    }
+    
+     /**
+     * Sets the Issue Quantity of this record.
+     * 
+     * @param fnValue 
+     * @return result as success/failed
+     */
+    public JSONObject setIssueQuantity(int fnValue){
+        return setValue("nIssueQty", fnValue);
+    }
+    
+    /**
+     * @return The Issue Quantity of this record. 
+     */
+    public Object getIssueQuantity(){
+        return (Object) getValue("nIssueQty");
+    }
+    
+    
+     /**
+     * Sets the Order Quantity of this record.
+     * 
+     * @param fnValue 
+     * @return result as success/failed
+     */
+    public JSONObject setOrderQuantity(int fnValue){
+        return setValue("nOrderQty", fnValue);
+    }
+    /**
+     * @return The Order Quantity of this record. 
+     */
+    public Object getOrderQuantity(){
+        return (Object) getValue("nOrderQty");
+    }
+    
+    
+    /**
+     * @return The xBrandNme of this record.
+     */
+     
+    public String getBrandName() {
+         System.out.println("\nto get xBrandNme == " + (String)getValue("xBrandNme"));
+        return (String) getValue("xBrandNme");
+    }
+    /**
+     * Sets the sBrandCde of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setBrandName(String fsValue) {
+         System.out.println("\nto set xBrandNme == " + fsValue);
+        return setValue("xBrandNme", fsValue);
+    }
 
+    /**
+     * @return The sModelCde of this record.
+     */
+    public String getModelName() {
+        return (String) getValue("xModelNme");
+    }
+    
+    /**
+     * Sets the sModelCde of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setModelName(String fsValue) {
+        return setValue("xModelNme", fsValue);
+    }
+    
+    /**
+     * @return The xModelDsc of this record.
+     */
+    public String getModelDescription() {
+        return (String) getValue("xModelDsc");
+    }
+    
+    /**
+     * Sets the xModelDsc of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setModelDescription(String fsValue) {
+        return setValue("xModelDsc", fsValue);
+    }
+    
+   
+
+    /**
+     * @return The sModelCde of this record.
+     */
+    public String getColorName() {
+        return (String) getValue("xColorNme");
+    }
+    
+    /**
+     * Sets the sModelCde of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setColorName(String fsValue) {
+        return setValue("xColorNme", fsValue);
+    }
+    
+    /**
+     * @return The xMeasurNm of this record.
+     */
+    public String getMeasureName() {
+        return (String) getValue("xMeasurNm");
+    }
+    
+    /**
+     * Sets the xMeasurNm of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setMeasureName(String fsValue) {
+        return setValue("xMeasurNm", fsValue);
+    }
     
     /**
      * Gets the SQL statement for this entity.
@@ -605,7 +889,7 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
      * @return SQL Statement
      */
     public String makeSQL(){
-        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm");
+        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»nUnserved»cClassify»nQtyOnHnd»nResvOrdr»nBackOrdr»nOnTranst»nAvgMonSl»xQuantity»nIssueQty»nOrderQtyxBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm");
     }
     
     /**
@@ -614,7 +898,7 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
      * @return SQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm");
+        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»nUnserved»cClassify»nQtyOnHnd»nResvOrdr»nBackOrdr»nOnTranst»nAvgMonSl»xQuantity»nIssueQty»nOrderQtyxBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm");
     }
     
     /**
@@ -636,22 +920,51 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
                             ", c.sDescript xCategr01" +
                             ", d.sDescript xCategr02" +
                             ", e.sDescript xInvTypNm" +
+                            ", f.cClassify" +
+                            ", f.nQtyOnHnd" +
+                            ", f.nResvOrdr" +
+                            ", f.nBackOrdr" +
+                            ", f.nOnTranst" +
+                            ", f.nAvgMonSl" +
+                            ", f.nQuantity xQuantity" +
+                            ", f.nIssueQty" +
+                            ", f.nOrderQty" +
+                            ", g.sDescript xBrandNme" +
+                            ", h.sDescript xModelNme" +
+                            ", h.sDescript xModelDsc" +
+                            ", i.sDescript xColorNme" +
+                            ", j.sMeasurNm xMeasurNm" +
+                            ", 0 AS nUnserved" +
                         " FROM Inv_Stock_Req_Cancel_Detail a" + 
                             " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                             " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
                             " LEFT JOIN Category_Level2 d ON b.sCategCd2 = d.sCategrCd" +
-                            " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd";
+                            " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd" +
+                            " LEFT JOIN Inv_Stock_Request_Detail f ON b.sStockIDx = f.sStockIDx" +
+                            " LEFT JOIN Brand g ON b.sBrandIDx = g.sBrandIDx" +
+                            " LEFT JOIN Model h ON b.sModelIDx = h.sModelIDx" +
+                            " LEFT JOIN Color i ON b.sColorIDx = i.sColorIDx" +
+                            " LEFT JOIN Measure j ON b.sMeasurID = j.sMeasurID";
     }
     
     private void initialize(){
         try {
             poEntity = MiscUtil.xml2ResultSet(System.getProperty("sys.default.path.metadata") + XML, getTable());
-            
+            System.out.println(System.getProperty("sys.default.path.metadata") + XML);
             poEntity.last();
             poEntity.moveToInsertRow();
-
+            
             MiscUtil.initRowSet(poEntity);      
             poEntity.updateObject("nQuantity", 0);
+            poEntity.updateObject("nUnserved", 0);
+            poEntity.updateObject("nQtyOnHnd", 0);
+            poEntity.updateObject("nResvOrdr", 0);
+            poEntity.updateObject("nBackOrdr", 0);
+            poEntity.updateObject("nOnTranst", 0);
+            poEntity.updateObject("nAvgMonSl", 0);
+            poEntity.updateObject("nIssueQty", 0);
+            poEntity.updateObject("nOrderQty", 0);
+            poEntity.updateObject("cClassify", "");
             
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
