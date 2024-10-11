@@ -799,7 +799,6 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
      */
      
     public String getBrandName() {
-         System.out.println("\nto get xBrandNme == " + (String)getValue("xBrandNme"));
         return (String) getValue("xBrandNme");
     }
     /**
@@ -908,43 +907,43 @@ public class Model_Inv_Stock_Req_Cancel_Detail implements GEntity{
      */
     public String getSQL(){
         return "SELECT" +
-                            "  a.sTransNox" +
-                            ", a.nEntryNox" +
-                            ", a.sOrderNox" +
-                            ", a.sStockIDx" +
-                            ", a.nQuantity" +
-                            ", a.sNotesxxx" +
-                            ", a.dModified" +
-                            ", b.sBarCodex xBarCodex" +
-                            ", b.sDescript xDescript" +
-                            ", c.sDescript xCategr01" +
-                            ", d.sDescript xCategr02" +
-                            ", e.sDescript xInvTypNm" +
-                            ", f.cClassify" +
-                            ", f.nQtyOnHnd" +
-                            ", f.nResvOrdr" +
-                            ", f.nBackOrdr" +
-                            ", f.nOnTranst" +
-                            ", f.nAvgMonSl" +
-                            ", f.nQuantity xQuantity" +
-                            ", f.nIssueQty" +
-                            ", f.nOrderQty" +
-                            ", g.sDescript xBrandNme" +
-                            ", h.sDescript xModelNme" +
-                            ", h.sDescript xModelDsc" +
-                            ", i.sDescript xColorNme" +
-                            ", j.sMeasurNm xMeasurNm" +
-                            ", 0 AS nUnserved" +
-                        " FROM Inv_Stock_Req_Cancel_Detail a" + 
-                            " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                            " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
-                            " LEFT JOIN Category_Level2 d ON b.sCategCd2 = d.sCategrCd" +
-                            " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd" +
-                            " LEFT JOIN Inv_Stock_Request_Detail f ON b.sStockIDx = f.sStockIDx" +
-                            " LEFT JOIN Brand g ON b.sBrandIDx = g.sBrandIDx" +
-                            " LEFT JOIN Model h ON b.sModelIDx = h.sModelIDx" +
-                            " LEFT JOIN Color i ON b.sColorIDx = i.sColorIDx" +
-                            " LEFT JOIN Measure j ON b.sMeasurID = j.sMeasurID";
+                "  a.sTransNox" +
+                ", a.nEntryNox" +
+                ", a.sOrderNox" +
+                ", a.sStockIDx" +
+                ", a.nQuantity" +
+                ", a.sNotesxxx" +
+                ", a.dModified" +
+                ", b.sBarCodex xBarCodex" +
+                ", b.sDescript xDescript" +
+                ", c.sDescript xCategr01" +
+                ", d.sDescript xCategr02" +
+                ", e.sDescript xInvTypNm" +
+                ", f.cClassify" +
+                ", f.nQtyOnHnd" +
+                ", f.nResvOrdr" +
+                ", f.nBackOrdr" +
+                ", f.nOnTranst" +
+                ", f.nAvgMonSl" +
+                ", f.nQuantity xQuantity" +
+                ", f.nIssueQty" +
+                ", f.nOrderQty" +
+                ", g.sDescript xBrandNme" +
+                ", h.sDescript xModelNme" +
+                ", h.sDescript xModelDsc" +
+                ", i.sDescript xColorNme" +
+                ", j.sMeasurNm xMeasurNm" +
+                ", 0 AS nUnserved" +
+            " FROM Inv_Stock_Req_Cancel_Detail a" + 
+                " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
+                " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
+                " LEFT JOIN Category_Level2 d ON b.sCategCd2 = d.sCategrCd" +
+                " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd" +
+                " LEFT JOIN Inv_Stock_Request_Detail f ON b.sStockIDx = f.sStockIDx" +
+                " LEFT JOIN Brand g ON b.sBrandIDx = g.sBrandIDx" +
+                " LEFT JOIN Model h ON b.sModelIDx = h.sModelIDx" +
+                " LEFT JOIN Color i ON b.sColorIDx = i.sColorIDx" +
+                " LEFT JOIN Measure j ON b.sMeasurID = j.sMeasurID";
     }
     
     private void initialize(){
