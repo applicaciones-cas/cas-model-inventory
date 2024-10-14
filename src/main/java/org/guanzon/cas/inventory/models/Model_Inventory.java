@@ -601,7 +601,6 @@ public class Model_Inventory implements GEntity {
      */
     
     public String getBrandID() {
-         System.out.println("\nto get sBrandCde == " + (String)getValue("sBrandCde"));
         return (String) getValue("sBrandIDx");
     }
     
