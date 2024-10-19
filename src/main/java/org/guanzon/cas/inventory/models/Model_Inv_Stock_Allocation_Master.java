@@ -16,10 +16,10 @@ import org.json.simple.JSONObject;
 
 
 /**
- * @author Michael Cuison
+ * @author Unclejo
  */
-public class Model_Inv_Stock_Request_Master implements GEntity{
-    final String XML = "Model_Inv_Stock_Request_Master.xml";
+public class Model_Inv_Stock_Allocation_Master implements GEntity{
+    final String XML = "Model_Inv_Stock_Allocation_Master.xml";
     
     GRider poGRider;                //application driver
     CachedRowSet poEntity;          //rowset
@@ -31,7 +31,7 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
      * 
      * @param foValue - GhostRider Application Driver
      */
-    public Model_Inv_Stock_Request_Master(GRider foValue){
+    public Model_Inv_Stock_Allocation_Master(GRider foValue){
         if (foValue == null){
             System.err.println("Application Driver is not set.");
             System.exit(1);
@@ -101,7 +101,7 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
      */
     @Override
     public String getTable() {
-        return "Inv_Stock_Request_Master";
+        return "Inv_Stock_Allocation_Master";
     }
     
     /**
@@ -213,7 +213,7 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
     public JSONObject openRecord(String fsCondition) {
         poJSON = new JSONObject();
         
-        String lsSQL = getSQL();
+        String lsSQL = makeSelectSQL();
         
         //replace the condition based on the primary key column of the record
         lsSQL = MiscUtil.addCondition(lsSQL, "sTransNox = " + SQLUtil.toSQL(fsCondition));
@@ -274,7 +274,7 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
                     poJSON.put("message", "No record to save.");
                 }
             } else {
-                Model_Inv_Stock_Request_Master loOldEntity = new Model_Inv_Stock_Request_Master(poGRider);
+                Model_Inv_Stock_Allocation_Master loOldEntity = new Model_Inv_Stock_Allocation_Master(poGRider);
                 
                 setModifiedDate(poGRider.getServerDate());
                 setModifiedBy(poGRider.getUserID());
@@ -283,7 +283,8 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
                 
                 if ("success".equals((String) loJSON.get("result"))){
                     //replace the condition based on the primary key column of the record
-                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()), "xBranchNm»xCategrNm");
+                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()), "");
+//                    lsSQL = MiscUtil.makeSQL(this, loOldEntity, "sTransNox = " + SQLUtil.toSQL(this.getTransactionNumber()), "xBranchNm»xCategrNm");
                     
                     if (!lsSQL.isEmpty()){
                         if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
@@ -365,54 +366,20 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
         return (String) getValue("sTransNox");
     }
     
-    /**
-     * Sets the BranchCode of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setBranchCode(String fnValue){
-        return setValue("sBranchCd", fnValue);
-    }
-    
-    /**
-     * @return The BranchCode of this record. 
-     */
-    public Object getBranchCode(){
-        return (Object) getValue("sBranchCd");
-    }
-    
      /**
-     * Sets the CategoryCode of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setCategoryCode(String fsValue){
-        return setValue("sCategrCd", fsValue);
-    }
-    
-    /**
-     * @return The CategoryCode of this record. 
-     */
-    public String getCategoryCode(){
-        return (String) getValue("sCategrCd");
-    }
-    
-     /**
-     * Sets the Transaction of this record.
+     * Sets the Transaction date of this record.
      * 
      * @param fdValue 
      * @return result as success/failed
      */
-    public JSONObject setTransaction(Date fdValue){
+    public JSONObject setTransactionDate(Date fdValue){
         return setValue("dTransact", fdValue);
     }
     
     /**
-     * @return The Transaction of this record. 
+     * @return The Transaction date of this record. 
      */
-    public Date getTransaction(){
+    public Date getTransactionDate(){
         return (Date) getValue("dTransact");
     }
     
@@ -434,193 +401,6 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
     }
     
     /**
-     * Sets the Remarks of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setRemarks(String fsValue){
-        return setValue("sRemarksx", fsValue);
-    }
-    
-    /**
-     * @return The Remarks of this record. 
-     */
-    public String getRemarks(){
-        return (String) getValue("sRemarksx");
-    }
-    
-    /**
-     * Sets the IssNotes of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setIssNotes(String fsValue){
-        return setValue("sIssNotes", fsValue);
-    }
-    
-    /**
-     * @return The IssNotes of this record. 
-     */
-    public String getIssNotes(){
-        return (String) getValue("sIssNotes");
-    }
-    
-    /**
-     * Sets the CurrentInventory of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setCurrentInventory(Integer fnValue){
-        return setValue("nCurrInvx", fnValue);
-    }
-    
-    /**
-     * @return The CurrentInventory of this record. 
-     */
-    public Integer getCurrentInventory(){
-        return (Integer) getValue("nCurrInvx");
-    }
-    
-    /**
-     * Sets the EstimatedInventory of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setEstimatedInventory(Integer fnValue){
-        return setValue("nEstInvxx", fnValue);
-    }
-    
-    /**
-     * @return The EstimatedInventory of this record. 
-     */
-    public Integer getEstimatedInventory(){
-        return (Integer) getValue("nEstInvxx");
-    }
-    
-    /**
-     * Sets the Approved of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setApproved(String fsValue){
-        return setValue("sApproved", fsValue);
-    }
-    
-    /**
-     * @return The Approved of this record. 
-     */
-    public String getApproved(){
-        return (String) getValue("sApproved");
-    }
-    
-    /**
-     * Sets the Approved of this record.
-     * 
-     * @param fdValue 
-     * @return result as success/failed
-     */
-    public JSONObject setApprovedDate(Date fdValue){
-        return setValue("dApproved", fdValue);
-    }
-    
-    /**
-     * @return The Approved of this record. 
-     */
-    public Date getApprovedDate(){
-        return (Date) getValue("dApproved");
-    }
-    
-    /**
-     * Sets the ApproveCode of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setApproveCode(String fsValue){
-        return setValue("sAprvCode", fsValue);
-    }
-    
-    /**
-     * @return The ApproveCode of this record. 
-     */
-    public String getApproveCode(){
-        return (String) getValue("sAprvCode");
-    }
-    
-    /**
-     * Sets the EntryNumber of this record.
-     * 
-     * @param fnValue 
-     * @return result as success/failed
-     */
-    public JSONObject setEntryNumber(Integer fnValue){
-        return setValue("nEntryNox", fnValue);
-    }
-    
-    /**
-     * @return The EntryNumber of this record. 
-     */
-    public Integer getEntryNumber(){
-        return (Integer) getValue("nEntryNox");
-    }
-    
-    /**
-     * Sets the SourceCode of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setSourceCode(String fsValue){
-        return setValue("sSourceCd", fsValue);
-    }
-    
-    /**
-     * @return The SourceCode of this record. 
-     */
-    public String getSourceCode(){
-        return (String) getValue("sSourceCd");
-    }
-    
-    /**
-     * Sets the SourceNumber of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setSourceNumber(String fsValue){
-        return setValue("sSourceNo", fsValue);
-    }
-    
-    /**
-     * @return The SourceNumber of this record. 
-     */
-    public String getSourceNumber(){
-        return (String) getValue("sSourceNo");
-    }
-    
-    /**
-     * Sets the Confirm of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setConfirm(String fsValue){
-        return setValue("cConfirmd", fsValue);
-    }
-    
-    /**
-     * @return The Confirm of this record. 
-     */
-    public String getConfirm(){
-        return (String) getValue("cConfirmd");
-    }
-    
-    /**
      * Sets the TransactionStatus of this record.
      * 
      * @param fsValue 
@@ -635,57 +415,6 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
      */
     public String getTransactionStatus(){
         return (String) getValue("cTranStat");
-    }
-    
-    /**
-     * Sets the RecordStatus of this record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setRecordStatus(String fsValue){
-        return setValue("cRecdStat", fsValue);
-    }
-    
-    /**
-     * @return The RecordStatus of this record. 
-     */
-    public String getRecordStatus(){
-        return (String) getValue("cRecdStat");
-    }
-    
-    /**
-     * Sets record as active.
-     * 
-     * @param fbValue
-     * @return result as success/failed
-     */
-    public JSONObject setActive(boolean fbValue){
-        return setValue("cRecdStat", fbValue ? "1" : "0");
-    }
-    
-    /**
-     * @return If record is active. 
-     */
-    public boolean isActive(){
-        return ((String) getValue("cRecdStat")).equals("1");
-    }
-    
-    /**
-     * Sets the date and time the record start encoded.
-     * 
-     * @param fdValue 
-     * @return result as success/failed
-     */
-    public JSONObject setStartEncDate(Date fdValue){
-        return setValue("dStartEnc", fdValue);
-    }
-    
-    /**
-     * @return The date and time the record start encoded.
-     */
-    public Date getStartEncDate(){
-        return (Date) getValue("dStartEnc");
     }
     
     /**
@@ -722,48 +451,14 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
         return (Date) getValue("dModified");
     }
     
-    
-    /**
-     * Sets the branch name of the record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setBranchName(String fsValue){
-        return setValue("xBranchNm", fsValue);
-    }
-    
-    /**
-     * @return The branch name of  the record 
-     */
-    public String getBranchName(){
-        return (String) getValue("xBranchNm");
-    }
-    
-    
-    /**
-     * Sets the category name of the record.
-     * 
-     * @param fsValue 
-     * @return result as success/failed
-     */
-    public JSONObject setCategoryName(String fsValue){
-        return setValue("xCategrNm", fsValue);
-    }
-    
-    /**
-     * @return The category name of  the record 
-     */
-    public String getCategoryName(){
-        return (String) getValue("xCategrNm");
-    }
     /**
      * Gets the SQL statement for this entity.
      * 
      * @return SQL Statement
      */
     public String makeSQL(){
-        return MiscUtil.makeSQL(this, "xBranchNm»xCategrNm");
+        return MiscUtil.makeSQL(this, "");
+//        return MiscUtil.makeSQL(this, "xBranchNm»xCategrNm");
     }
     
     /**
@@ -772,42 +467,10 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
      * @return SQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xBranchNm»xCategrNm");
+        return MiscUtil.makeSelect(this, "");
+//        return MiscUtil.makeSelect(this, "xBranchNm»xCategrNm");
     }
     
-    /**
-     * Gets the SQL statement for this entity.
-     * 
-     * @return SQL Statement
-     */
-    public String getSQL(){
-        return "SELECT" +
-                "  a.sTransNox" +
-                ", a.sBranchCd" +
-                ", a.sCategrCd" +
-                ", a.dTransact" +
-                ", a.sReferNox" +
-                ", a.sRemarksx" +
-                ", a.sIssNotes" +
-                ", a.nCurrInvx" +
-                ", a.nEstInvxx" +
-                ", a.sApproved" +
-                ", a.dApproved" +
-                ", a.sAprvCode" +
-                ", a.nEntryNox" +
-                ", a.sSourceCd" +
-                ", a.sSourceNo" +
-                ", a.cConfirmd" +
-                ", a.cTranStat" +
-                ", a.dStartEnc" +
-                ", a.sModified" +
-                ", a.dModified" +
-                ", b.sBranchNm xBranchNm" +
-                ", c.sDescript xCategrNm" +
-            " FROM Inv_Stock_Request_Master a" + 
-                " LEFT JOIN Branch b ON a.sBranchCd= b.sBranchCd" +
-                " LEFT JOIN Category c ON a.sCategrCd = c.sCategrCd";
-    }
     
     private void initialize(){
         try {
@@ -817,13 +480,9 @@ public class Model_Inv_Stock_Request_Master implements GEntity{
             poEntity.moveToInsertRow();
 
             MiscUtil.initRowSet(poEntity);      
-            poEntity.updateString("cTranStat", RecordStatus.INACTIVE);
-            poEntity.updateString("dApproved", null);
-            poEntity.updateObject("nCurrInvx", 0);
-            poEntity.updateObject("nEstInvxx", 0);
-            poEntity.updateObject("dStartEnc", poGRider.getServerDate());
-            poEntity.updateObject("sBranchCd", poGRider.getBranchCode());
+            poEntity.updateString("cTranStat", RecordStatus.ACTIVE);
             poEntity.updateObject("dTransact", poGRider.getServerDate());
+            poEntity.updateObject("sReferNox", "");
             
             poEntity.insertRow();
             poEntity.moveToCurrentRow();
