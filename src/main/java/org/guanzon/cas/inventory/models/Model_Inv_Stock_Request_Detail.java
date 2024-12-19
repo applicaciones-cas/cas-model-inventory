@@ -305,7 +305,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
                 lsSQL = makeSQL();
                 
                 if (!lsSQL.isEmpty()){
-                    System.out.println(lsSQL);
+                    System.out.println("save record query = " + lsSQL);
                     if (poGRider.executeQuery(lsSQL, getTable(), poGRider.getBranchCode(), "") > 0){
                         poJSON.put("result", "success");
                         poJSON.put("message", "Record saved successfully.");
@@ -856,6 +856,22 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
     public JSONObject setModelName(String fsValue) {
         return setValue("xModelNme", fsValue);
     }
+    /**
+     * @return The sModelCde of this record.
+     */
+    public String getModelCode() {
+        return (String) getValue("xModelCde");
+    }
+    
+    /**
+     * Sets the sModelCde of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setModelCode(String fsValue) {
+        return setValue("xModelCde", fsValue);
+    }
     
     /**
      * @return The xModelDsc of this record.
@@ -950,6 +966,87 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
         return setValue("sLocatnID", fsValue);
     }
     
+    /**
+     * Sets the sLocatnCd of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public Object getSeriesName() {
+        return (Object) getValue("sSeriesNm");
+    }
+    
+    /**
+     * Sets the sLocatnCd of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setSeriesName(String fsValue) {
+        return setValue("sSeriesNm", fsValue);
+    }
+     /**
+     * Sets the sLocatnCd of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public Object getVariantName() {
+        return (Object) getValue("xVrntName");
+    }
+    
+    /**
+     * Sets the sLocatnCd of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setVariantName(String fsValue) {
+        return setValue("xVrntName", fsValue);
+    }
+    
+    
+     /**
+     * Sets the sLocatnCd of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public Object setVariantDescription() {
+        return (Object) getValue("sVrntDesc");
+    }
+    
+    /**
+     * Sets the sLocatnCd of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setVariantDescription(String fsValue) {
+        return setValue("sVrntDesc", fsValue);
+    }
+    
+    /**
+     * Sets the sLocatnCd of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public JSONObject setYearModel(int fsValue) {
+        return setValue("nYearModl", fsValue);
+    }
+    
+    
+     /**
+     * Sets the sLocatnCd of this record.
+     *
+     * @param fsValue
+     * @return result as success/failed
+     */
+    public Object getYearModel() {
+        return (Object) getValue("nYearModl");
+    }
+    
 
     
     /**
@@ -958,7 +1055,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
      * @return SQL Statement
      */
     public String makeSQL(){
-        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm»nMinLevel»sLocatnID");
+        return MiscUtil.makeSQL(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm»nMinLevel»sLocatnID»sBrandIDx»sModelIDx»xModelCde»nYearModl»xVrntName»sVrntDesc»sSeriesNm");
     }
     
     /**
@@ -967,7 +1064,7 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
      * @return SQL Statement
      */
     public String makeSelectSQL() {
-        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm»nMinLevel»sLocatnID");
+        return MiscUtil.makeSelect(this, "xBarCodex»xDescript»xCategr01»xCategr02»xInvTypNm»xBrandNme»xModelNme»xModelDsc»xColorNme»xMeasurNm»nMinLevel»sLocatnID»sBrandIDx»sModelIDx»xModelCde»nYearModl»xVrntName»sVrntDesc»sSeriesNm");
     }
     
     /**
@@ -1009,6 +1106,13 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
                 ", i.sMeasurNm xMeasurNm" +
                 ", j.nMinLevel" +
                 ", j.sLocatnID" +
+                ", f.sBrandIDx" +
+                ", g.sModelIDx" +
+                ", g.sModelCde xModelCde" +
+                ", g.nYearModl" +
+                ", o.sVrntName xVrntName" +
+                ", o.sDescript sVrntDesc" +
+                ", n.sDescript sSeriesNm" +
             " FROM Inv_Stock_Request_Detail a" + 
                 " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                 " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
@@ -1016,9 +1120,14 @@ public class Model_Inv_Stock_Request_Detail implements GEntity{
                 " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd" +
                 " LEFT JOIN Brand f ON b.sBrandIDx = f.sBrandIDx" +
                 " LEFT JOIN Model g ON b.sModelIDx = g.sModelIDx" +
+                " LEFT JOIN Model_Series n ON g.sSeriesID = n.sSeriesID" +
+                " LEFT JOIN Model_Variant o ON g.sVrntIDxx = o.sVrntIDxx" +
                 " LEFT JOIN Color h ON b.sColorIDx = h.sColorIDx" +
                 " LEFT JOIN Measure i ON b.sMeasurID = i.sMeasurID"+
-                " LEFT JOIN Inv_Master j ON b.sStockIDx = j.sStockIDx"  ;
+                " LEFT JOIN Inv_Master j ON b.sStockIDx = j.sStockIDx"+
+                " LEFT JOIN Warehouse k ON j.sWhouseID = k.sWhouseID" +
+                " LEFT JOIN Inv_Location l ON j.sLocatnID = l.sLocatnID" +
+                " LEFT JOIN Section m ON m.sSectnIDx = l.sSectnIDx"  ;
     }
     
     private void initialize(){
